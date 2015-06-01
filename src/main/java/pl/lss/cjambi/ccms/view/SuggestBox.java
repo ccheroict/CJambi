@@ -15,7 +15,7 @@ import com.trolltech.qt.gui.QStringListModel;
 import java.util.ArrayList;
 import java.util.List;
 import pl.lss.cjambi.ccms.utils.BeanUtils;
-import pl.lss.cjambi.ccms.utils.StringUtils;
+import pl.lss.cjambi.ccms.utils.Utils;
 
 /**
  *
@@ -61,7 +61,7 @@ public abstract class SuggestBox<T> extends QLineEdit {
     @QtPropertyWriter
     public void setState(T state) {
         this.state = state;
-        setText(StringUtils.toStringOrEmpty(BeanUtils.getProperty(state, propName)));
+        setText(Utils.toStringOrEmpty(BeanUtils.getProperty(state, propName)));
     }
 
     private void onTextEdited(String query) {
@@ -86,7 +86,7 @@ public abstract class SuggestBox<T> extends QLineEdit {
     private List<String> convertToStringList(List<T> cache) {
         List<String> l = new ArrayList<>();
         for (T obj : cache) {
-            l.add(StringUtils.toStringOrNull(BeanUtils.getProperty(obj, propName)));
+            l.add(Utils.toStringOrNull(BeanUtils.getProperty(obj, propName)));
         }
         return l;
     }

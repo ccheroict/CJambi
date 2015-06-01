@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pl.lss.cjambi.ccms.utils;
+package pl.lss.cjambi.ccms.utils.converter;
 
 /**
  *
  * @author ctran
  */
-public class Editor<T> {
+public interface Converter<DATA, PRESENTATION> {
 
-    public Editor() {
-    }
+    public DATA toData(PRESENTATION presentation);
 
+    public PRESENTATION toPresentation(DATA data);
 }

@@ -10,7 +10,7 @@ import com.trolltech.qt.QtPropertyWriter;
 import com.trolltech.qt.gui.QComboBox;
 import java.util.List;
 import pl.lss.cjambi.ccms.utils.BeanUtils;
-import pl.lss.cjambi.ccms.utils.StringUtils;
+import pl.lss.cjambi.ccms.utils.Utils;
 
 /**
  *
@@ -25,7 +25,7 @@ public class ComboBox<T> extends QComboBox {
         super();
         this.choices = choices;
         for (T obj : choices) {
-            addItem(StringUtils.toStringOrNull(BeanUtils.getProperty(obj, propName)));
+            addItem(Utils.toStringOrNull(BeanUtils.getProperty(obj, propName)));
         }
         activatedIndex.connect(this, "onActiveIndex(Integer)");
 
