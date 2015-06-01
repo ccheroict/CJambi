@@ -3,14 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pl.lss.cjambi.ccms.utils;
+package pl.lss.cjambi.ccms.view;
 
 import com.trolltech.qt.QtPropertyReader;
 import com.trolltech.qt.QtPropertyWriter;
+import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QTableWidget;
 import com.trolltech.qt.gui.QTableWidgetItem;
 import java.util.ArrayList;
 import java.util.List;
+import pl.lss.cjambi.ccms.utils.BeanUtils;
 import pl.lss.cjambi.ccms.utils.converter.Converter;
 
 /**
@@ -22,6 +24,10 @@ public class Table<T> extends QTableWidget {
     private List<T> state;
     private List<String> propNames = new ArrayList<>();
     private List<Converter> converters = new ArrayList<>();
+    private List<Integer> colAlignments = new ArrayList<>();
+
+    public Table() {
+    }
 
     @QtPropertyReader
     public List<T> getState() {
@@ -34,11 +40,24 @@ public class Table<T> extends QTableWidget {
         refresh();
     }
 
-    public void addColumn(String propName, Converter converter, String header) {
+    public void addColumn(String headerText, String propName, Converter converter) {
+        addColumn(headerText, propName, converter, Qt.AlignmentFlag.AlignCenter);
+    }
+
+    public void addColumn(String header, String propName, Converter converter, Qt.AlignmentFlag alignmentFlag) {
         propNames.add(propName);
         converters.add(converter);
-        setColumnCount(propNames.size());
-        horizontalHeaderItem(propNames.size() - 1).setText(header);
+        colAlignments.add(alignmentFlag.value());
+
+        int nCol = columnCount();
+        QTableWidgetItem headerItem = new QTableWidgetItem(header);
+        headerItem.setTextAlignment(alignmentFlag.value());
+        headerItem.setToolTip(header);
+        setHorizontalHeaderItem(nCol, headerItem);
+        resizeColumnToContents(nCol);
+        resizeColumnToContents(nCol - 1);
+        horizontalHeader().setStretchLastSection(true);
+        setColumnCount(nCol + 1);
     }
 
     private void refresh() {
@@ -48,6 +67,7 @@ public class Table<T> extends QTableWidget {
                 Converter converter = converters.get(col);
                 String content = (String) converter.toPresentation(BeanUtils.getProperty(state.get(row), propNames.get(col)));
                 QTableWidgetItem item = new QTableWidgetItem(content);
+                item.setTextAlignment(colAlignments.get(col));
                 setItem(row, col, item);
             }
         }

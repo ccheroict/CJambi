@@ -5,6 +5,8 @@
  */
 package pl.lss.cjambi.ccms.db;
 
+import com.j256.ormlite.dao.Dao;
+import java.sql.SQLException;
 import java.util.List;
 import pl.lss.cjambi.ccms.bean.Filter;
 import pl.lss.cjambi.ccms.bean.Order;
@@ -15,6 +17,8 @@ import pl.lss.cjambi.ccms.bean.User;
  * @author ctran
  */
 public interface DbService {
+
+    public Dao getDao(Class clazz) throws SQLException;
 
     public void createTablesIfNessecary();
 

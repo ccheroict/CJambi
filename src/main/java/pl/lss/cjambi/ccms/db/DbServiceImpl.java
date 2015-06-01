@@ -103,9 +103,14 @@ public class DbServiceImpl implements DbService {
     }
 
     @Override
+    public Dao getDao(Class clazz) throws SQLException {
+        return DaoManager.createDao(connectionSource, clazz);
+    }
+
+    @Override
     public User login(String username, String password) {
         try {
-            Dao<User, Integer> dao = DaoManager.createDao(connectionSource, User.class);
+            Dao<User, Integer> dao = getDao(User.class);
             return (User) dao.queryForFirst(dao.queryBuilder().where().eq(User.USERNAME_FIELD, username).and().eq(User.PASSWORD_FIELD, password).prepare());
         } catch (SQLException ex) {
             logger.error("login", ex);
@@ -116,7 +121,7 @@ public class DbServiceImpl implements DbService {
     @Override
     public List<User> getUser(String query) {
         try {
-            Dao<User, Integer> dao = DaoManager.createDao(connectionSource, User.class);
+            Dao<User, Integer> dao = getDao(User.class);
             return dao.query(dao.queryBuilder().where().like(User.USERNAME_FIELD, "%" + query + "%").prepare());
         } catch (SQLException ex) {
             logger.error("getUser", ex);
@@ -127,18 +132,18 @@ public class DbServiceImpl implements DbService {
     @Override
     public List<Order> getOrder(Filter filter) {
         try {
-            Dao<Order, Integer> dao = DaoManager.createDao(connectionSource, Order.class);
+            Dao<Order, Integer> dao = getDao(Order.class);
             return dao.queryForAll();
         } catch (SQLException ex) {
             logger.error("getOrder", ex);
-            return new ArrayList<>();
+            return null;
         }
     }
 
     @Override
     public void createOrUpdateOrder(Order order) {
         try {
-            Dao<Order, Integer> dao = DaoManager.createDao(connectionSource, Order.class);
+            Dao<Order, Integer> dao = getDao(Order.class);
             order.lastChangedDate = new Date();
             Iterator<Item> it = order.items.iterator();
             Item first = it.next();
