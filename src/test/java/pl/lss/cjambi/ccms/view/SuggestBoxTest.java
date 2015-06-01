@@ -5,6 +5,7 @@
  */
 package pl.lss.cjambi.ccms.view;
 
+import com.trolltech.qt.core.QTimer;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QDialog;
 import com.trolltech.qt.gui.QHBoxLayout;
@@ -36,6 +37,7 @@ public class SuggestBoxTest extends QDialog {
 
     @AfterClass
     public static void tearDownClass() {
+        QTimer.singleShot(0, instance, "close()");
         QApplication.execStatic();
     }
 
@@ -60,10 +62,10 @@ public class SuggestBoxTest extends QDialog {
                 return db.getUser(query);
             }
         };
+        suggestBox.setStyleSheet("QLineEdit{border: 1px solid red;}");
+
         layout.addWidget(suggestBox);
         instance.setLayout(layout);
-        System.out.println(instance.exec());
-
         User state = suggestBox.getState();
         System.out.println(state.id);
     }

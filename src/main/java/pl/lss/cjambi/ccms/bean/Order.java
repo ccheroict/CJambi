@@ -36,7 +36,7 @@ public class Order {
     public double discountValue;
     @DatabaseField
     public double total;
-    @ForeignCollectionField
+    @ForeignCollectionField(eager = true)
     public ForeignCollection<Item> items;
 
     public Order() {

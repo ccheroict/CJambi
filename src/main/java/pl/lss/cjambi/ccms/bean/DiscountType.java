@@ -19,8 +19,6 @@ public class DiscountType {
     public int id;
     @DatabaseField
     public String name;
-    @DatabaseField
-    public double value;
 
     public DiscountType() {
     }

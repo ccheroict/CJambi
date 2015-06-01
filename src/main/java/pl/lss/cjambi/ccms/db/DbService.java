@@ -6,6 +6,8 @@
 package pl.lss.cjambi.ccms.db;
 
 import java.util.List;
+import pl.lss.cjambi.ccms.bean.Filter;
+import pl.lss.cjambi.ccms.bean.Order;
 import pl.lss.cjambi.ccms.bean.User;
 
 /**
@@ -19,5 +21,9 @@ public interface DbService {
     public User login(String username, String password);
 
     public List<User> getUser(String query);
+
+    public List<Order> getOrder(Filter filter);
+
+    public void createOrUpdateOrder(Order order);
 
 }

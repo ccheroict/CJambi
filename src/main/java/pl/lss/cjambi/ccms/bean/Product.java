@@ -46,10 +46,6 @@ public class Product {
     public Unit unit;
 
     public Product() {
-        packSize = 0;
-        originalPrice = 0;
-        discountValue = 0;
-        finalPrice = 0;
     }
 
     public double getPrice() {

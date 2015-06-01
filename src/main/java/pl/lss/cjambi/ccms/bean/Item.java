@@ -33,9 +33,5 @@ public class Item {
     public Order order;
 
     public Item() {
-        nPackRequired = 0;
-        quantity = 0;
-        price = 0;
-        total = 0;
     }
 }
