@@ -1,0 +1,5 @@
+{
+    "jdbcUrl": "jdbc:mysql://localhost:3306/ccms?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false",
+    "username": "root",
+    "password": ""
+}
