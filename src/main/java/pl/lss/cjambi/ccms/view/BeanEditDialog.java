@@ -6,7 +6,6 @@
 package pl.lss.cjambi.ccms.view;
 
 import com.google.inject.Inject;
-import java.text.ParseException;
 import org.apache.log4j.Logger;
 import pl.lss.cjambi.ccms.resources.I18n;
 import pl.lss.cjambi.ccms.utils.Editor;
@@ -53,7 +52,7 @@ public abstract class BeanEditDialog<T> extends OkCloseDialog {
         }
         try {
             editor.commit();
-        } catch (ParseException ex) {
+        } catch (Exception ex) {
             logger.error("onOkBtnClicked", ex);
             reporter.error(I18n.sorryErrorAppeared);
             return;
