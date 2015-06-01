@@ -12,7 +12,7 @@ import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QMainWindow;
 import pl.lss.cjambi.ccms.db.DbService;
 import pl.lss.cjambi.ccms.resources.Cache;
-import pl.lss.cjambi.ccms.view.InformationDialog;
+import pl.lss.cjambi.ccms.view.ConfirmDialog;
 import pl.lss.cjambi.ccms.view.LoginDialog;
 
 /**
@@ -31,8 +31,7 @@ public class MainEntryPoint extends QMainWindow {
         MainEntryPoint app = Cache.getInstance(MainEntryPoint.class);
         app.guaranteeDatabaseIsInitialized();
         if (app.authorizeUser()) {
-            System.out.println(Cache.getInstance(InformationDialog.class)
-                    .setType(InformationDialog.InformationType.INFO)
+            System.out.println(Cache.getInstance(ConfirmDialog.class)
                     .setMessage("HAHAHA")
                     .build()
                     .exec());

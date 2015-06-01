@@ -14,6 +14,7 @@ public class I18n {
     public static String readDataSourceConfigurationError = "Lỗi khi đọc file cấu hình";
     public static String errorWhileCreatingDatabase = "Lỗi khi khởi tạo CSDL";
     public static String errorWhileConnectingToDatabase = "Lỗi kết nối với CSDL";
+    public static String sorryErrorAppeared = "Rất tiêc, có lỗi nào đó đã xảy ra";
     public static String error = "Lỗi";
     public static String information = "Thông báo";
     public static String warning = "Cảnh báo";
@@ -21,4 +22,6 @@ public class I18n {
     public static String login = "Đăng nhập";
     public static String username = "Tài khoản";
     public static String password = "Mật khẩu";
+    public static String close = "Đóng";
+
 }

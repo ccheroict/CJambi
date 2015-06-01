@@ -9,6 +9,7 @@ import com.trolltech.qt.QtPropertyReader;
 import com.trolltech.qt.QtPropertyWriter;
 import com.trolltech.qt.gui.QComboBox;
 import java.util.List;
+import org.apache.log4j.Logger;
 import pl.lss.cjambi.ccms.utils.BeanUtils;
 import pl.lss.cjambi.ccms.utils.Utils;
 
@@ -18,15 +19,21 @@ import pl.lss.cjambi.ccms.utils.Utils;
  */
 public class ComboBox<T> extends QComboBox {
 
+    private static final Logger logger = Logger.getLogger(ComboBox.class);
     private List<T> choices;
     private T state;
 
     public ComboBox(List<T> choices, String propName) {
         super();
         this.choices = choices;
-        for (T obj : choices) {
-            addItem(Utils.toStringOrNull(BeanUtils.getProperty(obj, propName)));
+        try {
+            for (T obj : choices) {
+                addItem(Utils.toStringOrNull(BeanUtils.getProperty(obj, propName)));
+            }
+        } catch (Exception ex) {
+            logger.error("ComboBox", ex);
         }
+
         activatedIndex.connect(this, "onActiveIndex(Integer)");
 
     }
@@ -38,11 +45,15 @@ public class ComboBox<T> extends QComboBox {
 
     @QtPropertyWriter
     public void setState(T state) {
-        Integer id = (Integer) BeanUtils.getProperty(state, "id");
-        for (int i = 0; i < choices.size(); i++) {
-            if (id.equals(BeanUtils.getProperty(choices.get(i), "id"))) {
-                setCurrentIndex(i);
+        try {
+            Integer id = (Integer) BeanUtils.getProperty(state, "id");
+            for (int i = 0; i < choices.size(); i++) {
+                if (id.equals(BeanUtils.getProperty(choices.get(i), "id"))) {
+                    setCurrentIndex(i);
+                }
             }
+        } catch (Exception ex) {
+            logger.error("setState", ex);
         }
     }
 

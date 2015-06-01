@@ -14,6 +14,7 @@ import com.trolltech.qt.gui.QLineEdit;
 import com.trolltech.qt.gui.QStringListModel;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.log4j.Logger;
 import pl.lss.cjambi.ccms.utils.BeanUtils;
 import pl.lss.cjambi.ccms.utils.Utils;
 
@@ -23,6 +24,8 @@ import pl.lss.cjambi.ccms.utils.Utils;
  * @param <T> type of state
  */
 public abstract class SuggestBox<T> extends QLineEdit {
+
+    private static final Logger logger = Logger.getLogger(SuggestBox.class);
 
     private static final int DELAY_TIME = 300;
     private QTimer timer;
@@ -60,8 +63,12 @@ public abstract class SuggestBox<T> extends QLineEdit {
 
     @QtPropertyWriter
     public void setState(T state) {
-        this.state = state;
-        setText(Utils.toStringOrEmpty(BeanUtils.getProperty(state, propName)));
+        try {
+            this.state = state;
+            setText(Utils.toStringOrEmpty(BeanUtils.getProperty(state, propName)));
+        } catch (Exception ex) {
+            logger.error("setState", ex);
+        }
     }
 
     private void onTextEdited(String query) {
@@ -85,8 +92,12 @@ public abstract class SuggestBox<T> extends QLineEdit {
 
     private List<String> convertToStringList(List<T> cache) {
         List<String> l = new ArrayList<>();
-        for (T obj : cache) {
-            l.add(Utils.toStringOrNull(BeanUtils.getProperty(obj, propName)));
+        try {
+            for (T obj : cache) {
+                l.add(Utils.toStringOrNull(BeanUtils.getProperty(obj, propName)));
+            }
+        } catch (Exception ex) {
+            logger.error("convertToStringList", ex);
         }
         return l;
     }

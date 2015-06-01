@@ -16,7 +16,7 @@ import pl.lss.cjambi.ccms.resources.IconResources;
  *
  * @author ctran
  */
-public class InformationDialog extends AcceptDialog {
+public class InformationDialog extends OkDialog {
 
     private InformationType type;
     private QLabel icon, message;
@@ -56,17 +56,6 @@ public class InformationDialog extends AcceptDialog {
         layout.addWidget(message);
         layout.setSpacing(10);
         return w;
-    }
-
-    @Override
-    public InformationDialog build() {
-        super.build(); //To change body of generated methods, choose Tools | Templates.
-        return this;
-    }
-
-    @Override
-    public void onAcceptBtnClicked() {
-        close();
     }
 
     public enum InformationType {

@@ -59,8 +59,11 @@ public class DbServiceImpl implements DbService {
             connectionSource = new JdbcConnectionSource(obj.get("jdbcUrl").getAsString(), obj.get("username").getAsString(), obj.get("password").getAsString());
         } catch (IOException ex) {
             reporter.error(I18n.readDataSourceConfigurationError);
+            throw new RuntimeException();
         } catch (SQLException ex) {
             reporter.error(I18n.errorWhileConnectingToDatabase);
+            throw new RuntimeException();
+
         }
     }
 
@@ -99,6 +102,7 @@ public class DbServiceImpl implements DbService {
         } catch (SQLException ex) {
             logger.error("createTablesIfNessecary", ex);
             reporter.error(I18n.errorWhileCreatingDatabase);
+            throw new RuntimeException();
         }
     }
 

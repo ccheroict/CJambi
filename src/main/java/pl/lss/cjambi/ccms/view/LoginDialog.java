@@ -21,7 +21,7 @@ import pl.lss.cjambi.ccms.resources.IconResources;
  *
  * @author ctran
  */
-public class LoginDialog extends AcceptDialog {
+public class LoginDialog extends OkDialog {
 
     private QLineEdit username, password;
     @Inject
@@ -35,7 +35,7 @@ public class LoginDialog extends AcceptDialog {
     }
 
     @Override
-    public void onAcceptBtnClicked() {
+    public void onOkBtnClicked() {
         User user = db.login(username.text(), password.text());
         if (user != null) {
             Cache.setUser(user);
@@ -44,6 +44,7 @@ public class LoginDialog extends AcceptDialog {
             username.setText("");
             password.setText("");
         }
+        setResult(DialogCode.Accepted.value());
     }
 
     @Override

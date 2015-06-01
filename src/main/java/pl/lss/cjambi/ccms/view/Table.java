@@ -12,6 +12,7 @@ import com.trolltech.qt.gui.QTableWidget;
 import com.trolltech.qt.gui.QTableWidgetItem;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.log4j.Logger;
 import pl.lss.cjambi.ccms.utils.BeanUtils;
 import pl.lss.cjambi.ccms.utils.converter.Converter;
 
@@ -21,6 +22,7 @@ import pl.lss.cjambi.ccms.utils.converter.Converter;
  */
 public class Table<T> extends QTableWidget {
 
+    private static final Logger logger = Logger.getLogger(Table.class);
     private List<T> state;
     private List<String> propNames = new ArrayList<>();
     private List<Converter> converters = new ArrayList<>();
@@ -61,15 +63,19 @@ public class Table<T> extends QTableWidget {
     }
 
     private void refresh() {
-        setRowCount(state.size());
-        for (int row = 0; row < rowCount(); row++) {
-            for (int col = 0; col < columnCount(); col++) {
-                Converter converter = converters.get(col);
-                String content = (String) converter.toPresentation(BeanUtils.getProperty(state.get(row), propNames.get(col)));
-                QTableWidgetItem item = new QTableWidgetItem(content);
-                item.setTextAlignment(colAlignments.get(col));
-                setItem(row, col, item);
+        try {
+            setRowCount(state.size());
+            for (int row = 0; row < rowCount(); row++) {
+                for (int col = 0; col < columnCount(); col++) {
+                    Converter converter = converters.get(col);
+                    String content = (String) converter.toPresentation(BeanUtils.getProperty(state.get(row), propNames.get(col)));
+                    QTableWidgetItem item = new QTableWidgetItem(content);
+                    item.setTextAlignment(colAlignments.get(col));
+                    setItem(row, col, item);
+                }
             }
+        } catch (Exception ex) {
+            logger.error("refresh", ex);
         }
     }
 }
