@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.log4j.Logger;
 import pl.lss.cjambi.ccms.bean.Company;
 import pl.lss.cjambi.ccms.bean.DiscountType;
@@ -100,11 +102,22 @@ public class DbServiceImpl implements DbService {
     @Override
     public User login(String username, String password) {
         try {
-            Dao userDao = DaoManager.createDao(connectionSource, User.class);
+            Dao<User, Integer> userDao = DaoManager.createDao(connectionSource, User.class);
             return (User) userDao.queryForFirst(userDao.queryBuilder().where().eq(User.USERNAME_FIELD, username).and().eq(User.PASSWORD_FIELD, password).prepare());
         } catch (SQLException ex) {
             logger.error("login", ex);
             return null;
+        }
+    }
+
+    @Override
+    public List<User> getUser(String query) {
+        try {
+            Dao<User, Integer> userDao = DaoManager.createDao(connectionSource, User.class);
+            return userDao.query(userDao.queryBuilder().where().like(User.USERNAME_FIELD, "%" + query + "%").prepare());
+        } catch (SQLException ex) {
+            logger.error("login", ex);
+            return new ArrayList<>();
         }
     }
 }

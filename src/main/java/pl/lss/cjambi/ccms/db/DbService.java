@@ -5,6 +5,7 @@
  */
 package pl.lss.cjambi.ccms.db;
 
+import java.util.List;
 import pl.lss.cjambi.ccms.bean.User;
 
 /**
@@ -16,5 +17,7 @@ public interface DbService {
     public void createTablesIfNessecary();
 
     public User login(String username, String password);
+
+    public List<User> getUser(String query);
 
 }

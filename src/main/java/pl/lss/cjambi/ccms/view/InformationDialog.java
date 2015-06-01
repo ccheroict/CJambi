@@ -5,7 +5,6 @@
  */
 package pl.lss.cjambi.ccms.view;
 
-import com.google.inject.Singleton;
 import com.trolltech.qt.gui.QHBoxLayout;
 import com.trolltech.qt.gui.QIcon;
 import com.trolltech.qt.gui.QLabel;
@@ -17,7 +16,6 @@ import pl.lss.cjambi.ccms.resources.IconResources;
  *
  * @author ctran
  */
-@Singleton
 public class InformationDialog extends AcceptDialog {
 
     private InformationType type;

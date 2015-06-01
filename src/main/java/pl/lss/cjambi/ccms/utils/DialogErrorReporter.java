@@ -6,6 +6,8 @@
 package pl.lss.cjambi.ccms.utils;
 
 import com.google.inject.Singleton;
+import pl.lss.cjambi.ccms.resources.Cache;
+import pl.lss.cjambi.ccms.view.InformationDialog;
 
 /**
  *
@@ -19,5 +21,9 @@ public class DialogErrorReporter implements ErrorReporter {
 
     @Override
     public void error(String message) {
+        Cache.getInstance(InformationDialog.class)
+                .setType(InformationDialog.InformationType.ERROR)
+                .setMessage(message)
+                .build().exec();
     }
 }
