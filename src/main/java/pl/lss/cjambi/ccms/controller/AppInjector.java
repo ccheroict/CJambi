@@ -11,8 +11,6 @@ import pl.lss.cjambi.ccms.db.DbService;
 import pl.lss.cjambi.ccms.db.DbServiceImpl;
 import pl.lss.cjambi.ccms.utils.DialogErrorReporter;
 import pl.lss.cjambi.ccms.utils.ErrorReporter;
-import pl.lss.cjambi.ccms.view.ConfirmDialog;
-import pl.lss.cjambi.ccms.view.InformationDialog;
 
 /**
  *
@@ -26,9 +24,5 @@ public class AppInjector extends AbstractModule {
     protected void configure() {
         bind(ErrorReporter.class).to(DialogErrorReporter.class);
         bind(DbService.class).to(DbServiceImpl.class);
-        bind(InformationDialog.class);
-        bind(ConfirmDialog.class);
-        bind(MainEntryPoint.class);
     }
-
 }

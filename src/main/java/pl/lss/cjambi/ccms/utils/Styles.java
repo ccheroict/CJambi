@@ -9,7 +9,9 @@ package pl.lss.cjambi.ccms.utils;
  *
  * @author ctran
  */
-public class Style {
+public class Styles {
 
-    public static final String Q_LINE_EDIT_RED_BORDER = "QLineEdit{border: 1px solid red;}";
+    public static final String QLINEEDIT_RED_BORDER = "QLineEdit{border: 1px solid red;}";
+    public static final String TOOLBAR = "QToolButton {height: 48px; width: 48px;}";
+
 }

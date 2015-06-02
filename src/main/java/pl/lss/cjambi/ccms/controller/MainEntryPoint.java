@@ -18,9 +18,8 @@ import pl.lss.cjambi.ccms.resources.Cache;
 import pl.lss.cjambi.ccms.resources.I18n;
 import pl.lss.cjambi.ccms.resources.IconResources;
 import pl.lss.cjambi.ccms.utils.Constants;
-import pl.lss.cjambi.ccms.utils.Utils;
+import pl.lss.cjambi.ccms.utils.Styles;
 import pl.lss.cjambi.ccms.view.LoginDialog;
-import pl.lss.jambi.ccms.resources.Styles;
 
 /**
  *
@@ -32,7 +31,7 @@ public class MainEntryPoint extends QMainWindow {
     private String appTitle = Constants.APP_NAME + " " + Constants.APP_VERSION;
 
     @Inject
-    private static DbService db;
+    private DbService db;
 
     public MainEntryPoint() {
         setWindowTitle(appTitle);
@@ -62,7 +61,7 @@ public class MainEntryPoint extends QMainWindow {
     }
 
     private boolean authorizeUser() {
-        LoginDialog dialog = Cache.getInstance(LoginDialog.class);
+        LoginDialog dialog = new LoginDialog();
         return (dialog.build().exec() != 0);
     }
 
@@ -103,12 +102,15 @@ public class MainEntryPoint extends QMainWindow {
 //        grid.refresh();
     }
 
-    private void onClientListGridActived() {
-        setWindowTitle(appTitle + " - " + I18n.clientList);
-//        ClientGrid grid = new ClientGrid();
-//        grid.build();
-//        setCentralWidget(grid);
-//        grid.refresh();
+    private QMenu buildOrderMenu() {
+        QMenu menu = new QMenu();
+        menu.setTitle(I18n.order);
+
+        QAction getOrderListAction = new QAction(I18n.orderList, null);
+        getOrderListAction.triggered.connect(this, "onOrderListGridActived()");
+        menu.addAction(getOrderListAction);
+
+        return menu;
     }
 
     private void onOrderListGridActived() {
@@ -121,25 +123,34 @@ public class MainEntryPoint extends QMainWindow {
 
     private void buildToolBar() {
         QToolBar toolbar = addToolBar("toolbar");
-        toolbar.setStyleSheet(Styles.toolbar);
-        toolbar.addAction(Utils.createAddSupplierAction());
-        toolbar.addAction(Utils.createAddProductAction());
-        toolbar.addAction(Utils.createAddOrderAction());
-        toolbar.addAction(Utils.createAddClientAction());
+        toolbar.setStyleSheet(Styles.TOOLBAR);
+
+        QAction addSupplierAction = new QAction(IconResources.SUPPIER_ICON, I18n.addNewSupplier, null);
+        addSupplierAction.triggered.connect(this, "onAddSupplierAction()");
+        toolbar.addAction(addSupplierAction);
+
+        QAction addProductAction = new QAction(IconResources.PRODUCT_ICON, I18n.addNewProduct, null);
+        addProductAction.triggered.connect(this, "onAddProductAction()");
+        toolbar.addAction(addProductAction);
+
+        QAction addOrderAction = new QAction(IconResources.ORDER_ICON, I18n.addNewOrder, null);
+        addOrderAction.triggered.connect(this, "onAddOrderAction()");
+        toolbar.addAction(addOrderAction);
     }
 
-    private QMenu buildOrderMenu() {
-        QMenu menu = new QMenu();
-        menu.setTitle(I18n.order);
-
-        QAction getClientListAction = new QAction(I18n.clientList, null);
-        getClientListAction.triggered.connect(this, "onClientListGridActived()");
-        menu.addAction(getClientListAction);
-
-        QAction getOrderListAction = new QAction(I18n.orderList, null);
-        getOrderListAction.triggered.connect(this, "onOrderListGridActived()");
-        menu.addAction(getOrderListAction);
-
-        return menu;
+    private void onAddSupplierAction() {
     }
+
+    private void onAddProductAction() {
+//        ProductEditDialog dialog = new ProductEditDialog(null);
+//        dialog.exec();
+//        refreshCentralWidget();
+    }
+
+    private void onAddOrderAction() {
+//        OrderEditDialog dialog = new OrderEditDialog(null);
+//        dialog.exec();
+//        refreshCentralWidget();
+    }
+
 }
