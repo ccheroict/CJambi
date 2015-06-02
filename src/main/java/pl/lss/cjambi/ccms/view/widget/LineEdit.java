@@ -8,20 +8,25 @@ package pl.lss.cjambi.ccms.view.widget;
 import com.trolltech.qt.QtPropertyReader;
 import com.trolltech.qt.QtPropertyWriter;
 import com.trolltech.qt.gui.QLineEdit;
+import pl.lss.cjambi.ccms.utils.Utils;
 
 /**
  *
  * @author ctran
  */
-public class LineEdit extends QLineEdit {
+public class LineEdit extends QLineEdit implements HasState {
 
     @QtPropertyReader
+    @Override
     public String getState() {
         return text();
     }
 
     @QtPropertyWriter
-    public void setState(String text) {
-        setText(text);
+    public void setState(Object state) {
+        if (state == null) {
+            state = "";
+        }
+        setText(Utils.toStringOrEmpty(state));
     }
 }

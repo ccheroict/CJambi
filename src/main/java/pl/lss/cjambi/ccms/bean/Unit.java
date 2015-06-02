@@ -15,6 +15,8 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable
 public class Unit {
 
+    public static final String NAME_FIELD = "name";
+
     @DatabaseField(generatedId = true)
     public Integer id;
     @DatabaseField

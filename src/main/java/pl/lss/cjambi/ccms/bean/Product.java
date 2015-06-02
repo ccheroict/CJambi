@@ -16,6 +16,8 @@ import java.util.Date;
 @DatabaseTable
 public class Product {
 
+    public static final String CODE_FIELD = "code";
+
     @DatabaseField(generatedId = true)
     public Integer id;
     @DatabaseField

@@ -5,7 +5,6 @@
  */
 package pl.lss.cjambi.ccms.view.dialog;
 
-import com.google.inject.Singleton;
 import com.trolltech.qt.gui.QIcon;
 import com.trolltech.qt.gui.QLabel;
 import com.trolltech.qt.gui.QWidget;
@@ -16,14 +15,20 @@ import pl.lss.cjambi.ccms.resources.IconResources;
  *
  * @author ctran
  */
-@Singleton
 public class ConfirmDialog extends OkCloseDialog {
+
+    private static final ConfirmDialog instance = new ConfirmDialog();
+
+    public static ConfirmDialog getInstance() {
+        return instance;
+    }
 
     private QLabel message;
 
-    public ConfirmDialog() {
+    private ConfirmDialog() {
         super();
         message = new QLabel();
+        build();
     }
 
     @Override

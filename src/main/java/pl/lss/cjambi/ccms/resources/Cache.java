@@ -5,11 +5,8 @@
  */
 package pl.lss.cjambi.ccms.resources;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import pl.lss.cjambi.ccms.bean.Company;
 import pl.lss.cjambi.ccms.bean.User;
-import pl.lss.cjambi.ccms.controller.AppInjector;
 
 /**
  *
@@ -17,12 +14,7 @@ import pl.lss.cjambi.ccms.controller.AppInjector;
  */
 public class Cache {
 
-    public static final Injector injector = Guice.createInjector(new AppInjector());
     private static User user;
-
-    public static <T> T getInstance(Class<T> clazz) {
-        return injector.getInstance(clazz);
-    }
 
     public static void setUser(User loggedUser) {
         user = loggedUser;

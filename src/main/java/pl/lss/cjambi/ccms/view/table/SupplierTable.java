@@ -5,16 +5,17 @@
  */
 package pl.lss.cjambi.ccms.view.table;
 
-import com.google.inject.Inject;
 import com.trolltech.qt.gui.QLabel;
 import com.trolltech.qt.gui.QWidget;
 import pl.lss.cjambi.ccms.bean.Filter;
 import pl.lss.cjambi.ccms.bean.Supplier;
 import pl.lss.cjambi.ccms.db.DbService;
+import pl.lss.cjambi.ccms.db.DbServiceImpl;
 import pl.lss.cjambi.ccms.resources.I18n;
 import pl.lss.cjambi.ccms.view.HBoxWidget;
 import pl.lss.cjambi.ccms.view.PageWidget;
 import pl.lss.cjambi.ccms.view.VBoxWidget;
+import pl.lss.cjambi.ccms.view.dialog.SupplierEditDialog;
 import pl.lss.cjambi.ccms.view.widget.Table;
 
 /**
@@ -23,8 +24,13 @@ import pl.lss.cjambi.ccms.view.widget.Table;
  */
 public class SupplierTable extends PageWidget {
 
-    @Inject
-    private DbService db;
+    private static final SupplierTable instance = new SupplierTable();
+
+    public static SupplierTable getInstance() {
+        return instance;
+    }
+
+    private static final DbService db = DbServiceImpl.getInstance();
 
     private Table<Supplier> table;
     private Filter filter = new Filter();
@@ -32,9 +38,8 @@ public class SupplierTable extends PageWidget {
     private long maxPage;
     private QLabel total;
 
-    public SupplierTable() {
+    private SupplierTable() {
         super();
-        filter.supplierCode = "";
     }
 
     @Override
@@ -46,7 +51,15 @@ public class SupplierTable extends PageWidget {
 
     @Override
     protected QWidget buildContent() {
-        table = new Table();
+        table = new Table<Supplier>() {
+
+            @Override
+            protected void showEditDialog(Supplier selected) {
+                SupplierEditDialog dialog = SupplierEditDialog.getInstance();
+                dialog.setBean(selected);
+                dialog.exec();
+            }
+        };
         table.addColumn(I18n.supplierCode, Supplier.CODE_FIELD);
         table.addColumn(I18n.supplierName, Supplier.NAME_FIELD);
         table.addColumn(I18n.note, Supplier.NOTE_FIELD);

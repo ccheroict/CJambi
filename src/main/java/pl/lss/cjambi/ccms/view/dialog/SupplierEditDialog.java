@@ -8,7 +8,6 @@ package pl.lss.cjambi.ccms.view.dialog;
 import com.trolltech.qt.gui.QFormLayout;
 import com.trolltech.qt.gui.QIcon;
 import com.trolltech.qt.gui.QLabel;
-import com.trolltech.qt.gui.QPlainTextEdit;
 import com.trolltech.qt.gui.QWidget;
 import java.util.List;
 import pl.lss.cjambi.ccms.bean.Filter;
@@ -27,9 +26,15 @@ import pl.lss.cjambi.ccms.view.widget.SuggestBox;
  */
 public class SupplierEditDialog extends BeanEditDialog<Supplier> {
 
+    private static final SupplierEditDialog instance = new SupplierEditDialog();
+
+    public static SupplierEditDialog getInstance() {
+        return instance;
+    }
+
     private SuggestBox code;
     private LineEdit name;
-    private QPlainTextEdit note;
+    private PlainTextEdit note;
 
     public SupplierEditDialog() {
         super();
@@ -44,6 +49,7 @@ public class SupplierEditDialog extends BeanEditDialog<Supplier> {
         };
         name = new LineEdit();
         note = new PlainTextEdit();
+        build();
     }
 
     @Override
@@ -64,9 +70,9 @@ public class SupplierEditDialog extends BeanEditDialog<Supplier> {
         form.addRow(new QLabel(I18n.supplierName), name);
         form.addRow(new QLabel(I18n.note), note);
 
-        addMapping(code, Supplier.CODE_FIELD);
-        addMapping(name, Supplier.NAME_FIELD);
-        addMapping(note, Supplier.NOTE_FIELD);
+        editor.addMapping(code, Supplier.CODE_FIELD, Supplier.CODE_FIELD);
+        editor.addMapping(name, Supplier.NAME_FIELD);
+        editor.addMapping(note, Supplier.NOTE_FIELD);
 
         return widget;
     }
@@ -86,7 +92,12 @@ public class SupplierEditDialog extends BeanEditDialog<Supplier> {
 
     @Override
     protected boolean validate() {
-        return validateSuggestBoxStateInList(code, false, Styles.QLINEEDIT_RED_BORDER)
-                && validateTextWidgetIsEmpty(code, false, Styles.QLINEEDIT_RED_BORDER);
+        return validateSuggestBoxStateInList(code, Styles.QLINEEDIT_RED_BORDER, false, bean)
+                && validateTextWidgetIsEmpty(code, Styles.QLINEEDIT_RED_BORDER, false);
+    }
+
+    @Override
+    protected void customFillBeforeExec() {
+        code.setState(bean);
     }
 }

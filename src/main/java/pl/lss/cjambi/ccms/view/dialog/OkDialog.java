@@ -19,7 +19,7 @@ public abstract class OkDialog extends Dialog {
 
     protected QPushButton okBtn;
 
-    public OkDialog() {
+    protected OkDialog() {
         super();
         okBtn = new QPushButton(IconResources.ACTION_ICON, I18n.OK);
     }

@@ -5,25 +5,24 @@
  */
 package pl.lss.cjambi.ccms.utils;
 
-import com.google.inject.Singleton;
-import pl.lss.cjambi.ccms.resources.Cache;
 import pl.lss.cjambi.ccms.view.dialog.InformationDialog;
 
 /**
  *
  * @author ctran
  */
-@Singleton
 public class DialogErrorReporter implements ErrorReporter {
 
-    public DialogErrorReporter() {
+    private static final DialogErrorReporter instance = new DialogErrorReporter();
+
+    public static ErrorReporter getInstance() {
+        return instance;
     }
 
     @Override
     public void error(String message) {
-        Cache.getInstance(InformationDialog.class)
+        InformationDialog.getInstance()
                 .setType(InformationDialog.InformationType.ERROR)
-                .setMessage(message)
-                .build().exec();
+                .setMessage(message).exec();
     }
 }

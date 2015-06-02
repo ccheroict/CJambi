@@ -5,7 +5,6 @@
  */
 package pl.lss.cjambi.ccms.view;
 
-import pl.lss.cjambi.ccms.view.widget.ComboBox;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QDialog;
 import com.trolltech.qt.gui.QHBoxLayout;
@@ -16,7 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import pl.lss.cjambi.ccms.bean.User;
 import pl.lss.cjambi.ccms.db.DbService;
-import pl.lss.cjambi.ccms.resources.Cache;
+import pl.lss.cjambi.ccms.view.widget.ComboBox;
 
 /**
  *
@@ -30,7 +29,7 @@ public class ComboBoxTest extends QDialog {
     @BeforeClass
     public static void setUpClass() {
         QApplication.initialize(new String[0]);
-        db = Cache.getInstance(DbService.class);
+//        db = Cache.getInstance(DbService.class);
         instance = new ComboBoxTest();
     }
 
@@ -54,8 +53,8 @@ public class ComboBoxTest extends QDialog {
         layout.addWidget(comboBox);
         instance.setLayout(layout);
 
-        User state = comboBox.getState();
-        System.out.println(state.id);
+//        User state = comboBox.getState();
+//        System.out.println(state.id);
     }
 
 }

@@ -5,7 +5,6 @@
  */
 package pl.lss.cjambi.ccms.view.dialog;
 
-import com.google.inject.Inject;
 import com.trolltech.qt.gui.QFormLayout;
 import com.trolltech.qt.gui.QIcon;
 import com.trolltech.qt.gui.QLabel;
@@ -13,6 +12,7 @@ import com.trolltech.qt.gui.QLineEdit;
 import com.trolltech.qt.gui.QWidget;
 import pl.lss.cjambi.ccms.bean.User;
 import pl.lss.cjambi.ccms.db.DbService;
+import pl.lss.cjambi.ccms.db.DbServiceImpl;
 import pl.lss.cjambi.ccms.resources.Cache;
 import pl.lss.cjambi.ccms.resources.I18n;
 import pl.lss.cjambi.ccms.resources.IconResources;
@@ -23,15 +23,21 @@ import pl.lss.cjambi.ccms.resources.IconResources;
  */
 public class LoginDialog extends OkDialog {
 
-    private QLineEdit username, password;
-    @Inject
-    private DbService db;
+    private static final LoginDialog instance = new LoginDialog();
+    private static final DbService db = DbServiceImpl.getInstance();
 
-    public LoginDialog() {
+    public static LoginDialog getInstance() {
+        return instance;
+    }
+
+    private QLineEdit username, password;
+
+    private LoginDialog() {
         super();
         username = new QLineEdit();
         password = new QLineEdit();
         password.setEchoMode(QLineEdit.EchoMode.Password);
+        build();
     }
 
     @Override

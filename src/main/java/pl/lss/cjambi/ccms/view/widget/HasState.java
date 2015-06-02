@@ -3,16 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pl.lss.cjambi.ccms.bean;
+package pl.lss.cjambi.ccms.view.widget;
 
 /**
  *
  * @author ctran
  */
-public class Filter {
+public interface HasState {
 
-    public String supplierCode = "";
-    public String productCode = "";
-    public Long pageNum;
-    public Long pageSize;
+    public Object getState();
+
+    public void setState(Object obj);
 }

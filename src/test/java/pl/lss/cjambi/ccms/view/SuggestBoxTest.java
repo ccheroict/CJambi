@@ -17,7 +17,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import pl.lss.cjambi.ccms.bean.User;
 import pl.lss.cjambi.ccms.db.DbService;
-import pl.lss.cjambi.ccms.resources.Cache;
 import pl.lss.cjambi.ccms.view.widget.SuggestBox;
 
 /**
@@ -32,7 +31,7 @@ public class SuggestBoxTest extends QDialog {
     @BeforeClass
     public static void setUpClass() {
         QApplication.initialize(new String[0]);
-        db = Cache.getInstance(DbService.class);
+//        db = Cache.getInstance(DbService.class);
         instance = new SuggestBoxTest();
     }
 

@@ -5,15 +5,15 @@
  */
 package pl.lss.cjambi.ccms.view.dialog;
 
-import com.google.inject.Inject;
 import com.trolltech.qt.gui.QLineEdit;
 import com.trolltech.qt.gui.QPlainTextEdit;
 import com.trolltech.qt.gui.QWidget;
 import org.apache.log4j.Logger;
 import pl.lss.cjambi.ccms.controller.exception.InvalidInformationException;
 import pl.lss.cjambi.ccms.db.DbService;
-import pl.lss.cjambi.ccms.resources.Cache;
+import pl.lss.cjambi.ccms.db.DbServiceImpl;
 import pl.lss.cjambi.ccms.resources.I18n;
+import pl.lss.cjambi.ccms.utils.DialogErrorReporter;
 import pl.lss.cjambi.ccms.utils.Editor;
 import pl.lss.cjambi.ccms.utils.ErrorReporter;
 import pl.lss.cjambi.ccms.view.widget.SuggestBox;
@@ -25,17 +25,15 @@ import pl.lss.cjambi.ccms.view.widget.SuggestBox;
 public abstract class BeanEditDialog<T> extends OkCloseDialog {
 
     private static final Logger logger = Logger.getLogger(BeanEditDialog.class);
-    @Inject
-    protected ErrorReporter reporter;
-    @Inject
-    protected DbService db;
+    protected static final ErrorReporter reporter = DialogErrorReporter.getInstance();
+    protected static final DbService db = DbServiceImpl.getInstance();
 
-    private Editor<T> editor;
+    protected Editor<T> editor;
     protected T bean;
 
-    public BeanEditDialog() {
+    protected BeanEditDialog() {
         super();
-        editor = Cache.getInstance(Editor.class);
+        editor = new Editor();
     }
 
     public void setBean(T bean) {
@@ -43,14 +41,11 @@ public abstract class BeanEditDialog<T> extends OkCloseDialog {
         editor.setBean(bean);
     }
 
-    protected void addMapping(QWidget widget, String propName) {
-        editor.addMapping(widget, propName);
-    }
-
     @Override
     public int exec() {
         try {
             editor.flush();
+            customFillBeforeExec();
             return super.exec();
         } catch (Exception ex) {
             logger.error("exec", ex);
@@ -71,26 +66,43 @@ public abstract class BeanEditDialog<T> extends OkCloseDialog {
         return true;
     }
 
-    protected boolean validateSuggestBoxStateInList(SuggestBox box, boolean desire, String invalidStyle) {
-        if (box.isValidState() == desire) {
-            box.setStyleSheet("");
-            return true;
-        } else {
-            box.setStyleSheet(invalidStyle);
-            return false;
+    protected boolean validateSuggestBoxStateInList(SuggestBox box, String invalidStyle, boolean desire, Object... exceptions) {
+        for (int i = 0; i < exceptions.length; i++) {
+            if (box.getState() == exceptions[i]) {
+                setStyleSheet(box, invalidStyle, true);
+                return true;
+            }
         }
+        boolean res = (box.isValidState() == desire);
+        setStyleSheet(box, invalidStyle, box.isValidState() == desire);
+        return res;
     }
 
-    protected boolean validateTextWidgetIsEmpty(QWidget widget, boolean desire, String invalidStyle) {
+    protected boolean validateTextWidgetIsEmpty(QWidget widget, String invalidStyle, boolean desire, Object... exceptions) {
         String text = null;
         if (widget instanceof QLineEdit) {
             text = ((QLineEdit) widget).text();
         } else if (widget instanceof QPlainTextEdit) {
             text = ((QPlainTextEdit) widget).toPlainText();
         }
-        if (desire) {
-            return (text != null && !text.isEmpty());
+        boolean res;
+        if (!desire) {
+            res = (text != null && !text.isEmpty());
+            setStyleSheet(widget, invalidStyle, res);
+            return res;
         }
-        return (text == null || text.isEmpty());
+        res = (text == null || text.isEmpty());
+        setStyleSheet(widget, invalidStyle, res);
+        return res;
     }
+
+    private void setStyleSheet(QWidget widget, String invalidStyle, boolean res) {
+        if (res) {
+            widget.setStyleSheet("");
+        } else {
+            widget.setStyleSheet(invalidStyle);
+        }
+    }
+
+    protected abstract void customFillBeforeExec();
 }

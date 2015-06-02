@@ -23,7 +23,7 @@ import pl.lss.cjambi.ccms.utils.Utils;
  * @author ctran
  * @param <T> type of state
  */
-public abstract class SuggestBox<T> extends QLineEdit {
+public abstract class SuggestBox<T> extends QLineEdit implements HasState {
 
     private static final Logger logger = Logger.getLogger(SuggestBox.class);
     private static final int DELAY_TIME = 300;
@@ -58,11 +58,13 @@ public abstract class SuggestBox<T> extends QLineEdit {
     }
 
     @QtPropertyReader
+    @Override
     public Object getState() {
         return (state == null ? text() : state);
     }
 
     @QtPropertyWriter
+    @Override
     public void setState(Object state) {
         try {
             this.state = state;
@@ -104,7 +106,7 @@ public abstract class SuggestBox<T> extends QLineEdit {
     }
 
     public boolean isValidState() {
-        return (state != null && (state.getClass() == type));
+        return (getState() != null && (getState().getClass() == type));
     }
 
     public abstract List<T> fetchData();

@@ -9,8 +9,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import pl.lss.cjambi.ccms.bean.Filter;
-import pl.lss.cjambi.ccms.bean.Order;
-import pl.lss.cjambi.ccms.resources.Cache;
 
 /**
  *
@@ -25,9 +23,9 @@ public class DbServiceImplTest {
 
     @BeforeClass
     public static void setUpClass() {
-        db = Cache.getInstance(DbService.class);
-        Order order = db.getOrder(new Filter()).get(0);
-        db.createOrUpdateOrder(order);
+//        db = Cache.getInstance(DbService.class);
+//        Order order = db.getOrder(new Filter()).get(0);
+//        db.createOrUpdateOrder(order);
     }
 
     @AfterClass

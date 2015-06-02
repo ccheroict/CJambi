@@ -5,13 +5,13 @@
  */
 package pl.lss.cjambi.ccms.utils.converter;
 
-import com.google.inject.Inject;
 import com.j256.ormlite.dao.CloseableWrappedIterable;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.ForeignCollection;
 import java.util.ArrayList;
 import java.util.List;
 import pl.lss.cjambi.ccms.db.DbService;
+import pl.lss.cjambi.ccms.db.DbServiceImpl;
 import pl.lss.cjambi.ccms.utils.BeanUtils;
 import pl.lss.cjambi.ccms.utils.SplittedString;
 
@@ -19,21 +19,15 @@ import pl.lss.cjambi.ccms.utils.SplittedString;
  *
  * @author ctran
  */
-public class ForeignCollectionToListConverter implements Converter<ForeignCollection, List> {
+public abstract class ForeignCollectionToListConverter implements Converter<ForeignCollection, List> {
 
-    @Inject
-    private DbService db;
+    private static final DbService db = DbServiceImpl.getInstance();
     private Object bean;
     private String propName;
 
-    public ForeignCollectionToListConverter setBean(Object bean) {
+    public ForeignCollectionToListConverter(Object bean, String propName) {
         this.bean = bean;
-        return this;
-    }
-
-    public ForeignCollectionToListConverter setPropName(String propName) {
         this.propName = propName;
-        return this;
     }
 
     @Override
@@ -63,5 +57,4 @@ public class ForeignCollectionToListConverter implements Converter<ForeignCollec
         it.close();
         return l;
     }
-
 }

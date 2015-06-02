@@ -36,8 +36,8 @@ public class I18n {
     public static final String productInfo = "Thông tin sản phẩm";
     public static final String supplier = "Nhà cung cấp";
     public static final String productCode = "Mã sản phẩm";
-    public static final String packing = "Đóng gói";
-    public static final String price = "Giá";
+    public static final String packSize = "Đóng gói";
+    public static final String defaultPrice = "Giá";
     public static final String catalog = "Loại";
     public static final String vat = "Thuế";
     public static final String unit = "Đơn vị tính";
@@ -45,7 +45,7 @@ public class I18n {
     public static final String productList = "Danh sách sản phẩm";
     public static final String grossValue = "Giá brutto";
     public static final String product = "Sản phẩm";
-    public static final String productColour = "Màu sắc";
+    public static final String colour = "Màu sắc";
     public static final String order = "Đơn hàng";
     public static final String orderList = "Danh sách đơn hàng";
     public static final String clientList = "Danh sách khách hàng";
@@ -88,5 +88,6 @@ public class I18n {
     public static final String total = "Tống số";
     public static final String delete = "Xóa";
     public static final String clearFiltrBtn = "Xóa bộ lọc";
+    public static final String finalPrice = "Giá cuối cùng";
 
 }

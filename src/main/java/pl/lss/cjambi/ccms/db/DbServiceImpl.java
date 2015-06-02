@@ -7,8 +7,6 @@ package pl.lss.cjambi.ccms.db;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
@@ -36,22 +34,27 @@ import pl.lss.cjambi.ccms.bean.Tax;
 import pl.lss.cjambi.ccms.bean.Unit;
 import pl.lss.cjambi.ccms.bean.User;
 import pl.lss.cjambi.ccms.resources.I18n;
+import pl.lss.cjambi.ccms.utils.DialogErrorReporter;
 import pl.lss.cjambi.ccms.utils.ErrorReporter;
 
 /**
  *
  * @author ctran
  */
-@Singleton
 public class DbServiceImpl implements DbService {
 
     private static final Logger logger = Logger.getLogger(DbServiceImpl.class);
     private static final String dbConfigFilePath = "db.json";
-    private ConnectionSource connectionSource;
-    @Inject
-    private ErrorReporter reporter;
+    private static final DbService instance = new DbServiceImpl();
+    private static final ErrorReporter reporter = DialogErrorReporter.getInstance();
 
-    public DbServiceImpl() {
+    private ConnectionSource connectionSource;
+
+    public static DbService getInstance() {
+        return instance;
+    }
+
+    private DbServiceImpl() {
         try {
             JsonParser parser = new JsonParser();
             String configStr = readFile(dbConfigFilePath);
@@ -63,7 +66,6 @@ public class DbServiceImpl implements DbService {
         } catch (SQLException ex) {
             reporter.error(I18n.errorWhileConnectingToDatabase);
             throw new RuntimeException();
-
         }
     }
 
@@ -154,7 +156,8 @@ public class DbServiceImpl implements DbService {
         try {
             Dao dao = getDao(Supplier.class);
             QueryBuilder qb = dao.queryBuilder();
-            qb.offset(filter.pageNum * filter.pageSize).limit(filter.pageSize);
+            qb.orderBy(Supplier.CODE_FIELD, true);
+            setOffsetAndLimit(qb, filter);
             PreparedQuery query = qb.where().like(Supplier.CODE_FIELD, "%" + filter.supplierCode + "%").prepare();
             List<Supplier> res = dao.query(query);
             if (res == null) {
@@ -188,6 +191,63 @@ public class DbServiceImpl implements DbService {
         } catch (SQLException ex) {
             logger.error("countSupplier", ex);
             return 0;
+        }
+    }
+
+    @Override
+    public List getProduct(Filter filter) {
+        try {
+            Dao dao = getDao(Product.class);
+            QueryBuilder qb = dao.queryBuilder();
+            setOffsetAndLimit(qb, filter);
+            PreparedQuery query = qb.where().like(Product.CODE_FIELD, "%" + filter.productCode + "%").prepare();
+            List res = dao.query(query);
+            if (res == null) {
+                res = new ArrayList<>();
+            }
+            return res;
+        } catch (SQLException ex) {
+            logger.error("getProduct", ex);
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public List getDiscountType() {
+        try {
+            Dao dao = getDao(DiscountType.class);
+            return dao.queryForAll();
+        } catch (SQLException ex) {
+            logger.error("getDiscountType", ex);
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public List getTax() {
+        try {
+            Dao dao = getDao(Tax.class);
+            return dao.queryForAll();
+        } catch (SQLException ex) {
+            logger.error("getTax", ex);
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public List getUnit() {
+        try {
+            Dao dao = getDao(Unit.class);
+            return dao.queryForAll();
+        } catch (SQLException ex) {
+            logger.error("getUnit", ex);
+            return new ArrayList<>();
+        }
+    }
+
+    private void setOffsetAndLimit(QueryBuilder qb, Filter filter) throws SQLException {
+        if (filter.pageNum != null && filter.pageSize != null) {
+            qb.offset(filter.pageNum * filter.pageSize).limit(filter.pageSize);
         }
     }
 }

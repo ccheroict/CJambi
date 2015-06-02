@@ -19,7 +19,7 @@ public abstract class OkCloseDialog extends OkDialog {
 
     protected QPushButton closeBtn;
 
-    public OkCloseDialog() {
+    protected OkCloseDialog() {
         super();
         closeBtn = new QPushButton(IconResources.CANCEL_ICON, I18n.close);
     }

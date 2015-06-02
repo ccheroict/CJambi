@@ -18,13 +18,20 @@ import pl.lss.cjambi.ccms.resources.IconResources;
  */
 public class InformationDialog extends OkDialog {
 
-    private InformationType type;
+    private static final InformationDialog instance = new InformationDialog();
+
+    public static InformationDialog getInstance() {
+        return instance;
+    }
+
+    private InformationType type = InformationType.INFO;
     private QLabel icon, message;
 
-    protected InformationDialog() {
+    private InformationDialog() {
         super();
         icon = new QLabel();
         message = new QLabel();
+        build();
     }
 
     public InformationDialog setType(InformationType type) {

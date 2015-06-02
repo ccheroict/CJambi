@@ -17,11 +17,11 @@ import pl.lss.cjambi.ccms.utils.Utils;
  *
  * @author ctran
  */
-public class ComboBox<T> extends QComboBox {
+public class ComboBox<T> extends QComboBox implements HasState {
 
     private static final Logger logger = Logger.getLogger(ComboBox.class);
     private List<T> choices;
-    private T state;
+    private Object state;
 
     public ComboBox(List<T> choices, String propName) {
         super();
@@ -39,12 +39,17 @@ public class ComboBox<T> extends QComboBox {
     }
 
     @QtPropertyReader
-    public T getState() {
+    @Override
+    public Object getState() {
         return state;
     }
 
     @QtPropertyWriter
-    public void setState(T state) {
+    @Override
+    public void setState(Object state) {
+        if (state == null) {
+            state = choices.get(0);
+        }
         try {
             Integer id = (Integer) BeanUtils.getProperty(state, "id");
             for (int i = 0; i < choices.size(); i++) {

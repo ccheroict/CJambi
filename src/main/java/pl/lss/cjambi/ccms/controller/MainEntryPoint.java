@@ -5,22 +5,22 @@
  */
 package pl.lss.cjambi.ccms.controller;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.trolltech.qt.core.QTimer;
 import com.trolltech.qt.gui.QAction;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QMainWindow;
 import com.trolltech.qt.gui.QMenu;
 import com.trolltech.qt.gui.QToolBar;
+import pl.lss.cjambi.ccms.bean.Product;
 import pl.lss.cjambi.ccms.bean.Supplier;
 import pl.lss.cjambi.ccms.db.DbService;
-import pl.lss.cjambi.ccms.resources.Cache;
+import pl.lss.cjambi.ccms.db.DbServiceImpl;
 import pl.lss.cjambi.ccms.resources.I18n;
 import pl.lss.cjambi.ccms.resources.IconResources;
 import pl.lss.cjambi.ccms.utils.Constants;
 import pl.lss.cjambi.ccms.utils.Styles;
 import pl.lss.cjambi.ccms.view.dialog.LoginDialog;
+import pl.lss.cjambi.ccms.view.dialog.ProductEditDialog;
 import pl.lss.cjambi.ccms.view.dialog.SupplierEditDialog;
 import pl.lss.cjambi.ccms.view.table.SupplierTable;
 
@@ -28,13 +28,10 @@ import pl.lss.cjambi.ccms.view.table.SupplierTable;
  *
  * @author ctran
  */
-@Singleton
 public class MainEntryPoint extends QMainWindow {
 
-    private String appTitle = Constants.APP_NAME + " " + Constants.APP_VERSION;
-
-    @Inject
-    private DbService db;
+    private static final String appTitle = Constants.APP_NAME + " " + Constants.APP_VERSION;
+    private static final DbService db = DbServiceImpl.getInstance();
 
     public MainEntryPoint() {
         setWindowTitle(appTitle);
@@ -48,7 +45,7 @@ public class MainEntryPoint extends QMainWindow {
     public static void main(String[] args) {
         QApplication.initialize(args);
 
-        MainEntryPoint app = Cache.getInstance(MainEntryPoint.class);
+        MainEntryPoint app = new MainEntryPoint();
         app.guaranteeDatabaseIsInitialized();
         if (app.authorizeUser()) {
             app.show();
@@ -64,8 +61,8 @@ public class MainEntryPoint extends QMainWindow {
     }
 
     private boolean authorizeUser() {
-        LoginDialog dialog = Cache.getInstance(LoginDialog.class);
-        return (dialog.build().exec() != 0);
+        LoginDialog dialog = LoginDialog.getInstance();
+        return (dialog.exec() != 0);
     }
 
     private void buildMenuBar() {
@@ -91,7 +88,7 @@ public class MainEntryPoint extends QMainWindow {
 
     private void onSupplierTableActived() {
         setWindowTitle(appTitle + " - " + I18n.supplierList);
-        SupplierTable table = Cache.getInstance(SupplierTable.class);
+        SupplierTable table = SupplierTable.getInstance();
         table.refresh();
         setCentralWidget(table);
     }
@@ -141,15 +138,15 @@ public class MainEntryPoint extends QMainWindow {
     }
 
     private void onAddSupplierAction() {
-        SupplierEditDialog dialog = Cache.getInstance(SupplierEditDialog.class);
+        SupplierEditDialog dialog = SupplierEditDialog.getInstance();
         dialog.setBean(new Supplier());
-        dialog.build().exec();
+        dialog.exec();
     }
 
     private void onAddProductAction() {
-//        ProductEditDialog dialog = new ProductEditDialog(null);
-//        dialog.exec();
-//        refreshCentralWidget();
+        ProductEditDialog dialog = ProductEditDialog.getInstance();
+        dialog.setBean(new Product());
+        dialog.exec();
     }
 
     private void onAddOrderAction() {

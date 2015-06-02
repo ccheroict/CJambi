@@ -7,7 +7,6 @@ package pl.lss.cjambi.ccms.view;
 
 import pl.lss.cjambi.ccms.bean.Filter;
 import pl.lss.cjambi.ccms.db.DbService;
-import pl.lss.cjambi.ccms.resources.Cache;
 
 /**
  *
@@ -18,7 +17,7 @@ public class OrderTest {
     private static DbService db;
 
     public static void main(String[] args) {
-        db = Cache.getInstance(DbService.class);
+//        db = Cache.getInstance(DbService.class);
         db.getOrder(new Filter());
     }
 }

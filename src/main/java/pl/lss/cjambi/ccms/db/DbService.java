@@ -25,9 +25,9 @@ public interface DbService {
 
     public User login(String username, String password);
 
-    public List<User> getUser(String query);
+    public List getUser(String query);
 
-    public List<Order> getOrder(Filter filter);
+    public List getOrder(Filter filter);
 
     public void createOrUpdateOrder(Order order);
 
@@ -36,5 +36,13 @@ public interface DbService {
     public void createOrUpdateSupplier(Supplier bean) throws SQLException;
 
     public long countSupplier(Filter filter);
+
+    public List getProduct(Filter filter);
+
+    public List getDiscountType();
+
+    public List getTax();
+
+    public List getUnit();
 
 }
