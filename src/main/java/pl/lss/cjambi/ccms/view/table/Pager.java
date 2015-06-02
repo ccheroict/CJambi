@@ -8,6 +8,8 @@ package pl.lss.cjambi.ccms.view.table;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QLineEdit;
 import com.trolltech.qt.gui.QPushButton;
+import com.trolltech.qt.gui.QSizePolicy;
+import com.trolltech.qt.gui.QSpacerItem;
 import pl.lss.cjambi.ccms.resources.I18n;
 import pl.lss.cjambi.ccms.resources.IconResources;
 import pl.lss.cjambi.ccms.view.HBoxWidget;
@@ -32,36 +34,37 @@ public abstract class Pager extends HBoxWidget {
         firstBtn.setIcon(IconResources.FIRST_BUTTON_ICON);
         firstBtn.setIconSize(IconResources.ICON_16);
         firstBtn.clicked.connect(this, "onFirstBtnClicked()");
-        addWidget(firstBtn, 1, Qt.AlignmentFlag.AlignLeft);
+        addWidget(firstBtn, 0, Qt.AlignmentFlag.AlignLeft);
 
         prevBtn = new QPushButton(I18n.prevPage);
         prevBtn.setIcon(IconResources.PREV_BUTTON_ICON);
         prevBtn.setIconSize(IconResources.ICON_16);
         prevBtn.clicked.connect(this, "onPrevBtnClicked()");
-        addWidget(prevBtn, 1, Qt.AlignmentFlag.AlignLeft);
+        addWidget(prevBtn, 0, Qt.AlignmentFlag.AlignLeft);
 
         pageNumLineEdit = new QLineEdit(String.valueOf(pageNum));
         pageNumLineEdit.setFixedWidth(60);
         pageNumLineEdit.setAlignment(Qt.AlignmentFlag.AlignCenter);
-        addWidget(pageNumLineEdit);
+        addWidget(pageNumLineEdit, 0, Qt.AlignmentFlag.AlignLeft);
 
         nextBtn = new QPushButton(I18n.nextPage);
         nextBtn.setIcon(IconResources.NEXT_BUTTON_ICON);
         nextBtn.setIconSize(IconResources.ICON_16);
         nextBtn.clicked.connect(this, "onNextBtnClicked()");
-        addWidget(nextBtn, 1, Qt.AlignmentFlag.AlignLeft);
+        addWidget(nextBtn, 0, Qt.AlignmentFlag.AlignLeft);
 
         lastBtn = new QPushButton(I18n.lastPage);
         lastBtn.setIcon(IconResources.LAST_BUTTON_ICON);
         lastBtn.setIconSize(IconResources.ICON_16);
         lastBtn.clicked.connect(this, "onLastBtnCLicked()");
-        addWidget(lastBtn, 1, Qt.AlignmentFlag.AlignLeft);
+        addWidget(lastBtn, 0, Qt.AlignmentFlag.AlignLeft);
 
         refreshBtn = new QPushButton(I18n.reload);
         refreshBtn.setIcon(IconResources.REFRESH_BUTTON_ICON);
         refreshBtn.setIconSize(IconResources.ICON_16);
         refreshBtn.clicked.connect(this, "onRefreshBtnCLicked()");
-        addWidget(refreshBtn, 1, Qt.AlignmentFlag.AlignLeft);
+        addWidget(refreshBtn, 0, Qt.AlignmentFlag.AlignLeft);
+        addSpacerItem(new QSpacerItem(0, 0, QSizePolicy.Policy.Expanding));
     }
 
     private void onFirstBtnClicked() {

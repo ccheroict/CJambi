@@ -16,7 +16,7 @@ import com.j256.ormlite.table.DatabaseTable;
 public class Company {
 
     @DatabaseField(generatedId = true)
-    public int id;
+    public Integer id;
     @DatabaseField
     public String name;
     @DatabaseField

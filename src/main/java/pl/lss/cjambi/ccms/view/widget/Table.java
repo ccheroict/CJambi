@@ -13,9 +13,10 @@ import com.trolltech.qt.gui.QTableWidgetItem;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
+import pl.lss.cjambi.ccms.resources.Cache;
 import pl.lss.cjambi.ccms.utils.BeanUtils;
 import pl.lss.cjambi.ccms.utils.converter.Converter;
-import pl.lss.cjambi.ccms.utils.converter.TypeToStringConverter;
+import pl.lss.cjambi.ccms.utils.converter.DefaultConverter;
 
 /**
  *
@@ -47,13 +48,7 @@ public class Table<T> extends QTableWidget {
     }
 
     public void addColumn(String header, String propName) {
-        addColumn(header, propName, new TypeToStringConverter() {
-
-            @Override
-            public Object toData(Object presentation) {
-                return presentation;
-            }
-        });
+        addColumn(header, propName, Cache.getInstance(DefaultConverter.class));
     }
 
     public void addColumn(String header, String propName, Converter converter) {

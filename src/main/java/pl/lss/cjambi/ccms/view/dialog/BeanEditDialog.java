@@ -35,7 +35,6 @@ public abstract class BeanEditDialog<T> extends OkCloseDialog {
 
     public BeanEditDialog() {
         super();
-        this.bean = bean;
         editor = Cache.getInstance(Editor.class);
     }
 

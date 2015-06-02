@@ -18,17 +18,17 @@ public class Item {
     private static final double EPS = 1e-6;
 
     @DatabaseField(generatedId = true)
-    public int id;
+    public Integer id;
     @DatabaseField(foreign = true)
     public Product product;
     @DatabaseField
-    public int nPackRequired;
+    public Integer nPackRequired;
     @DatabaseField
-    public int quantity;
+    public Integer quantity;
     @DatabaseField
-    public double price;
+    public Double price;
     @DatabaseField
-    public double total;
+    public Double total;
     @DatabaseField(foreign = true)
     public Order order;
 

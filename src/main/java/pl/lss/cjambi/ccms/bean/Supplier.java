@@ -20,7 +20,7 @@ public class Supplier {
     public static final String NOTE_FIELD = "note";
 
     @DatabaseField(generatedId = true)
-    public int id;
+    public Integer id;
     @DatabaseField
     public String code;
     @DatabaseField

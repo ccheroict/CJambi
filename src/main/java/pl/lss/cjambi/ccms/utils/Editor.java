@@ -5,19 +5,13 @@
  */
 package pl.lss.cjambi.ccms.utils;
 
-import com.google.inject.Inject;
-import com.j256.ormlite.dao.CloseableWrappedIterable;
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.ForeignCollection;
 import com.trolltech.qt.gui.QWidget;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import org.apache.log4j.Logger;
-import pl.lss.cjambi.ccms.db.DbService;
+import pl.lss.cjambi.ccms.resources.Cache;
+import pl.lss.cjambi.ccms.utils.converter.Converter;
+import pl.lss.cjambi.ccms.utils.converter.DefaultConverter;
 
 /**
  *
@@ -27,76 +21,48 @@ public class Editor<T> {
 
     private static final Logger logger = Logger.getLogger(Editor.class);
 
-    @Inject
-    private static DbService db;
-
     private T bean;
-    private Map<QWidget, String> widgetPropMap;
-
-    public Editor() {
-        widgetPropMap = new HashMap();
-    }
+    private List<QWidget> widgets = new ArrayList<>();
+    private List<String> propNames = new ArrayList<>();
+    private List<Converter> converters = new ArrayList<>();
+    private int nProp = 0;
 
     public void setBean(T bean) {
         this.bean = bean;
     }
 
     public void addMapping(QWidget widget, String propName) {
-        widgetPropMap.put(widget, propName);
+        addMapping(widget, propName, Cache.getInstance(DefaultConverter.class));
     }
 
-    public void flush() throws SQLException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        for (Entry<QWidget, String> entry : widgetPropMap.entrySet()) {
-            QWidget widget = entry.getKey();
-            String propName = entry.getValue();
+    public void addMapping(QWidget widget, String propName, Converter converter) {
+        nProp++;
+
+        widgets.add(widget);
+        propNames.add(propName);
+        converters.add(converter);
+    }
+
+    public void flush() throws Exception {
+        for (int i = 0; i < nProp; i++) {
+            QWidget widget = widgets.get(i);
+            String propName = propNames.get(i);
+            Converter converter = converters.get(i);
             Object value = BeanUtils.getProperty(bean, propName);
 
-            if (value instanceof ForeignCollection) {
-                widget.setProperty("state", convertForeignCollectionToList((ForeignCollection) value));
-            } else {
-                widget.setProperty("state", value);
-            }
+            widget.setProperty("state", converter.toPresentation(value));
         }
     }
 
-    public void commit() throws SQLException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        for (Entry<QWidget, String> entry : widgetPropMap.entrySet()) {
-            QWidget widget = entry.getKey();
-            String propName = entry.getValue();
+    public void commit() throws Exception {
+        for (int i = 0; i < nProp; i++) {
+            QWidget widget = widgets.get(i);
+            String propName = propNames.get(i);
+            Converter converter = converters.get(i);
             Object value = widget.property("state");
 
-            if (value instanceof List) {
-                BeanUtils.setProperty(bean, propName, convertListToForeignCollection((List) value, propName));
-            } else {
-                BeanUtils.setProperty(bean, propName, value);
-            }
+            BeanUtils.setProperty(bean, propName, converter.toData(value));
         }
     }
 
-    private List<T> convertForeignCollectionToList(ForeignCollection collection) throws SQLException {
-        List<T> l = new ArrayList<>();
-        CloseableWrappedIterable it = collection.getWrappedIterable();
-        while (it.iterator().hasNext()) {
-            l.add((T) it.iterator().next());
-        }
-        it.close();
-        return l;
-    }
-
-    private ForeignCollection<T> convertListToForeignCollection(List<T> l, String propName)
-            throws SQLException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        Dao dao = db.getDao(bean.getClass());
-        SplittedString ss = new SplittedString(propName, ".");
-        String parentPropName = null;
-        String childPropName = ss.first;
-        if (ss.last != null) {
-            parentPropName = ss.first;
-            childPropName = ss.last;
-        }
-        Object parent = BeanUtils.getProperty(bean, parentPropName);
-        dao.assignEmptyForeignCollection(parent.getClass(), childPropName);
-        ForeignCollection collection = (ForeignCollection) BeanUtils.getProperty(bean, propName);
-        collection.addAll(l);
-        return collection;
-    }
 }

@@ -19,7 +19,7 @@ public class User {
     public static final String PASSWORD_FIELD = "password";
 
     @DatabaseField(generatedId = true)
-    public int id;
+    public Integer id;
     @DatabaseField
     public String name;
     @DatabaseField

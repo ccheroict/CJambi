@@ -22,8 +22,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import org.apache.log4j.Logger;
 import pl.lss.cjambi.ccms.bean.Company;
@@ -149,25 +147,6 @@ public class DbServiceImpl implements DbService {
 
     @Override
     public void createOrUpdateOrder(Order order) {
-        try {
-            Dao<Order, Integer> dao = getDao(Order.class);
-            order.lastChangedDate = new Date();
-            Iterator<Item> it = order.items.iterator();
-            Item first = it.next();
-            Item item = new Item();
-            item.product = first.product;
-            item.nPackRequired = 1;
-            item.order = order;
-            item.price = 300;
-            item.quantity = 10;
-            item.total = 3000;
-            order.items.remove(first);
-            order.items.add(item);
-
-            dao.createOrUpdate(order);
-        } catch (SQLException ex) {
-            logger.error("createOrUpdateOrder", ex);
-        }
     }
 
     @Override

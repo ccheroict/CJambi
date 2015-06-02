@@ -19,7 +19,7 @@ import java.util.Date;
 public class Order {
 
     @DatabaseField(generatedId = true)
-    public int id;
+    public Integer id;
     @DatabaseField
     public String code;
     @DatabaseField
@@ -27,15 +27,15 @@ public class Order {
     @DatabaseField
     public Date lastChangedDate;
     @DatabaseField
-    public int packQuantity;
+    public Integer packQuantity;
     @DatabaseField
-    public int productQuantity;
+    public Integer productQuantity;
     @DatabaseField(foreign = true)
     public DiscountType discount;
     @DatabaseField
-    public double discountValue;
+    public Double discountValue;
     @DatabaseField
-    public double total;
+    public Double total;
     @ForeignCollectionField(eager = true)
     public ForeignCollection<Item> items;
 

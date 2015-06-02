@@ -17,7 +17,7 @@ import java.util.Date;
 public class Product {
 
     @DatabaseField(generatedId = true)
-    public int id;
+    public Integer id;
     @DatabaseField
     public String code;
     @DatabaseField
@@ -25,19 +25,19 @@ public class Product {
     @DatabaseField
     public String colour;
     @DatabaseField
-    public int packSize;
+    public Integer packSize;
     @DatabaseField
-    public double originalPrice;
+    public Double originalPrice;
     @DatabaseField(foreign = true)
     public DiscountType discountType;
     @DatabaseField
-    public double discountValue;
+    public Double discountValue;
     @DatabaseField
     public Date promotionDateFrom;
     @DatabaseField
     public Date promotionDateTo;
     @DatabaseField
-    public double finalPrice;
+    public Double finalPrice;
     @DatabaseField(foreign = true)
     public Supplier supplier;
     @DatabaseField(foreign = true)

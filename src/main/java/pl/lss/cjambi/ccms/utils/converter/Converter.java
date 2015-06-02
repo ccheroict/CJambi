@@ -11,7 +11,7 @@ package pl.lss.cjambi.ccms.utils.converter;
  */
 public interface Converter<DATA, PRESENTATION> {
 
-    public DATA toData(PRESENTATION presentation);
+    public DATA toData(PRESENTATION presentation) throws Exception;
 
-    public PRESENTATION toPresentation(DATA data);
+    public PRESENTATION toPresentation(DATA data) throws Exception;
 }
