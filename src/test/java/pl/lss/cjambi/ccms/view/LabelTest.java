@@ -5,6 +5,7 @@
  */
 package pl.lss.cjambi.ccms.view;
 
+import pl.lss.cjambi.ccms.view.widget.Label;
 import com.trolltech.qt.gui.QApplication;
 import org.junit.After;
 import org.junit.AfterClass;

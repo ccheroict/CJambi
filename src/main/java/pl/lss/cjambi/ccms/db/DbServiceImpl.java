@@ -12,6 +12,8 @@ import com.google.inject.Singleton;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.stmt.PreparedQuery;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import java.io.BufferedReader;
@@ -115,7 +117,8 @@ public class DbServiceImpl implements DbService {
     public User login(String username, String password) {
         try {
             Dao<User, Integer> dao = getDao(User.class);
-            return (User) dao.queryForFirst(dao.queryBuilder().where().eq(User.USERNAME_FIELD, username).and().eq(User.PASSWORD_FIELD, password).prepare());
+            //TO-DO: binary check login
+            return (User) dao.queryForFirst(dao.queryBuilder().where().like(User.USERNAME_FIELD, username).and().like(User.PASSWORD_FIELD, password).prepare());
         } catch (SQLException ex) {
             logger.error("login", ex);
             return null;
@@ -164,6 +167,48 @@ public class DbServiceImpl implements DbService {
             dao.createOrUpdate(order);
         } catch (SQLException ex) {
             logger.error("createOrUpdateOrder", ex);
+        }
+    }
+
+    @Override
+    public List<Supplier> getSupplier(Filter filter) {
+        try {
+            Dao dao = getDao(Supplier.class);
+            QueryBuilder qb = dao.queryBuilder();
+            qb.offset(filter.pageNum * filter.pageSize).limit(filter.pageSize);
+            PreparedQuery query = qb.where().like(Supplier.CODE_FIELD, "%" + filter.supplierCode + "%").prepare();
+            List<Supplier> res = dao.query(query);
+            if (res == null) {
+                res = new ArrayList<>();
+            }
+            return res;
+        } catch (SQLException ex) {
+            logger.error("getSupplier", ex);
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public void createOrUpdateSupplier(Supplier supplier) throws SQLException {
+        try {
+            Dao dao = getDao(Supplier.class);
+            dao.createOrUpdate(supplier);
+        } catch (SQLException ex) {
+            logger.error("createTablesIfNessecary", ex);
+            throw ex;
+        }
+    }
+
+    @Override
+    public long countSupplier(Filter filter) {
+        try {
+            Dao dao = getDao(Supplier.class);
+            QueryBuilder qb = dao.queryBuilder().setCountOf(true);
+            PreparedQuery query = qb.where().like(Supplier.CODE_FIELD, "%" + filter.supplierCode + "%").prepare();
+            return dao.countOf(query);
+        } catch (SQLException ex) {
+            logger.error("countSupplier", ex);
+            return 0;
         }
     }
 }

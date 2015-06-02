@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pl.lss.cjambi.ccms.view;
+package pl.lss.cjambi.ccms.view.dialog;
 
 import com.trolltech.qt.gui.QDialogButtonBox;
 import com.trolltech.qt.gui.QPushButton;
@@ -15,27 +15,25 @@ import pl.lss.cjambi.ccms.resources.IconResources;
  *
  * @author ctran
  */
-public abstract class OkCloseDialog extends OkDialog {
+public abstract class OkDialog extends Dialog {
 
-    protected QPushButton closeBtn;
+    protected QPushButton okBtn;
 
-    public OkCloseDialog() {
+    public OkDialog() {
         super();
-        closeBtn = new QPushButton(IconResources.CANCEL_ICON, I18n.close);
+        okBtn = new QPushButton(IconResources.ACTION_ICON, I18n.OK);
     }
 
     @Override
-    public QWidget buildButtons() {
+    protected QWidget buildButtons() {
         QDialogButtonBox box = new QDialogButtonBox();
         box.addButton(okBtn, QDialogButtonBox.ButtonRole.AcceptRole);
-        box.addButton(closeBtn, QDialogButtonBox.ButtonRole.RejectRole);
         okBtn.clicked.connect(this, "onOkBtnClicked()");
-        closeBtn.clicked.connect(this, "onCloseBtnClicked()");
         return box;
     }
 
-    private void onCloseBtnClicked() {
+    protected void onOkBtnClicked() throws Exception {
         close();
-        setResult(DialogCode.Rejected.value());
+        setResult(DialogCode.Accepted.value());
     }
 }

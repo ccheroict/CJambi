@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pl.lss.cjambi.ccms.view;
+package pl.lss.cjambi.ccms.view.widget;
 
 import com.trolltech.qt.QtPropertyReader;
 import com.trolltech.qt.QtPropertyWriter;
@@ -26,18 +26,19 @@ import pl.lss.cjambi.ccms.utils.Utils;
 public abstract class SuggestBox<T> extends QLineEdit {
 
     private static final Logger logger = Logger.getLogger(SuggestBox.class);
-
     private static final int DELAY_TIME = 300;
+
+    private Class<T> type;
     private QTimer timer;
-    private T state;
+    private Object state;
     private final String propName;
     private List<T> cache;
     private QStringListModel model;
     private QCompleter completer;
-    private String query;
 
-    public SuggestBox(String propName) {
+    public SuggestBox(Class<T> type, String propName) {
         super();
+        this.type = type;
         this.propName = propName;
 
         timer = new QTimer();
@@ -57,12 +58,12 @@ public abstract class SuggestBox<T> extends QLineEdit {
     }
 
     @QtPropertyReader
-    public T getState() {
-        return state;
+    public Object getState() {
+        return (state == null ? text() : state);
     }
 
     @QtPropertyWriter
-    public void setState(T state) {
+    public void setState(Object state) {
         try {
             this.state = state;
             setText(Utils.toStringOrEmpty(BeanUtils.getProperty(state, propName)));
@@ -75,7 +76,6 @@ public abstract class SuggestBox<T> extends QLineEdit {
         if (timer.isActive()) {
             timer.stop();
         }
-        this.query = query;
         timer.start();
     }
 
@@ -85,7 +85,8 @@ public abstract class SuggestBox<T> extends QLineEdit {
     }
 
     private void onTimerTimeout() {
-        cache = fetchData(query);
+        state = null;
+        cache = fetchData();
         model.setStringList(convertToStringList(cache));
         completer.complete();
     }
@@ -102,5 +103,10 @@ public abstract class SuggestBox<T> extends QLineEdit {
         return l;
     }
 
-    public abstract List<T> fetchData(String query);
+    public boolean isValidState() {
+        return (state != null && (state.getClass() == type));
+    }
+
+    public abstract List<T> fetchData();
+
 }

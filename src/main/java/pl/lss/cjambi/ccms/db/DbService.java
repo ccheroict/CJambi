@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.List;
 import pl.lss.cjambi.ccms.bean.Filter;
 import pl.lss.cjambi.ccms.bean.Order;
+import pl.lss.cjambi.ccms.bean.Supplier;
 import pl.lss.cjambi.ccms.bean.User;
 
 /**
@@ -29,5 +30,11 @@ public interface DbService {
     public List<Order> getOrder(Filter filter);
 
     public void createOrUpdateOrder(Order order);
+
+    public List<Supplier> getSupplier(Filter filter);
+
+    public void createOrUpdateSupplier(Supplier bean) throws SQLException;
+
+    public long countSupplier(Filter filter);
 
 }

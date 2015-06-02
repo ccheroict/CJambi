@@ -15,6 +15,10 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable
 public class Supplier {
 
+    public static final String CODE_FIELD = "code";
+    public static final String NAME_FIELD = "name";
+    public static final String NOTE_FIELD = "note";
+
     @DatabaseField(generatedId = true)
     public int id;
     @DatabaseField

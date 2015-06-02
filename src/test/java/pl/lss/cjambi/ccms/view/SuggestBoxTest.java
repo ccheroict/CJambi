@@ -18,6 +18,7 @@ import org.junit.Test;
 import pl.lss.cjambi.ccms.bean.User;
 import pl.lss.cjambi.ccms.db.DbService;
 import pl.lss.cjambi.ccms.resources.Cache;
+import pl.lss.cjambi.ccms.view.widget.SuggestBox;
 
 /**
  *
@@ -55,18 +56,18 @@ public class SuggestBoxTest extends QDialog {
     @Test
     public void testSuggestUser() {
         QHBoxLayout layout = new QHBoxLayout();
-        SuggestBox<User> suggestBox = new SuggestBox(User.USERNAME_FIELD) {
+        SuggestBox<User> suggestBox = new SuggestBox(User.class, User.USERNAME_FIELD) {
 
             @Override
-            public List fetchData(String query) {
-                return db.getUser(query);
+            public List fetchData() {
+                return db.getUser(text());
             }
         };
         suggestBox.setStyleSheet("QLineEdit{border: 1px solid red;}");
 
         layout.addWidget(suggestBox);
         instance.setLayout(layout);
-        User state = suggestBox.getState();
+        User state = (User) suggestBox.getState();
         System.out.println(state.id);
     }
 

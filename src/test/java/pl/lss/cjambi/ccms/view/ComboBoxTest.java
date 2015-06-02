@@ -5,6 +5,7 @@
  */
 package pl.lss.cjambi.ccms.view;
 
+import pl.lss.cjambi.ccms.view.widget.ComboBox;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QDialog;
 import com.trolltech.qt.gui.QHBoxLayout;

@@ -7,7 +7,7 @@ package pl.lss.cjambi.ccms.utils;
 
 import com.google.inject.Singleton;
 import pl.lss.cjambi.ccms.resources.Cache;
-import pl.lss.cjambi.ccms.view.InformationDialog;
+import pl.lss.cjambi.ccms.view.dialog.InformationDialog;
 
 /**
  *

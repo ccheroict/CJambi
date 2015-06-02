@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pl.lss.cjambi.ccms.view;
+package pl.lss.cjambi.ccms.view.dialog;
 
 import com.trolltech.qt.gui.QHBoxLayout;
 import com.trolltech.qt.gui.QIcon;
@@ -39,17 +39,17 @@ public class InformationDialog extends OkDialog {
     }
 
     @Override
-    public QIcon getDialogIcon() {
+    protected QIcon getDialogIcon() {
         return type.icon;
     }
 
     @Override
-    public String getDialogTitle() {
+    protected String getDialogTitle() {
         return type.title;
     }
 
     @Override
-    public QWidget buildContent() {
+    protected QWidget buildContent() {
         QWidget w = new QWidget();
         QHBoxLayout layout = new QHBoxLayout(w);
         layout.addWidget(icon);

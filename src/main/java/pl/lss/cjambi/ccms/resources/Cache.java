@@ -7,6 +7,7 @@ package pl.lss.cjambi.ccms.resources;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import pl.lss.cjambi.ccms.bean.Company;
 import pl.lss.cjambi.ccms.bean.User;
 import pl.lss.cjambi.ccms.controller.AppInjector;
 
@@ -25,6 +26,10 @@ public class Cache {
 
     public static void setUser(User loggedUser) {
         user = loggedUser;
+    }
+
+    public static Company getUserCompany() {
+        return user.office.company;
     }
 
 }

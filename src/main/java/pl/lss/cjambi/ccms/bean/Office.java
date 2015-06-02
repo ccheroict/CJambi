@@ -29,8 +29,8 @@ public class Office {
     public String fax;
     @DatabaseField
     public String email;
-    @DatabaseField(foreign = true)
-    public Company company; //this office is one of offices' 
+    @DatabaseField(foreign = true, foreignAutoRefresh = true)
+    public Company company; //this office is one of offices'
 
     public Office() {
     }

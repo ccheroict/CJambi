@@ -33,9 +33,12 @@ public class Editor<T> {
     private T bean;
     private Map<QWidget, String> widgetPropMap;
 
-    public Editor(T bean) {
-        this.bean = bean;
+    public Editor() {
         widgetPropMap = new HashMap();
+    }
+
+    public void setBean(T bean) {
+        this.bean = bean;
     }
 
     public void addMapping(QWidget widget, String propName) {
@@ -60,10 +63,12 @@ public class Editor<T> {
         for (Entry<QWidget, String> entry : widgetPropMap.entrySet()) {
             QWidget widget = entry.getKey();
             String propName = entry.getValue();
-            Object value = widget.property(propName);
+            Object value = widget.property("state");
 
             if (value instanceof List) {
                 BeanUtils.setProperty(bean, propName, convertListToForeignCollection((List) value, propName));
+            } else {
+                BeanUtils.setProperty(bean, propName, value);
             }
         }
     }

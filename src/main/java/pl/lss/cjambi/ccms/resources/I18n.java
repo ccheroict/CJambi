@@ -11,18 +11,18 @@ package pl.lss.cjambi.ccms.resources;
  */
 public class I18n {
 
-    public static String readDataSourceConfigurationError = "Lỗi khi đọc file cấu hình";
-    public static String errorWhileCreatingDatabase = "Lỗi khi khởi tạo CSDL";
-    public static String errorWhileConnectingToDatabase = "Lỗi kết nối với CSDL";
-    public static String sorryErrorAppeared = "Rất tiêc, có lỗi nào đó đã xảy ra";
-    public static String error = "Lỗi";
-    public static String information = "Thông báo";
-    public static String warning = "Cảnh báo";
-    public static String OK = "OK";
-    public static String login = "Đăng nhập";
-    public static String username = "Tài khoản";
-    public static String password = "Mật khẩu";
-    public static String close = "Đóng";
+    public static final String readDataSourceConfigurationError = "Lỗi khi đọc file cấu hình";
+    public static final String errorWhileCreatingDatabase = "Lỗi khi khởi tạo CSDL";
+    public static final String errorWhileConnectingToDatabase = "Lỗi kết nối với CSDL";
+    public static final String sorryErrorHasAppeared = "Rất tiêc, có lỗi nào đó đã xảy ra";
+    public static final String error = "Lỗi";
+    public static final String information = "Thông báo";
+    public static final String warning = "Cảnh báo";
+    public static final String OK = "OK";
+    public static final String login = "Đăng nhập";
+    public static final String username = "Tài khoản";
+    public static final String password = "Mật khẩu";
+    public static final String close = "Đóng";
     public static final String warehouse = "Kho";
     public static final String addNewSupplier = "Thêm nhà cung cấp";
     public static final String addNewClient = "Thêm khách hàng";
@@ -78,5 +78,15 @@ public class I18n {
     public static final String orderItem = "Sản phẩm trong đơn hàng";
     public static final String printOrder = "In đơn hàng";
     public static final String printProductCode = "In mã sản phẩm";
+    public static final String note = "Chú ý";
+    public static final String firstPage = "Trang đầu";
+    public static final String prevPage = "Trang trước";
+    public static final String nextPage = "Trang sau";
+    public static final String lastPage = "Trang cuối";
+    public static final String invalidPageNum = "Số trang không hợp lệ";
+    public static final String reload = "Tải lại";
+    public static final String total = "Tống số";
+    public static final String delete = "Xóa";
+    public static final String clearFiltrBtn = "Xóa bộ lọc";
 
 }

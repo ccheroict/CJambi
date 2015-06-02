@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pl.lss.cjambi.ccms.view;
+package pl.lss.cjambi.ccms.view.dialog;
 
 import com.google.inject.Inject;
 import com.trolltech.qt.gui.QFormLayout;
@@ -35,7 +35,7 @@ public class LoginDialog extends OkDialog {
     }
 
     @Override
-    public void onOkBtnClicked() {
+    protected void onOkBtnClicked() {
         User user = db.login(username.text(), password.text());
         if (user != null) {
             Cache.setUser(user);
@@ -48,22 +48,21 @@ public class LoginDialog extends OkDialog {
     }
 
     @Override
-    public QIcon getDialogIcon() {
+    protected QIcon getDialogIcon() {
         return IconResources.APP_ICON;
     }
 
     @Override
-    public String getDialogTitle() {
+    protected String getDialogTitle() {
         return I18n.login;
     }
 
     @Override
-    public QWidget buildContent() {
+    protected QWidget buildContent() {
         QWidget w = new QWidget();
         QFormLayout layout = new QFormLayout(w);
         layout.addRow(new QLabel(I18n.username), username);
         layout.addRow(new QLabel(I18n.password), password);
         return w;
     }
-
 }

@@ -26,7 +26,7 @@ public class User {
     public String username;
     @DatabaseField
     public String password;
-    @DatabaseField(foreign = true)
+    @DatabaseField(foreign = true, foreignAutoRefresh = true)
     public Office office; //where this user works
 
     public User() {

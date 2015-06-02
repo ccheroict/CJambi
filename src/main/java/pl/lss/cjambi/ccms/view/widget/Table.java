@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pl.lss.cjambi.ccms.view;
+package pl.lss.cjambi.ccms.view.widget;
 
 import com.trolltech.qt.QtPropertyReader;
 import com.trolltech.qt.QtPropertyWriter;
@@ -15,6 +15,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import pl.lss.cjambi.ccms.utils.BeanUtils;
 import pl.lss.cjambi.ccms.utils.converter.Converter;
+import pl.lss.cjambi.ccms.utils.converter.TypeToStringConverter;
 
 /**
  *
@@ -23,12 +24,15 @@ import pl.lss.cjambi.ccms.utils.converter.Converter;
 public class Table<T> extends QTableWidget {
 
     private static final Logger logger = Logger.getLogger(Table.class);
-    private List<T> state;
+    public static final long DEFAULT_SIZE = 20;
+
+    private List<T> state = new ArrayList<>();
     private List<String> propNames = new ArrayList<>();
     private List<Converter> converters = new ArrayList<>();
     private List<Integer> colAlignments = new ArrayList<>();
 
     public Table() {
+        super();
     }
 
     @QtPropertyReader
@@ -42,8 +46,18 @@ public class Table<T> extends QTableWidget {
         refresh();
     }
 
-    public void addColumn(String headerText, String propName, Converter converter) {
-        addColumn(headerText, propName, converter, Qt.AlignmentFlag.AlignCenter);
+    public void addColumn(String header, String propName) {
+        addColumn(header, propName, new TypeToStringConverter() {
+
+            @Override
+            public Object toData(Object presentation) {
+                return presentation;
+            }
+        });
+    }
+
+    public void addColumn(String header, String propName, Converter converter) {
+        addColumn(header, propName, converter, Qt.AlignmentFlag.AlignCenter);
     }
 
     public void addColumn(String header, String propName, Converter converter, Qt.AlignmentFlag alignmentFlag) {
@@ -52,14 +66,16 @@ public class Table<T> extends QTableWidget {
         colAlignments.add(alignmentFlag.value());
 
         int nCol = columnCount();
+        setColumnCount(nCol + 1);
+
         QTableWidgetItem headerItem = new QTableWidgetItem(header);
+        headerItem.setText(header);
         headerItem.setTextAlignment(alignmentFlag.value());
         headerItem.setToolTip(header);
         setHorizontalHeaderItem(nCol, headerItem);
         resizeColumnToContents(nCol);
         resizeColumnToContents(nCol - 1);
         horizontalHeader().setStretchLastSection(true);
-        setColumnCount(nCol + 1);
     }
 
     private void refresh() {

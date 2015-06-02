@@ -3,16 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pl.lss.cjambi.ccms.bean;
+package pl.lss.cjambi.ccms.controller.exception;
 
 /**
  *
  * @author ctran
  */
-public class Filter {
-
-    public String supplierCode;
-    public Long pageNum;
-    public Long pageSize;
+public class InvalidInformationException extends Exception {
 
 }

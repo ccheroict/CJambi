@@ -13,13 +13,16 @@ import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QMainWindow;
 import com.trolltech.qt.gui.QMenu;
 import com.trolltech.qt.gui.QToolBar;
+import pl.lss.cjambi.ccms.bean.Supplier;
 import pl.lss.cjambi.ccms.db.DbService;
 import pl.lss.cjambi.ccms.resources.Cache;
 import pl.lss.cjambi.ccms.resources.I18n;
 import pl.lss.cjambi.ccms.resources.IconResources;
 import pl.lss.cjambi.ccms.utils.Constants;
 import pl.lss.cjambi.ccms.utils.Styles;
-import pl.lss.cjambi.ccms.view.LoginDialog;
+import pl.lss.cjambi.ccms.view.dialog.LoginDialog;
+import pl.lss.cjambi.ccms.view.dialog.SupplierEditDialog;
+import pl.lss.cjambi.ccms.view.table.SupplierTable;
 
 /**
  *
@@ -61,7 +64,7 @@ public class MainEntryPoint extends QMainWindow {
     }
 
     private boolean authorizeUser() {
-        LoginDialog dialog = new LoginDialog();
+        LoginDialog dialog = Cache.getInstance(LoginDialog.class);
         return (dialog.build().exec() != 0);
     }
 
@@ -76,25 +79,24 @@ public class MainEntryPoint extends QMainWindow {
 //        menu.addAction(Singletons.getAddSupplierAction());
 
         QAction getSupplierListAction = new QAction(I18n.supplierList, null);
-        getSupplierListAction.triggered.connect(this, "onSupplierListGridActived()");
+        getSupplierListAction.triggered.connect(this, "onSupplierTableActived()");
         menu.addAction(getSupplierListAction);
 
         QAction getProductListAction = new QAction(I18n.productList, null);
-        getProductListAction.triggered.connect(this, "onProductListGridActivated()");
+        getProductListAction.triggered.connect(this, "onProductTableActivated()");
         menu.addAction(getProductListAction);
 
         return menu;
     }
 
-    private void onSupplierListGridActived() {
+    private void onSupplierTableActived() {
         setWindowTitle(appTitle + " - " + I18n.supplierList);
-//        SupplierGrid grid = new SupplierGrid();
-//        grid.build();
-//        setCentralWidget(grid);
-//        grid.refresh();
+        SupplierTable table = Cache.getInstance(SupplierTable.class);
+        table.refresh();
+        setCentralWidget(table);
     }
 
-    private void onProductListGridActivated() {
+    private void onProductTableActivated() {
         setWindowTitle(appTitle + " - " + I18n.productList);
 //        ProductGrid grid = new ProductGrid();
 //        grid.build();
@@ -107,13 +109,13 @@ public class MainEntryPoint extends QMainWindow {
         menu.setTitle(I18n.order);
 
         QAction getOrderListAction = new QAction(I18n.orderList, null);
-        getOrderListAction.triggered.connect(this, "onOrderListGridActived()");
+        getOrderListAction.triggered.connect(this, "onOrderTableActived()");
         menu.addAction(getOrderListAction);
 
         return menu;
     }
 
-    private void onOrderListGridActived() {
+    private void onOrderTableActived() {
         setWindowTitle(appTitle + " - " + I18n.orderList);
 //        OrderGrid grid = new OrderGrid();
 //        grid.build();
@@ -139,6 +141,9 @@ public class MainEntryPoint extends QMainWindow {
     }
 
     private void onAddSupplierAction() {
+        SupplierEditDialog dialog = Cache.getInstance(SupplierEditDialog.class);
+        dialog.setBean(new Supplier());
+        dialog.build().exec();
     }
 
     private void onAddProductAction() {

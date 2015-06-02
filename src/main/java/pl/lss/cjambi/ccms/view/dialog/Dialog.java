@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pl.lss.cjambi.ccms.view;
+package pl.lss.cjambi.ccms.view.dialog;
 
 import com.trolltech.qt.gui.QDialog;
 import com.trolltech.qt.gui.QIcon;
@@ -34,11 +34,11 @@ public abstract class Dialog extends QDialog {
         return this;
     }
 
-    public abstract QIcon getDialogIcon();
+    protected abstract QIcon getDialogIcon();
 
-    public abstract String getDialogTitle();
+    protected abstract String getDialogTitle();
 
-    public abstract QWidget buildContent();
+    protected abstract QWidget buildContent();
 
-    public abstract QWidget buildButtons();
+    protected abstract QWidget buildButtons();
 }
