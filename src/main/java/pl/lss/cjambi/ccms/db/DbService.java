@@ -54,4 +54,6 @@ public interface DbService {
 
     public List<Catalog> getCatalog();
 
+    public long countProduct(Filter filter);
+
 }

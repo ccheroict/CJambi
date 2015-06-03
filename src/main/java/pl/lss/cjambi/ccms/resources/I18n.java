@@ -37,7 +37,7 @@ public class I18n {
     public static final String supplier = "Nhà cung cấp";
     public static final String productCode = "Mã sản phẩm";
     public static final String packSize = "Đóng gói";
-    public static final String defaultPrice = "Giá";
+    public static final String originalPrice = "Giá";
     public static final String catalog = "Loại";
     public static final String vat = "Thuế";
     public static final String unit = "Đơn vị tính";

@@ -25,12 +25,6 @@ import pl.lss.cjambi.ccms.view.widget.SuggestBox;
  * @author ctran
  */
 public class SupplierEditDialog extends BeanEditDialog<Supplier> {
-//
-//    private static final SupplierEditDialog instance = new SupplierEditDialog();
-//
-//    public static SupplierEditDialog getInstance() {
-//        return instance;
-//    }
 
     private SuggestBox code;
     private LineEdit name;

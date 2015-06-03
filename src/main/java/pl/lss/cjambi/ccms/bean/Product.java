@@ -28,6 +28,8 @@ public class Product {
     public static final String DISCOUNT_TYPE_FIELD = "discountType";
     public static final String FINAL_PRICE_FIELD = "finalPrice";
     public static final String CATALOG_FIELD = "catalog";
+    public static final String SUPPLIER_CODE_FIELD = "supplier.code";
+    public static final String NOTE_FIELD = "note";
 
     public Product self = this;
 
@@ -55,7 +57,7 @@ public class Product {
     public Date promotionDateTo;
     @DatabaseField
     public Double finalPrice = 0.0;
-    @DatabaseField(foreign = true)
+    @DatabaseField(foreign = true, foreignAutoRefresh = true)
     public Supplier supplier;
     @DatabaseField(foreign = true)
     public Tax tax;
@@ -63,6 +65,8 @@ public class Product {
     public Unit unit;
     @DatabaseField(foreign = true)
     public Company company;
+    @DatabaseField
+    public String note;
 
     public Product() {
     }

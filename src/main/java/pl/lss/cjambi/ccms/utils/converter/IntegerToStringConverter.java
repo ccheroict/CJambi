@@ -26,7 +26,7 @@ public class IntegerToStringConverter extends TypeToStringConverter<Integer> {
     @Override
     public Integer toData(String presentation) throws NumberFormatException {
         try {
-            return Integer.parseInt(presentation);
+            return Integer.parseInt(presentation.trim());
         } catch (NumberFormatException ex) {
             throw ex;
         }

@@ -5,59 +5,65 @@
  */
 package pl.lss.cjambi.ccms.view.table;
 
+import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QLabel;
 import com.trolltech.qt.gui.QWidget;
 import pl.lss.cjambi.ccms.bean.Filter;
-import pl.lss.cjambi.ccms.bean.Supplier;
+import pl.lss.cjambi.ccms.bean.Product;
 import pl.lss.cjambi.ccms.db.DbService;
 import pl.lss.cjambi.ccms.db.DbServiceImpl;
 import pl.lss.cjambi.ccms.resources.I18n;
+import pl.lss.cjambi.ccms.utils.Constants;
+import pl.lss.cjambi.ccms.utils.converter.CurrencyToStringConverter;
+import pl.lss.cjambi.ccms.utils.converter.IntegerToStringConverter;
 import pl.lss.cjambi.ccms.view.HBoxWidget;
 import pl.lss.cjambi.ccms.view.PageWidget;
 import pl.lss.cjambi.ccms.view.VBoxWidget;
-import pl.lss.cjambi.ccms.view.dialog.SupplierEditDialog;
+import pl.lss.cjambi.ccms.view.dialog.ProductEditDialog;
 import pl.lss.cjambi.ccms.view.widget.Table;
 
 /**
  *
  * @author ctran
  */
-public class SupplierTable extends PageWidget {
+public class ProductTable extends PageWidget {
 
     private static final DbService db = DbServiceImpl.getInstance();
 
-    private Table<Supplier> table;
+    private Table<Product> table;
     private Filter filter = new Filter();
     private Pager pager;
     private long maxPage;
     private QLabel total;
 
-    public SupplierTable() {
+    public ProductTable() {
         super();
     }
 
     @Override
     protected QWidget buildHeader() {
         HBoxWidget header = new HBoxWidget();
-        header.addWidget(new QLabel(I18n.supplierList));
+        header.addWidget(new QLabel(I18n.productList));
         return header;
     }
 
     @Override
     protected QWidget buildContent() {
-        table = new Table<Supplier>() {
+        table = new Table<Product>() {
 
             @Override
-            protected void showEditDialog(Supplier selected) {
+            protected void showEditDialog(Product selected) {
 //                SupplierEditDialog dialog = SupplierEditDialog.getInstance();
-                SupplierEditDialog dialog = new SupplierEditDialog();
+                ProductEditDialog dialog = new ProductEditDialog();
                 dialog.setBean(selected);
                 dialog.exec();
             }
         };
-        table.addColumn(I18n.supplierCode, Supplier.CODE_FIELD);
-        table.addColumn(I18n.supplierName, Supplier.NAME_FIELD);
-        table.addColumn(I18n.note, Supplier.NOTE_FIELD);
+        table.addColumn(I18n.productCode, Product.CODE_FIELD);
+        table.addColumn(I18n.supplier, Product.SUPPLIER_CODE_FIELD);
+        table.addColumn(I18n.packSize, Product.PACK_SIZE_FIELD, new IntegerToStringConverter());
+        table.addColumn(I18n.originalPrice, Product.ORIGINAL_PRICE_FIELD, new CurrencyToStringConverter(Constants.PLN), Qt.AlignmentFlag.AlignRight);
+        table.addColumn(I18n.note, Product.NOTE_FIELD);
         return table;
     }
 
@@ -69,7 +75,7 @@ public class SupplierTable extends PageWidget {
 
             @Override
             protected long getMaxPage() {
-                long cnt = db.countSupplier(filter);
+                long cnt = db.countProduct(filter);
                 total.setText(I18n.total + ": " + cnt);
                 return ((cnt - 1) / Table.DEFAULT_SIZE + 1);
             }
@@ -78,7 +84,7 @@ public class SupplierTable extends PageWidget {
             protected void fetchDataAndRefreshTable() {
                 filter.pageSize = pageSize;
                 filter.pageNum = pageNum - 1;
-                table.setState(db.getSupplier(filter));
+                table.setState(db.getProduct(filter));
             }
         };
         footer.addWidget(pager);

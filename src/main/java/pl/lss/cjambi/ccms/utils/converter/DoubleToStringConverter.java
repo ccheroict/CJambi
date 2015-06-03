@@ -26,7 +26,7 @@ public class DoubleToStringConverter extends TypeToStringConverter<Double> {
     @Override
     public Double toData(String presentation) throws NumberFormatException {
         try {
-            return Utils.parseDouble(presentation);
+            return Utils.parseDouble(presentation.trim());
         } catch (NumberFormatException ex) {
             throw ex;
         }

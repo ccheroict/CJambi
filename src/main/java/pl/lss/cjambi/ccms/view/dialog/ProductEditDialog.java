@@ -28,6 +28,7 @@ import pl.lss.cjambi.ccms.utils.converter.IntegerToStringConverter;
 import pl.lss.cjambi.ccms.view.widget.ComboBox;
 import pl.lss.cjambi.ccms.view.widget.Label;
 import pl.lss.cjambi.ccms.view.widget.LineEdit;
+import pl.lss.cjambi.ccms.view.widget.PlainTextEdit;
 import pl.lss.cjambi.ccms.view.widget.SuggestBox;
 
 /**
@@ -36,10 +37,6 @@ import pl.lss.cjambi.ccms.view.widget.SuggestBox;
  */
 public class ProductEditDialog extends BeanEditDialog<Product> {
 
-//    private static final ProductEditDialog instance = new ProductEditDialog();
-//    public static ProductEditDialog getInstance() {
-//        return instance;
-//    }
     private SuggestBox<Product> code;
     private SuggestBox<Supplier> supplier;
     private LineEdit size, colour, packSize, originalPrice, discountValue;
@@ -48,6 +45,7 @@ public class ProductEditDialog extends BeanEditDialog<Product> {
     private ComboBox<Tax> tax;
     private ComboBox<Unit> unit;
     private Label finalPrice;
+    private PlainTextEdit note;
 
     public ProductEditDialog() {
         super();
@@ -79,6 +77,7 @@ public class ProductEditDialog extends BeanEditDialog<Product> {
         unit = new ComboBox(db.getUnit(), Unit.NAME_FIELD);
         catalog = new ComboBox(db.getCatalog(), Catalog.NAME_FIELD);
         finalPrice = new Label();
+        note = new PlainTextEdit();
 
         build();
     }
@@ -111,7 +110,7 @@ public class ProductEditDialog extends BeanEditDialog<Product> {
         grid.addWidget(new QLabel(I18n.packSize), nRow, 0);
         grid.addWidget(packSize, nRow, 1);
         grid.addWidget(unit, nRow++, 2);
-        grid.addWidget(new QLabel(I18n.defaultPrice), nRow, 0);
+        grid.addWidget(new QLabel(I18n.originalPrice), nRow, 0);
         grid.addWidget(originalPrice, nRow++, 1);
         grid.addWidget(new QLabel(I18n.discountValue), nRow, 0);
         grid.addWidget(discountValue, nRow, 1);
@@ -120,6 +119,8 @@ public class ProductEditDialog extends BeanEditDialog<Product> {
 //        grid.addWidget(tax, nRow++, 1);
         grid.addWidget(new QLabel(I18n.finalPrice), nRow, 0);
         grid.addWidget(finalPrice, nRow++, 1);
+        grid.addWidget(new QLabel(I18n.note), nRow, 0);
+        grid.addWidget(note, nRow++, 1);
 
         editor.addMapping(code, Product.SELF);
         editor.addMapping(catalog, Product.CATALOG_FIELD);

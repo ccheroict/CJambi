@@ -22,6 +22,7 @@ import pl.lss.cjambi.ccms.utils.Styles;
 import pl.lss.cjambi.ccms.view.dialog.LoginDialog;
 import pl.lss.cjambi.ccms.view.dialog.ProductEditDialog;
 import pl.lss.cjambi.ccms.view.dialog.SupplierEditDialog;
+import pl.lss.cjambi.ccms.view.table.ProductTable;
 import pl.lss.cjambi.ccms.view.table.SupplierTable;
 
 /**
@@ -88,17 +89,16 @@ public class MainEntryPoint extends QMainWindow {
 
     private void onSupplierTableActived() {
         setWindowTitle(appTitle + " - " + I18n.supplierList);
-        SupplierTable table = SupplierTable.getInstance();
+        SupplierTable table = new SupplierTable();
         table.refresh();
         setCentralWidget(table);
     }
 
     private void onProductTableActivated() {
         setWindowTitle(appTitle + " - " + I18n.productList);
-//        ProductGrid grid = new ProductGrid();
-//        grid.build();
-//        setCentralWidget(grid);
-//        grid.refresh();
+        ProductTable table = new ProductTable();
+        table.refresh();
+        setCentralWidget(table);
     }
 
     private QMenu buildOrderMenu() {

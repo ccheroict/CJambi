@@ -201,6 +201,7 @@ public class DbServiceImpl implements DbService {
         try {
             Dao dao = getDao(Product.class);
             QueryBuilder qb = dao.queryBuilder();
+            qb.orderBy(Product.CODE_FIELD, true);
             setOffsetAndLimit(qb, filter);
             PreparedQuery query = qb.where().like(Product.CODE_FIELD, "%" + filter.productCode + "%").prepare();
             List<Product> res = dao.query(query);
@@ -275,6 +276,19 @@ public class DbServiceImpl implements DbService {
         } catch (SQLException ex) {
             logger.error("getCatalog", ex);
             return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public long countProduct(Filter filter) {
+        try {
+            Dao dao = getDao(Product.class);
+            QueryBuilder qb = dao.queryBuilder().setCountOf(true);
+            PreparedQuery query = qb.where().like(Product.CODE_FIELD, "%" + filter.productCode + "%").prepare();
+            return dao.countOf(query);
+        } catch (SQLException ex) {
+            logger.error("countProduct", ex);
+            return 0;
         }
     }
 }

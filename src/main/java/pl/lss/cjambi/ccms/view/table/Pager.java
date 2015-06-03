@@ -104,11 +104,11 @@ public abstract class Pager extends HBoxWidget {
     protected void onPageNumChanged(long pageNum) {
         this.pageNum = pageNum;
         pageNumLineEdit.setText(String.valueOf(pageNum));
-        fetchData();
+        fetchDataAndRefreshTable();
     }
 
     protected abstract long getMaxPage();
 
-    protected abstract void fetchData();
+    protected abstract void fetchDataAndRefreshTable();
 
 }
