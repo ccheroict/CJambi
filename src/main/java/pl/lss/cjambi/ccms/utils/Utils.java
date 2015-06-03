@@ -65,6 +65,14 @@ public class Utils {
         }
     }
 
+    public static String toStringOrDefault(Integer defaultValue, Integer data) {
+        if (data == null) {
+            return toStringOrEmpty(defaultValue);
+        } else {
+            return toStringOrEmpty(data);
+        }
+    }
+
     public static Date parseDate(String s) {
         try {
             return sdf.parse(s);

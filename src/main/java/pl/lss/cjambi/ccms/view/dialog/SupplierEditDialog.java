@@ -25,12 +25,12 @@ import pl.lss.cjambi.ccms.view.widget.SuggestBox;
  * @author ctran
  */
 public class SupplierEditDialog extends BeanEditDialog<Supplier> {
-
-    private static final SupplierEditDialog instance = new SupplierEditDialog();
-
-    public static SupplierEditDialog getInstance() {
-        return instance;
-    }
+//
+//    private static final SupplierEditDialog instance = new SupplierEditDialog();
+//
+//    public static SupplierEditDialog getInstance() {
+//        return instance;
+//    }
 
     private SuggestBox code;
     private LineEdit name;
@@ -70,7 +70,7 @@ public class SupplierEditDialog extends BeanEditDialog<Supplier> {
         form.addRow(new QLabel(I18n.supplierName), name);
         form.addRow(new QLabel(I18n.note), note);
 
-        editor.addMapping(code, Supplier.CODE_FIELD, Supplier.CODE_FIELD);
+        editor.addMapping(code, Supplier.SELF);
         editor.addMapping(name, Supplier.NAME_FIELD);
         editor.addMapping(note, Supplier.NOTE_FIELD);
 
@@ -81,7 +81,6 @@ public class SupplierEditDialog extends BeanEditDialog<Supplier> {
     protected void onOkBtnClicked() {
         try {
             super.onOkBtnClicked(); //To change body of generated methods, choose Tools | Templates.
-            bean.company = Cache.getUserCompany();
             db.createOrUpdateSupplier(bean);
         } catch (Exception ex) {
             reporter.error(I18n.sorryErrorHasAppeared);
@@ -92,12 +91,13 @@ public class SupplierEditDialog extends BeanEditDialog<Supplier> {
 
     @Override
     protected boolean validate() {
-        return validateSuggestBoxStateInList(code, Styles.QLINEEDIT_RED_BORDER, false, bean)
-                && validateTextWidgetIsEmpty(code, Styles.QLINEEDIT_RED_BORDER, false);
+        return isSuggestBoxStateInList(code, Styles.QLINEEDIT_RED_BORDER, false, bean)
+                && checkTextWidgetEmpty(code, Styles.QLINEEDIT_RED_BORDER, false);
     }
 
     @Override
-    protected void customFillBeforeExec() {
-        code.setState(bean);
+    protected void customFillBeanAfterCommit() {
+        bean.code = code.text();
+        bean.company = Cache.getUserCompany();
     }
 }

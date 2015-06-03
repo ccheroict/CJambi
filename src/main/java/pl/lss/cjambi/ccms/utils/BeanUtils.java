@@ -18,7 +18,7 @@ public class BeanUtils {
 
     public static Object getProperty(Object bean, String property) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         try {
-            if (property == null) {
+            if (bean == null || property == null) {
                 return bean;
             }
             Object tmp = bean;

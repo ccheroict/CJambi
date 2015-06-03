@@ -13,5 +13,6 @@ public class Constants {
 
     public static String APP_NAME = "CCMS";
     public static String APP_VERSION = "1.0.0";
+    public static String PLN = "zł";
 
 }

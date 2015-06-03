@@ -89,5 +89,6 @@ public class I18n {
     public static final String delete = "Xóa";
     public static final String clearFiltrBtn = "Xóa bộ lọc";
     public static final String finalPrice = "Giá cuối cùng";
+    public static final String tax = "Thuế";
 
 }

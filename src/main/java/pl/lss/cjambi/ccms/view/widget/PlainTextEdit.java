@@ -5,8 +5,6 @@
  */
 package pl.lss.cjambi.ccms.view.widget;
 
-import com.trolltech.qt.QtPropertyReader;
-import com.trolltech.qt.QtPropertyWriter;
 import com.trolltech.qt.gui.QPlainTextEdit;
 import pl.lss.cjambi.ccms.utils.Utils;
 
@@ -16,13 +14,12 @@ import pl.lss.cjambi.ccms.utils.Utils;
  */
 public class PlainTextEdit extends QPlainTextEdit implements HasState {
 
-    @QtPropertyReader
     @Override
     public String getState() {
         return toPlainText();
     }
 
-    @QtPropertyWriter
+    @Override
     public void setState(Object state) {
         if (state == null) {
             state = "";

@@ -14,34 +14,30 @@ import pl.lss.cjambi.ccms.utils.Utils;
 public class CurrencyToStringConverter extends DoubleToStringConverter {
 
     private String symbol;
+    private Double defaultValue;
 
     public CurrencyToStringConverter(String symbol) {
+        this(null, symbol);
+    }
+
+    public CurrencyToStringConverter(Double defaultValue, String symbol) {
+        super(defaultValue);
+        this.defaultValue = defaultValue;
         this.symbol = symbol;
     }
 
     @Override
-    public Double toData(String presentation) {
+    public Double toData(String presentation) throws NumberFormatException {
         int i = presentation.indexOf(symbol);
         if (i < 0) {
             return null;
         }
-        presentation = presentation.substring(0, i) + presentation.substring(i + symbol.length());
+        presentation = presentation.substring(0, i).trim() + presentation.substring(i + symbol.length()).trim();
         return super.toData(presentation);
     }
 
     @Override
     public String toPresentation(Double data) {
-        return Utils.toStringOrDefault(0.0, data) + " " + symbol;
-    }
-
-    public static void main(String[] args) {
-        CurrencyToStringConverter test = new CurrencyToStringConverter("zł");
-        System.out.println(test.toData("2.336zł"));
-        System.out.println(test.toData("2.336 zł"));
-        System.out.println(test.toData(" 2.336zł"));
-        System.out.println(test.toData(" 2.336  zł"));
-        System.out.println(test.toData(" 222 2.336zł"));
-        System.out.println(test.toData(" 222 2,336zł"));
-        System.out.println(test.toPresentation(2.338));
+        return Utils.toStringOrDefault(defaultValue, data) + " " + symbol;
     }
 }

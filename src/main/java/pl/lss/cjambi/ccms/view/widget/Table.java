@@ -5,8 +5,6 @@
  */
 package pl.lss.cjambi.ccms.view.widget;
 
-import com.trolltech.qt.QtPropertyReader;
-import com.trolltech.qt.QtPropertyWriter;
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QAbstractItemView;
@@ -42,13 +40,11 @@ public abstract class Table<T> extends QTableWidget implements HasState {
 //        setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu);
     }
 
-    @QtPropertyReader
     @Override
     public List<T> getState() {
         return state;
     }
 
-    @QtPropertyWriter
     @Override
     public void setState(Object state) {
         this.state = (List<T>) state;
@@ -76,9 +72,9 @@ public abstract class Table<T> extends QTableWidget implements HasState {
         headerItem.setTextAlignment(alignmentFlag.value());
         headerItem.setToolTip(header);
         setHorizontalHeaderItem(nCol, headerItem);
-        resizeColumnToContents(nCol);
-        resizeColumnToContents(nCol - 1);
-        horizontalHeader().setStretchLastSection(true);
+//        resizeColumnToContents(nCol);
+//        resizeColumnToContents(nCol - 1);
+//        horizontalHeader().setStretchLastSection(true);
     }
 
     private void refresh() {
@@ -93,6 +89,8 @@ public abstract class Table<T> extends QTableWidget implements HasState {
                     setItem(row, col, item);
                 }
             }
+            resizeColumnsToContents();
+            horizontalHeader().setStretchLastSection(true);
         } catch (Exception ex) {
             logger.error("refresh", ex);
         }

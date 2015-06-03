@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
+import pl.lss.cjambi.ccms.bean.Catalog;
 import pl.lss.cjambi.ccms.bean.Company;
 import pl.lss.cjambi.ccms.bean.DiscountType;
 import pl.lss.cjambi.ccms.bean.Filter;
@@ -91,6 +92,7 @@ public class DbServiceImpl implements DbService {
     @Override
     public void createTablesIfNessecary() {
         try {
+            TableUtils.createTableIfNotExists(connectionSource, Catalog.class);
             TableUtils.createTableIfNotExists(connectionSource, Company.class);
             TableUtils.createTableIfNotExists(connectionSource, Unit.class);
             TableUtils.createTableIfNotExists(connectionSource, Tax.class);
@@ -195,15 +197,19 @@ public class DbServiceImpl implements DbService {
     }
 
     @Override
-    public List getProduct(Filter filter) {
+    public List<Product> getProduct(Filter filter) {
         try {
             Dao dao = getDao(Product.class);
             QueryBuilder qb = dao.queryBuilder();
             setOffsetAndLimit(qb, filter);
             PreparedQuery query = qb.where().like(Product.CODE_FIELD, "%" + filter.productCode + "%").prepare();
-            List res = dao.query(query);
+            List<Product> res = dao.query(query);
             if (res == null) {
                 res = new ArrayList<>();
+            } else {
+                for (Product product : res) {
+                    product.finalPrice = product.getPriceWithDiscount();
+                }
             }
             return res;
         } catch (SQLException ex) {
@@ -213,7 +219,7 @@ public class DbServiceImpl implements DbService {
     }
 
     @Override
-    public List getDiscountType() {
+    public List<DiscountType> getDiscountType() {
         try {
             Dao dao = getDao(DiscountType.class);
             return dao.queryForAll();
@@ -224,7 +230,7 @@ public class DbServiceImpl implements DbService {
     }
 
     @Override
-    public List getTax() {
+    public List<Tax> getTax() {
         try {
             Dao dao = getDao(Tax.class);
             return dao.queryForAll();
@@ -235,7 +241,7 @@ public class DbServiceImpl implements DbService {
     }
 
     @Override
-    public List getUnit() {
+    public List<Unit> getUnit() {
         try {
             Dao dao = getDao(Unit.class);
             return dao.queryForAll();
@@ -248,6 +254,27 @@ public class DbServiceImpl implements DbService {
     private void setOffsetAndLimit(QueryBuilder qb, Filter filter) throws SQLException {
         if (filter.pageNum != null && filter.pageSize != null) {
             qb.offset(filter.pageNum * filter.pageSize).limit(filter.pageSize);
+        }
+    }
+
+    @Override
+    public void createOrUpdateProduct(Product bean) {
+        try {
+            Dao dao = getDao(Product.class);
+            dao.createOrUpdate(bean);
+        } catch (SQLException ex) {
+            logger.error("createOrUpdateProduct", ex);
+        }
+    }
+
+    @Override
+    public List<Catalog> getCatalog() {
+        try {
+            Dao dao = getDao(Catalog.class);
+            return dao.queryForAll();
+        } catch (SQLException ex) {
+            logger.error("getCatalog", ex);
+            return new ArrayList<>();
         }
     }
 }

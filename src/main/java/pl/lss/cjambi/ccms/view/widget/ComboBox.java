@@ -5,8 +5,6 @@
  */
 package pl.lss.cjambi.ccms.view.widget;
 
-import com.trolltech.qt.QtPropertyReader;
-import com.trolltech.qt.QtPropertyWriter;
 import com.trolltech.qt.gui.QComboBox;
 import java.util.List;
 import org.apache.log4j.Logger;
@@ -38,13 +36,11 @@ public class ComboBox<T> extends QComboBox implements HasState {
         onActiveIndex(0);
     }
 
-    @QtPropertyReader
     @Override
     public Object getState() {
         return state;
     }
 
-    @QtPropertyWriter
     @Override
     public void setState(Object state) {
         if (state == null) {

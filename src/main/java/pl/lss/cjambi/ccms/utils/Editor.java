@@ -5,10 +5,9 @@
  */
 package pl.lss.cjambi.ccms.utils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.apache.log4j.Logger;
 import pl.lss.cjambi.ccms.utils.converter.Converter;
 import pl.lss.cjambi.ccms.utils.converter.DefaultConverter;
@@ -21,12 +20,11 @@ import pl.lss.cjambi.ccms.view.widget.HasState;
 public class Editor<T> {
 
     private static final Logger logger = Logger.getLogger(Editor.class);
+    private static final String SELF = "self";
 
     private T bean;
-    private List<HasState> widgets = new ArrayList<>();
-    private List<String> propNames = new ArrayList<>();
-    private List<Converter> converters = new ArrayList<>();
-    private Map<HasState, String> propNameInStates = new HashMap<>();
+    private Map<HasState, String> widgetPropNameMap = new HashMap<>();
+    private Map<HasState, Converter> converters = new HashMap<>();
     private int nProp = 0;
 
     public void setBean(T bean) {
@@ -34,44 +32,56 @@ public class Editor<T> {
     }
 
     public void addMapping(HasState widget, String propName) {
-        addMapping(widget, propName, null);
+        addMapping(widget, propName, new DefaultConverter());
     }
 
-    public void addMapping(HasState widget, String propName, String propNameInState) {
-        addMapping(widget, propName, propNameInState, new DefaultConverter());
-    }
-
-    public void addMapping(HasState widget, String propName, String propNameInState, Converter converter) {
+    public void addMapping(HasState widget, String propName, Converter converter) {
         nProp++;
-        widgets.add(widget);
-        propNames.add(propName);
-        converters.add(converter);
-        if (propNameInState != null) {
-            propNameInStates.put(widget, propNameInState);
-        }
+        widgetPropNameMap.put(widget, propName);
+        converters.put(widget, converter);
     }
 
-    public void flush() throws Exception {
-        for (int i = 0; i < nProp; i++) {
-            HasState widget = widgets.get(i);
-            String propName = propNames.get(i);
-            Converter converter = converters.get(i);
-            Object value = BeanUtils.getProperty(bean, propName);
-
-            widget.setState(converter.toPresentation(value));
-        }
-    }
-
-    public void commit() throws Exception {
-        for (int i = 0; i < nProp; i++) {
-            HasState widget = widgets.get(i);
-            String propName = propNames.get(i);
-            Converter converter = converters.get(i);
-            Object value = widget.getState();
-            if (value != null) {
-                value = BeanUtils.getProperty(value, propNameInStates.get(widget));
+    public void flush() {
+        try {
+            for (Entry<HasState, String> entry : widgetPropNameMap.entrySet()) {
+                HasState widget = entry.getKey();
+                flush(widget);
             }
-            BeanUtils.setProperty(bean, propName, converter.toData(value));
+        } catch (Exception ex) {
+            //Try flush simple prop -> do not catch Exception here
         }
+    }
+
+    public void flush(HasState widget) throws Exception {
+        String propName = widgetPropNameMap.get(widget);
+        Converter converter = getConverter(widget);
+        Object value = BeanUtils.getProperty(bean, propName);
+
+        widget.setState(converter.toPresentation(value));
+    }
+
+    public void commit() {
+        try {
+            for (Entry<HasState, String> entry : widgetPropNameMap.entrySet()) {
+                HasState widget = entry.getKey();
+                commit(widget);
+            }
+        } catch (Exception ex) {
+            //Try commit simple prop -> do not catch Exception here
+        }
+    }
+
+    public void commit(HasState widget) throws Exception {
+        String propName = widgetPropNameMap.get(widget);
+        if (SELF.equals(propName)) {
+            return;
+        }
+        Converter converter = getConverter(widget);
+        Object value = widget.getState();
+        BeanUtils.setProperty(bean, propName, converter.toData(value));
+    }
+
+    public Converter getConverter(HasState widget) {
+        return converters.get(widget);
     }
 }

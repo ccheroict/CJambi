@@ -3,32 +3,38 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pl.lss.cjambi.ccms.view;
+package pl.lss.cjambi.ccms.view.dialog;
 
+import com.trolltech.qt.core.QTimer;
 import com.trolltech.qt.gui.QApplication;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import pl.lss.cjambi.ccms.view.widget.Label;
+import pl.lss.cjambi.ccms.bean.Product;
 
 /**
  *
  * @author ctran
  */
-public class LabelTest {
+public class ProductEditDialogTest {
 
-    public LabelTest() {
+    private static ProductEditDialog instance;
+
+    public ProductEditDialogTest() {
     }
 
     @BeforeClass
     public static void setUpClass() {
         QApplication.initialize(new String[0]);
+//        instance = ProductEditDialoưg.getInstance();
+//        db = Cache.getInstance(DbService.class);
     }
 
     @AfterClass
     public static void tearDownClass() {
+        QTimer.singleShot(0, instance, "close()");
         QApplication.execStatic();
     }
 
@@ -41,10 +47,11 @@ public class LabelTest {
     }
 
     @Test
-    public void testState() {
-        Label label = new Label();
-//        label.setProperty("state", "BLA");
-        System.out.println(label.property("state"));
-        label.show();
+    public void test() {
+        instance.setBean(new Product());
+        instance.exec();
     }
+    /**
+     * Test of getInstance method, of class ProductEditDialog.
+     */
 }

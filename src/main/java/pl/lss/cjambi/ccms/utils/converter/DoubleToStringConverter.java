@@ -13,13 +13,27 @@ import pl.lss.cjambi.ccms.utils.Utils;
  */
 public class DoubleToStringConverter extends TypeToStringConverter<Double> {
 
+    private Double defaultValue;
+
+    public DoubleToStringConverter() {
+        this(null);
+    }
+
+    public DoubleToStringConverter(Double defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
     @Override
-    public Double toData(String presentation) {
+    public Double toData(String presentation) throws NumberFormatException {
         try {
             return Utils.parseDouble(presentation);
-        } catch (NumberFormatException e) {
-            return null;
+        } catch (NumberFormatException ex) {
+            throw ex;
         }
     }
 
+    @Override
+    public String toPresentation(Double data) {
+        return Utils.toStringOrDefault(defaultValue, data);
+    }
 }

@@ -138,13 +138,15 @@ public class MainEntryPoint extends QMainWindow {
     }
 
     private void onAddSupplierAction() {
-        SupplierEditDialog dialog = SupplierEditDialog.getInstance();
+//        SupplierEditDialog dialog = SupplierEditDialog.getInstance();
+        SupplierEditDialog dialog = new SupplierEditDialog();
         dialog.setBean(new Supplier());
         dialog.exec();
     }
 
     private void onAddProductAction() {
-        ProductEditDialog dialog = ProductEditDialog.getInstance();
+//        ProductEditDialog dialog = ProductEditDialog.getInstance();
+        ProductEditDialog dialog = new ProductEditDialog();
         dialog.setBean(new Product());
         dialog.exec();
     }

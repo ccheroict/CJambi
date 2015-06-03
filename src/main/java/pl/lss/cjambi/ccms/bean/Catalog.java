@@ -13,26 +13,19 @@ import com.j256.ormlite.table.DatabaseTable;
  * @author ctran
  */
 @DatabaseTable
-public class Supplier {
+public class Catalog {
 
-    public static final String SELF = "self";
-    public static final String CODE_FIELD = "code";
     public static final String NAME_FIELD = "name";
-    public static final String NOTE_FIELD = "note";
-
-    public Supplier self = this;
 
     @DatabaseField(generatedId = true)
     public Integer id;
     @DatabaseField
-    public String code;
-    @DatabaseField
     public String name;
-    @DatabaseField
-    public String note;
+    @DatabaseField(foreign = true)
+    public Catalog parent;
     @DatabaseField(foreign = true)
     public Company company;
 
-    public Supplier() {
+    public Catalog() {
     }
 }

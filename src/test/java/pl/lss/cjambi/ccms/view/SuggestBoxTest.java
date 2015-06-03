@@ -17,6 +17,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import pl.lss.cjambi.ccms.bean.User;
 import pl.lss.cjambi.ccms.db.DbService;
+import pl.lss.cjambi.ccms.db.DbServiceImpl;
 import pl.lss.cjambi.ccms.view.widget.SuggestBox;
 
 /**
@@ -25,7 +26,7 @@ import pl.lss.cjambi.ccms.view.widget.SuggestBox;
  */
 public class SuggestBoxTest extends QDialog {
 
-    private static DbService db;
+    private static DbService db = DbServiceImpl.getInstance();
     private static SuggestBoxTest instance;
 
     @BeforeClass
@@ -63,9 +64,9 @@ public class SuggestBoxTest extends QDialog {
             }
         };
         suggestBox.setStyleSheet("QLineEdit{border: 1px solid red;}");
-
         layout.addWidget(suggestBox);
         instance.setLayout(layout);
+        instance.exec();
         User state = (User) suggestBox.getState();
         System.out.println(state.id);
     }

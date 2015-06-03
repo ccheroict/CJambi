@@ -5,8 +5,6 @@
  */
 package pl.lss.cjambi.ccms.view.widget;
 
-import com.trolltech.qt.QtPropertyReader;
-import com.trolltech.qt.QtPropertyWriter;
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.QTimer;
 import com.trolltech.qt.gui.QCompleter;
@@ -57,13 +55,11 @@ public abstract class SuggestBox<T> extends QLineEdit implements HasState {
         textEdited.connect(this, "onTextEdited(String)");
     }
 
-    @QtPropertyReader
     @Override
     public Object getState() {
         return (state == null ? text() : state);
     }
 
-    @QtPropertyWriter
     @Override
     public void setState(Object state) {
         try {

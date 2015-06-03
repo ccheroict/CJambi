@@ -5,8 +5,6 @@
  */
 package pl.lss.cjambi.ccms.view.widget;
 
-import com.trolltech.qt.QtPropertyReader;
-import com.trolltech.qt.QtPropertyWriter;
 import com.trolltech.qt.gui.QLabel;
 import pl.lss.cjambi.ccms.utils.Utils;
 
@@ -16,13 +14,11 @@ import pl.lss.cjambi.ccms.utils.Utils;
  */
 public class Label extends QLabel implements HasState {
 
-    @QtPropertyReader
     @Override
     public String getState() {
         return text();
     }
 
-    @QtPropertyWriter
     @Override
     public void setState(Object state) {
         if (state == null) {
