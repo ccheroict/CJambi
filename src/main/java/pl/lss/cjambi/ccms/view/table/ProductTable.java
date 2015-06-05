@@ -54,15 +54,15 @@ public class ProductTable extends PageWidget {
             @Override
             protected void showEditDialog(Product selected) {
 //                SupplierEditDialog dialog = SupplierEditDialog.getInstance();
-                ProductEditDialog dialog = new ProductEditDialog();
-                dialog.setBean(selected);
+                ProductEditDialog dialog = new ProductEditDialog(selected);
                 dialog.exec();
             }
         };
         table.addColumn(I18n.productCode, Product.CODE_FIELD);
+        table.addColumn(I18n.catalog, Product.CATALOG_NAME_FIELD);
         table.addColumn(I18n.supplier, Product.SUPPLIER_CODE_FIELD);
         table.addColumn(I18n.packSize, Product.PACK_SIZE_FIELD, new IntegerToStringConverter());
-        table.addColumn(I18n.originalPrice, Product.ORIGINAL_PRICE_FIELD, new CurrencyToStringConverter(Constants.PLN), Qt.AlignmentFlag.AlignRight);
+        table.addColumn(I18n.finalPrice, Product.ORIGINAL_PRICE_FIELD, new CurrencyToStringConverter(Constants.PLN), Qt.AlignmentFlag.AlignRight);
         table.addColumn(I18n.note, Product.NOTE_FIELD);
         return table;
     }

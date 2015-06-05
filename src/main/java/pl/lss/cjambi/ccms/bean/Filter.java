@@ -5,6 +5,9 @@
  */
 package pl.lss.cjambi.ccms.bean;
 
+import java.util.Date;
+import pl.lss.cjambi.ccms.utils.Utils;
+
 /**
  *
  * @author ctran
@@ -15,4 +18,6 @@ public class Filter {
     public String productCode = "";
     public Long pageNum;
     public Long pageSize;
+    public Date dateFrom = Utils.getStartOfDay(new Date());
+    public Date dateTo = Utils.getEndOfDay(new Date());
 }

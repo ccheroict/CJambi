@@ -19,12 +19,17 @@ import pl.lss.cjambi.ccms.utils.SplittedString;
  *
  * @author ctran
  */
-public abstract class ForeignCollectionToListConverter implements Converter<ForeignCollection, List> {
+public class ForeignCollectionToListConverter implements Converter<ForeignCollection, List> {
 
     private static final DbService db = DbServiceImpl.getInstance();
     private Object bean;
     private String propName;
 
+    /**
+     *
+     * @param bean bean which contains ForeignCollection
+     * @param propName  ForeignCollection property name
+     */
     public ForeignCollectionToListConverter(Object bean, String propName) {
         this.bean = bean;
         this.propName = propName;
@@ -41,8 +46,13 @@ public abstract class ForeignCollectionToListConverter implements Converter<Fore
             childPropName = ss.last;
         }
         Object parent = BeanUtils.getProperty(bean, parentPropName);
-        dao.assignEmptyForeignCollection(parent.getClass(), childPropName);
         ForeignCollection collection = (ForeignCollection) BeanUtils.getProperty(bean, propName);
+        if (collection == null) {
+            dao.assignEmptyForeignCollection(parent, childPropName);
+            collection = (ForeignCollection) BeanUtils.getProperty(bean, propName);
+        } else {
+            collection.clear();
+        }
         collection.addAll(state);
         return collection;
     }
@@ -50,11 +60,13 @@ public abstract class ForeignCollectionToListConverter implements Converter<Fore
     @Override
     public List toPresentation(ForeignCollection data) throws Exception {
         List l = new ArrayList<>();
-        CloseableWrappedIterable it = data.getWrappedIterable();
-        while (it.iterator().hasNext()) {
-            l.add(it.iterator().next());
+        if (data != null) {
+            CloseableWrappedIterable it = data.getWrappedIterable();
+            while (it.iterator().hasNext()) {
+                l.add(it.iterator().next());
+            }
+            it.close();
         }
-        it.close();
         return l;
     }
 }

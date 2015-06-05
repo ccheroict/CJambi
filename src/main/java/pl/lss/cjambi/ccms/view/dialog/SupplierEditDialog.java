@@ -16,6 +16,7 @@ import pl.lss.cjambi.ccms.resources.Cache;
 import pl.lss.cjambi.ccms.resources.I18n;
 import pl.lss.cjambi.ccms.resources.IconResources;
 import pl.lss.cjambi.ccms.utils.Styles;
+import pl.lss.cjambi.ccms.utils.converter.SupplierToCodeConverter;
 import pl.lss.cjambi.ccms.view.widget.LineEdit;
 import pl.lss.cjambi.ccms.view.widget.PlainTextEdit;
 import pl.lss.cjambi.ccms.view.widget.SuggestBox;
@@ -30,8 +31,9 @@ public class SupplierEditDialog extends BeanEditDialog<Supplier> {
     private LineEdit name;
     private PlainTextEdit note;
 
-    public SupplierEditDialog() {
+    public SupplierEditDialog(Supplier supplier) {
         super();
+        setBean(supplier);
         code = new SuggestBox<Supplier>(Supplier.class, Supplier.CODE_FIELD) {
 
             @Override
@@ -43,6 +45,7 @@ public class SupplierEditDialog extends BeanEditDialog<Supplier> {
         };
         name = new LineEdit();
         note = new PlainTextEdit();
+
         build();
     }
 
@@ -64,7 +67,7 @@ public class SupplierEditDialog extends BeanEditDialog<Supplier> {
         form.addRow(new QLabel(I18n.supplierName), name);
         form.addRow(new QLabel(I18n.note), note);
 
-        editor.addMapping(code, Supplier.SELF);
+        editor.addMapping(code, Supplier.SELF, new SupplierToCodeConverter());
         editor.addMapping(name, Supplier.NAME_FIELD);
         editor.addMapping(note, Supplier.NOTE_FIELD);
 
@@ -85,8 +88,7 @@ public class SupplierEditDialog extends BeanEditDialog<Supplier> {
 
     @Override
     protected boolean validate() {
-        return isSuggestBoxStateInList(code, Styles.QLINEEDIT_RED_BORDER, false, bean)
-                && checkTextWidgetEmpty(code, Styles.QLINEEDIT_RED_BORDER, false);
+        return setStyleSheet(code, Styles.QLINEEDIT_RED_BORDER, !checkTextWidgetEmpty(code) && stateIsNullOrItself(code, bean));
     }
 
     @Override

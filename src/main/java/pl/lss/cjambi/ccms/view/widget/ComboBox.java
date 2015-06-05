@@ -26,7 +26,7 @@ public class ComboBox<T> extends QComboBox implements HasState {
         this.choices = choices;
         try {
             for (T obj : choices) {
-                addItem(Utils.toStringOrNull(BeanUtils.getProperty(obj, propName)));
+                addItem(Utils.toStringOrEmpty(BeanUtils.getProperty(obj, propName))); // null is considered as ""
             }
         } catch (Exception ex) {
             logger.error("ComboBox", ex);

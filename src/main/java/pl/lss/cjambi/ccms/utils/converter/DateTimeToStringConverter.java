@@ -12,15 +12,15 @@ import pl.lss.cjambi.ccms.utils.Utils;
  *
  * @author ctran
  */
-public class DateTimeToStringConverter extends TypeToStringConverter<Date> {
+public class DateTimeToStringConverter implements Converter<Date, String> {
 
     @Override
-    public Date toData(String presentation) {
+    public Date toData(String presentation) throws Exception {
         return Utils.parseDate(presentation);
     }
 
     @Override
     public String toPresentation(Date data) {
-        return Utils.toStringOrEmpty(data);
+        return Utils.toStringSimpleDate(data);
     }
 }

@@ -12,25 +12,16 @@ import com.j256.ormlite.table.DatabaseTable;
  *
  * @author ctran
  */
-@DatabaseTable
-public class User {
+@DatabaseTable(tableName = "order_status")
+public class OrderStatus {
 
-    public static final String USERNAME_FIELD = "username";
-    public static final String PASSWORD_FIELD = "password";
+    public static final String NAME_FIELD = "name";
 
     @DatabaseField(generatedId = true)
     public Integer id;
     @DatabaseField
     public String name;
-    @DatabaseField
-    public String username;
-    @DatabaseField
-    public String password;
-    @DatabaseField(foreign = true, foreignAutoRefresh = true)
-    public Office office; //where this user works
-    @DatabaseField
-    public String initial;
 
-    public User() {
+    public OrderStatus() {
     }
 }

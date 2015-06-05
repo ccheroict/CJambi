@@ -18,10 +18,23 @@ import java.util.Date;
 @DatabaseTable
 public class Order {
 
+    public static final String CODE_FIELD = "code";
+    public static final String STATUS_FIELD = "status";
+    public static final String CREATED_DATE_FIELD = "createdDate";
+    public static final String ITEMS_FIELD = "items";
+    public static final String PACK_QUANTITY_FIELD = "packQuantity";
+    public static final String PRODUCT_QUANTITY_FIELD = "productQuantity";
+    public static final String TOTAL_FIELD = "total";
+    public static final String DISCOUNT_VALUE_FIELD = "discountValue";
+    public static final String DISCOUNT_TYPE_VALUE = "discountType";
+    public static final String VALUE_FIELD = "value";
+
     @DatabaseField(generatedId = true)
     public Integer id;
     @DatabaseField
     public String code;
+    @DatabaseField(foreign = true)
+    public OrderStatus status;
     @DatabaseField
     public Date createdDate;
     @DatabaseField
@@ -31,14 +44,19 @@ public class Order {
     @DatabaseField
     public Integer productQuantity;
     @DatabaseField(foreign = true)
-    public DiscountType discount;
+    public DiscountType discountType;
     @DatabaseField
     public Double discountValue;
     @DatabaseField
     public Double total;
+    @DatabaseField
+    public Double value;
     @ForeignCollectionField(eager = true)
     public ForeignCollection<Item> items;
+    @DatabaseField(foreign = true)
+    public Company company;
 
     public Order() {
+        createdDate = new Date();
     }
 }

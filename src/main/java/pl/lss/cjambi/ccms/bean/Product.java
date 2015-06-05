@@ -30,6 +30,7 @@ public class Product {
     public static final String CATALOG_FIELD = "catalog";
     public static final String SUPPLIER_CODE_FIELD = "supplier.code";
     public static final String NOTE_FIELD = "note";
+    public static final String CATALOG_NAME_FIELD = "catalog.name";
 
     public Product self = this;
 
@@ -37,7 +38,7 @@ public class Product {
     public Integer id;
     @DatabaseField
     public String code;
-    @DatabaseField(foreign = true)
+    @DatabaseField(foreign = true, foreignAutoRefresh = true)
     public Catalog catalog;
     @DatabaseField
     public String size;
@@ -69,18 +70,6 @@ public class Product {
     public String note;
 
     public Product() {
-    }
-
-    public Double getPriceWithDiscount() {
-        Double price = originalPrice;
-        if (discountValue != null && discountValue != 0) {
-            if (discountType.name.equals("%")) {
-                price = (1 - discountValue / 100.0) * originalPrice;
-            } else {
-                price -= discountValue;
-            }
-        }
-        return price;
     }
 
 //    public double getPrice() {

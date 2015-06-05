@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import org.apache.log4j.Logger;
+import pl.lss.cjambi.ccms.bean.DiscountType;
 
 /**
  *
@@ -38,11 +39,11 @@ public class Utils {
         }
     }
 
-    public static String toStringOrNull(Object obj) {
-        if (obj == null) {
-            return null;
+    public static String toStringOrDefaultIfNull(Object defaultValue, Object data) {
+        if (data == null) {
+            return toStringOrEmpty(defaultValue);
         } else {
-            return String.valueOf(obj);
+            return toStringOrEmpty(data);
         }
     }
 
@@ -57,28 +58,28 @@ public class Utils {
         return res;
     }
 
-    public static String toStringOrDefault(Double defaultValue, Double data) {
-        if (data == null) {
-            return toStringOrEmpty(defaultValue);
-        } else {
-            return toStringOrEmpty(data);
-        }
+    public static String toStringSimpleDate(Date date) {
+        return sdf.format(date);
     }
 
-    public static String toStringOrDefault(Integer defaultValue, Integer data) {
-        if (data == null) {
-            return toStringOrEmpty(defaultValue);
-        } else {
-            return toStringOrEmpty(data);
-        }
+    public static Date parseDate(String s) throws ParseException {
+        return sdf.parse(s);
     }
 
-    public static Date parseDate(String s) {
-        try {
-            return sdf.parse(s);
-        } catch (ParseException ex) {
-            return null;
+    public static Double parseDoubleOrDefaultIfEmpty(Double defaultValue, String s) throws NumberFormatException {
+        if (s == null || s.isEmpty()) {
+            return defaultValue;
         }
+        s = s.replaceAll("\\s+", "");
+        s = s.replace(',', '.');
+        return Double.parseDouble(s);
+    }
+
+    public static Integer parseIntOrDefaultIfEmpty(Integer defaultValue, String s) throws NumberFormatException {
+        if (s == null || s.isEmpty()) {
+            return defaultValue;
+        }
+        return Integer.parseInt(s);
     }
 
     public static Date getStartOfDay(Date date) {
@@ -97,13 +98,14 @@ public class Utils {
         return calendar.getTime();
     }
 
-    public static Double parseDouble(String s) {
-        s = s.replaceAll("\\s+", "");
-        s = s.replace(',', '.');
-        try {
-            return Double.parseDouble(s);
-        } catch (NumberFormatException e) {
-            return null;
+    public static Double getValueWithDiscount(Double value, Double discountValue, DiscountType discountType) {
+        if (discountValue != null && discountValue != 0) {
+            if (discountType.name.equals("%")) {
+                value = (1 - discountValue / 100.0) * value;
+            } else {
+                value -= discountValue;
+            }
         }
+        return value;
     }
 }

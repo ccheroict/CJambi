@@ -14,7 +14,6 @@ import pl.lss.cjambi.ccms.utils.Utils;
 public class CurrencyToStringConverter extends DoubleToStringConverter {
 
     private String symbol;
-    private Double defaultValue;
 
     public CurrencyToStringConverter(String symbol) {
         this(null, symbol);
@@ -22,22 +21,20 @@ public class CurrencyToStringConverter extends DoubleToStringConverter {
 
     public CurrencyToStringConverter(Double defaultValue, String symbol) {
         super(defaultValue);
-        this.defaultValue = defaultValue;
         this.symbol = symbol;
     }
 
     @Override
     public Double toData(String presentation) throws NumberFormatException {
         int i = presentation.indexOf(symbol);
-        if (i < 0) {
-            return null;
+        if (i >= 0) {
+            presentation = presentation.substring(0, i).trim() + presentation.substring(i + symbol.length()).trim();
         }
-        presentation = presentation.substring(0, i).trim() + presentation.substring(i + symbol.length()).trim();
         return super.toData(presentation);
     }
 
     @Override
     public String toPresentation(Double data) {
-        return Utils.toStringOrDefault(defaultValue, data) + " " + symbol;
+        return Utils.toStringOrDefaultIfNull(defaultValue, data) + " " + symbol;
     }
 }

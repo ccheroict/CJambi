@@ -21,9 +21,6 @@ public class LineEdit extends QLineEdit implements HasState {
 
     @Override
     public void setState(Object state) {
-        if (state == null) {
-            state = "";
-        }
         setText(Utils.toStringOrEmpty(state));
     }
 }

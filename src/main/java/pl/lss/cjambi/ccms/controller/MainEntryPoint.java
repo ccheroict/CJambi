@@ -11,6 +11,7 @@ import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QMainWindow;
 import com.trolltech.qt.gui.QMenu;
 import com.trolltech.qt.gui.QToolBar;
+import pl.lss.cjambi.ccms.bean.Order;
 import pl.lss.cjambi.ccms.bean.Product;
 import pl.lss.cjambi.ccms.bean.Supplier;
 import pl.lss.cjambi.ccms.db.DbService;
@@ -20,6 +21,7 @@ import pl.lss.cjambi.ccms.resources.IconResources;
 import pl.lss.cjambi.ccms.utils.Constants;
 import pl.lss.cjambi.ccms.utils.Styles;
 import pl.lss.cjambi.ccms.view.dialog.LoginDialog;
+import pl.lss.cjambi.ccms.view.dialog.OrderEditDialog;
 import pl.lss.cjambi.ccms.view.dialog.ProductEditDialog;
 import pl.lss.cjambi.ccms.view.dialog.SupplierEditDialog;
 import pl.lss.cjambi.ccms.view.table.ProductTable;
@@ -139,22 +141,18 @@ public class MainEntryPoint extends QMainWindow {
 
     private void onAddSupplierAction() {
 //        SupplierEditDialog dialog = SupplierEditDialog.getInstance();
-        SupplierEditDialog dialog = new SupplierEditDialog();
-        dialog.setBean(new Supplier());
+        SupplierEditDialog dialog = new SupplierEditDialog(new Supplier());
         dialog.exec();
     }
 
     private void onAddProductAction() {
 //        ProductEditDialog dialog = ProductEditDialog.getInstance();
-        ProductEditDialog dialog = new ProductEditDialog();
-        dialog.setBean(new Product());
+        ProductEditDialog dialog = new ProductEditDialog(new Product());
         dialog.exec();
     }
 
     private void onAddOrderAction() {
-//        OrderEditDialog dialog = new OrderEditDialog(null);
-//        dialog.exec();
-//        refreshCentralWidget();
+        OrderEditDialog dialog = new OrderEditDialog(new Order());
+        dialog.exec();
     }
-
 }

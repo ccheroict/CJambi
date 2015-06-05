@@ -24,4 +24,8 @@ public class Cache {
         return user.office.company;
     }
 
+    public static String getUserInitial() {
+        return user.initial;
+    }
+
 }

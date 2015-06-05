@@ -11,7 +11,7 @@ import pl.lss.cjambi.ccms.utils.Utils;
  *
  * @author ctran
  */
-public class IntegerToStringConverter extends TypeToStringConverter<Integer> {
+public class IntegerToStringConverter implements Converter<Integer, String> {
 
     private Integer defaultValue;
 
@@ -26,7 +26,7 @@ public class IntegerToStringConverter extends TypeToStringConverter<Integer> {
     @Override
     public Integer toData(String presentation) throws NumberFormatException {
         try {
-            return Integer.parseInt(presentation.trim());
+            return Utils.parseIntOrDefaultIfEmpty(defaultValue, presentation.trim());
         } catch (NumberFormatException ex) {
             throw ex;
         }
@@ -34,6 +34,6 @@ public class IntegerToStringConverter extends TypeToStringConverter<Integer> {
 
     @Override
     public String toPresentation(Integer data) {
-        return Utils.toStringOrDefault(defaultValue, data);
+        return Utils.toStringOrDefaultIfNull(defaultValue, data);
     }
 }

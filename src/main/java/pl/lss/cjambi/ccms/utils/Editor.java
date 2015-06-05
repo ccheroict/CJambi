@@ -25,6 +25,8 @@ public class Editor<T> {
     private T bean;
     private Map<HasState, String> widgetPropNameMap = new HashMap<>();
     private Map<HasState, Converter> converters = new HashMap<>();
+    private Map<HasState, Object> widgetStates = new HashMap<>();
+    private Map<String, Object> beanValues = new HashMap<>();
     private int nProp = 0;
 
     public void setBean(T bean) {
@@ -42,46 +44,73 @@ public class Editor<T> {
     }
 
     public void flush() {
+        flush(widgetPropNameMap.keySet().toArray(new HasState[widgetPropNameMap.size()]));
+    }
+
+    private void flush(HasState... widgets) {
+        widgetStates.clear();
         try {
-            for (Entry<HasState, String> entry : widgetPropNameMap.entrySet()) {
-                HasState widget = entry.getKey();
-                flush(widget);
+            for (int i = 0; i < widgets.length; i++) {
+                HasState widget = widgets[i];
+
+                String propName = widgetPropNameMap.get(widget);
+                Object value = BeanUtils.getProperty(bean, propName);
+
+                widgetStates.put(widget, widget.getState());
+                setWidgetState(widget, value);
             }
         } catch (Exception ex) {
-            //Try flush simple prop -> do not catch Exception here
+            for (Entry<HasState, Object> entry : widgetStates.entrySet()) {
+                HasState widget = entry.getKey();
+                Object state = entry.getValue();
+                setWidgetState(widget, state);
+            }
         }
     }
 
-    public void flush(HasState widget) throws Exception {
-        String propName = widgetPropNameMap.get(widget);
-        Converter converter = getConverter(widget);
-        Object value = BeanUtils.getProperty(bean, propName);
-
-        widget.setState(converter.toPresentation(value));
+    public void commit() throws Exception {
+        commit(widgetPropNameMap.keySet().toArray(new HasState[widgetPropNameMap.size()]));
     }
 
-    public void commit() {
+    private void commit(HasState... widgets) throws Exception {
+        beanValues.clear();
         try {
-            for (Entry<HasState, String> entry : widgetPropNameMap.entrySet()) {
-                HasState widget = entry.getKey();
-                commit(widget);
+            for (int i = 0; i < widgets.length; i++) {
+                HasState widget = widgets[i];
+                String propName = widgetPropNameMap.get(widget);
+
+                if (SELF.equals(propName)) {
+                    continue;
+                }
+
+                Object value = convertWidgetState(widget);
+                beanValues.put(propName, BeanUtils.getProperty(bean, propName));
+                BeanUtils.setProperty(bean, propName, value);
             }
         } catch (Exception ex) {
-            //Try commit simple prop -> do not catch Exception here
+            for (Entry<String, Object> entry : beanValues.entrySet()) {
+                String propName = entry.getKey();
+                Object value = entry.getValue();
+                BeanUtils.setProperty(bean, propName, value);
+            }
         }
     }
 
-    public void commit(HasState widget) throws Exception {
-        String propName = widgetPropNameMap.get(widget);
-        if (SELF.equals(propName)) {
-            return;
-        }
+    public Object convertWidgetState(HasState widget) throws Exception {
         Converter converter = getConverter(widget);
         Object value = widget.getState();
-        BeanUtils.setProperty(bean, propName, converter.toData(value));
+        return converter.toData(value);
     }
 
     public Converter getConverter(HasState widget) {
         return converters.get(widget);
+    }
+
+    public void setWidgetState(HasState widget, Object value) {
+        Converter converter = getConverter(widget);
+        try {
+            widget.setState(converter.toPresentation(value));
+        } catch (Exception ex) {
+        }
     }
 }

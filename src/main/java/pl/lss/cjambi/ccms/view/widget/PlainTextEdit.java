@@ -21,9 +21,6 @@ public class PlainTextEdit extends QPlainTextEdit implements HasState {
 
     @Override
     public void setState(Object state) {
-        if (state == null) {
-            state = "";
-        }
         setPlainText(Utils.toStringOrEmpty(state));
     }
 }

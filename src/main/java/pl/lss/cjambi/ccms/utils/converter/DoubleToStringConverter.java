@@ -11,9 +11,9 @@ import pl.lss.cjambi.ccms.utils.Utils;
  *
  * @author ctran
  */
-public class DoubleToStringConverter extends TypeToStringConverter<Double> {
+public class DoubleToStringConverter implements Converter<Double, String> {
 
-    private Double defaultValue;
+    protected Double defaultValue;
 
     public DoubleToStringConverter() {
         this(null);
@@ -26,7 +26,7 @@ public class DoubleToStringConverter extends TypeToStringConverter<Double> {
     @Override
     public Double toData(String presentation) throws NumberFormatException {
         try {
-            return Utils.parseDouble(presentation.trim());
+            return Utils.parseDoubleOrDefaultIfEmpty(defaultValue, presentation.trim());
         } catch (NumberFormatException ex) {
             throw ex;
         }
@@ -34,6 +34,6 @@ public class DoubleToStringConverter extends TypeToStringConverter<Double> {
 
     @Override
     public String toPresentation(Double data) {
-        return Utils.toStringOrDefault(defaultValue, data);
+        return Utils.toStringOrDefaultIfNull(defaultValue, data);
     }
 }

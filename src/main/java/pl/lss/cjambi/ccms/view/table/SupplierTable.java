@@ -50,8 +50,7 @@ public class SupplierTable extends PageWidget {
             @Override
             protected void showEditDialog(Supplier selected) {
 //                SupplierEditDialog dialog = SupplierEditDialog.getInstance();
-                SupplierEditDialog dialog = new SupplierEditDialog();
-                dialog.setBean(selected);
+                SupplierEditDialog dialog = new SupplierEditDialog(selected);
                 dialog.exec();
             }
         };

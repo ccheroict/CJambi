@@ -28,7 +28,6 @@ public abstract class SuggestBox<T> extends QLineEdit implements HasState {
 
     private Class<T> type;
     private QTimer timer;
-    private Object state;
     private final String propName;
     private List<T> cache;
     private QStringListModel model;
@@ -57,14 +56,13 @@ public abstract class SuggestBox<T> extends QLineEdit implements HasState {
 
     @Override
     public Object getState() {
-        return (state == null ? text() : state);
+        return text();
     }
 
     @Override
     public void setState(Object state) {
         try {
-            this.state = state;
-            setText(Utils.toStringOrEmpty(BeanUtils.getProperty(state, propName)));
+            setText(Utils.toStringOrEmpty(state));
         } catch (Exception ex) {
             logger.error("setState", ex);
         }
@@ -79,11 +77,13 @@ public abstract class SuggestBox<T> extends QLineEdit implements HasState {
 
     private void onCompleterActivatedIndex(QModelIndex index) {
         int row = index.row();
-        setState(cache.get(row));
+        try {
+            setState(BeanUtils.getProperty(cache.get(row), propName));
+        } catch (Exception ex) {
+        }
     }
 
     private void onTimerTimeout() {
-        state = null;
         cache = fetchData();
         model.setStringList(convertToStringList(cache));
         completer.complete();
@@ -93,7 +93,7 @@ public abstract class SuggestBox<T> extends QLineEdit implements HasState {
         List<String> l = new ArrayList<>();
         try {
             for (T obj : cache) {
-                l.add(Utils.toStringOrNull(BeanUtils.getProperty(obj, propName)));
+                l.add(Utils.toStringOrEmpty(BeanUtils.getProperty(obj, propName)));
             }
         } catch (Exception ex) {
             logger.error("convertToStringList", ex);
@@ -106,5 +106,4 @@ public abstract class SuggestBox<T> extends QLineEdit implements HasState {
     }
 
     public abstract List<T> fetchData();
-
 }

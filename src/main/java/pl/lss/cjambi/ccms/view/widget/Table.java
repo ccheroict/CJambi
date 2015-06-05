@@ -21,17 +21,21 @@ import pl.lss.cjambi.ccms.utils.converter.DefaultConverter;
  *
  * @author ctran
  */
-public abstract class Table<T> extends QTableWidget implements HasState {
+public abstract class Table<T> extends QTableWidget implements HasState, Refreshable {
 
     private static final Logger logger = Logger.getLogger(Table.class);
     public static final long DEFAULT_SIZE = 20;
 
-    private List<T> state = new ArrayList<>();
+    protected List<T> state = new ArrayList<>();
     private List<String> propNames = new ArrayList<>();
     private List<Converter> converters = new ArrayList<>();
     private List<Integer> colAlignments = new ArrayList<>();
 
     public Table() {
+        this(DEFAULT_SIZE);
+    }
+
+    public Table(long size) {
         super();
         doubleClicked.connect(this, "onDoubleClicked(QModelIndex)");
         setSelectionMode(QAbstractItemView.SelectionMode.ContiguousSelection);
@@ -77,13 +81,15 @@ public abstract class Table<T> extends QTableWidget implements HasState {
 //        horizontalHeader().setStretchLastSection(true);
     }
 
-    private void refresh() {
+    @Override
+    public void refresh() {
         try {
             setRowCount(state.size());
             for (int row = 0; row < rowCount(); row++) {
                 for (int col = 0; col < columnCount(); col++) {
                     Converter converter = converters.get(col);
-                    String content = (String) converter.toPresentation(BeanUtils.getProperty(state.get(row), propNames.get(col)));
+                    Object value = BeanUtils.getProperty(state.get(row), propNames.get(col));
+                    String content = (String) converter.toPresentation(value);
                     QTableWidgetItem item = new QTableWidgetItem(content);
                     item.setTextAlignment(colAlignments.get(col));
                     setItem(row, col, item);

@@ -8,8 +8,6 @@ package pl.lss.cjambi.ccms.view.table;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QLineEdit;
 import com.trolltech.qt.gui.QPushButton;
-import com.trolltech.qt.gui.QSizePolicy;
-import com.trolltech.qt.gui.QSpacerItem;
 import pl.lss.cjambi.ccms.resources.I18n;
 import pl.lss.cjambi.ccms.resources.IconResources;
 import pl.lss.cjambi.ccms.view.HBoxWidget;
@@ -64,7 +62,7 @@ public abstract class Pager extends HBoxWidget {
         refreshBtn.setIconSize(IconResources.ICON_16);
         refreshBtn.clicked.connect(this, "onRefreshBtnCLicked()");
         addWidget(refreshBtn, 0, Qt.AlignmentFlag.AlignLeft);
-        addSpacerItem(new QSpacerItem(0, 0, QSizePolicy.Policy.Expanding));
+        addSpacerItemToStretchWidget();
     }
 
     private void onFirstBtnClicked() {

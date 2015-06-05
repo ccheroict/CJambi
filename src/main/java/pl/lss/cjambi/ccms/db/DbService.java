@@ -12,6 +12,7 @@ import pl.lss.cjambi.ccms.bean.Catalog;
 import pl.lss.cjambi.ccms.bean.DiscountType;
 import pl.lss.cjambi.ccms.bean.Filter;
 import pl.lss.cjambi.ccms.bean.Order;
+import pl.lss.cjambi.ccms.bean.OrderStatus;
 import pl.lss.cjambi.ccms.bean.Product;
 import pl.lss.cjambi.ccms.bean.Supplier;
 import pl.lss.cjambi.ccms.bean.Tax;
@@ -56,4 +57,11 @@ public interface DbService {
 
     public long countProduct(Filter filter);
 
+    public List<OrderStatus> getOrderStatus();
+
+    public Supplier getSupplierByCode(String supplierCode);
+
+    public Product getProductByCode(String productCode);
+
+    public long countOrder(Filter filter);
 }

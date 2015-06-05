@@ -7,6 +7,7 @@ package pl.lss.cjambi.ccms.view;
 
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QHBoxLayout;
+import com.trolltech.qt.gui.QSizePolicy;
 import com.trolltech.qt.gui.QSpacerItem;
 import com.trolltech.qt.gui.QWidget;
 
@@ -26,7 +27,7 @@ public class HBoxWidget extends QWidget {
         layout.addWidget(widget, stretch, alignment);
     }
 
-    public void addSpacerItem(QSpacerItem item) {
-        layout.addSpacerItem(item);
+    public void addSpacerItemToStretchWidget() {
+        layout.addSpacerItem(new QSpacerItem(0, 0, QSizePolicy.Policy.Expanding));
     }
 }

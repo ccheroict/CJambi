@@ -7,6 +7,7 @@ package pl.lss.cjambi.ccms.db;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.j256.ormlite.dao.CloseableIterator;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
@@ -20,6 +21,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.apache.log4j.Logger;
 import pl.lss.cjambi.ccms.bean.Catalog;
@@ -29,14 +31,17 @@ import pl.lss.cjambi.ccms.bean.Filter;
 import pl.lss.cjambi.ccms.bean.Item;
 import pl.lss.cjambi.ccms.bean.Office;
 import pl.lss.cjambi.ccms.bean.Order;
+import pl.lss.cjambi.ccms.bean.OrderStatus;
 import pl.lss.cjambi.ccms.bean.Product;
 import pl.lss.cjambi.ccms.bean.Supplier;
 import pl.lss.cjambi.ccms.bean.Tax;
 import pl.lss.cjambi.ccms.bean.Unit;
 import pl.lss.cjambi.ccms.bean.User;
+import pl.lss.cjambi.ccms.resources.Cache;
 import pl.lss.cjambi.ccms.resources.I18n;
 import pl.lss.cjambi.ccms.utils.DialogErrorReporter;
 import pl.lss.cjambi.ccms.utils.ErrorReporter;
+import pl.lss.cjambi.ccms.utils.Utils;
 
 /**
  *
@@ -103,6 +108,7 @@ public class DbServiceImpl implements DbService {
             TableUtils.createTableIfNotExists(connectionSource, Product.class);
             TableUtils.createTableIfNotExists(connectionSource, Order.class);
             TableUtils.createTableIfNotExists(connectionSource, Item.class);
+            TableUtils.createTableIfNotExists(connectionSource, OrderStatus.class);
         } catch (SQLException ex) {
             logger.error("createTablesIfNessecary", ex);
             reporter.error(I18n.errorWhileCreatingDatabase);
@@ -151,6 +157,28 @@ public class DbServiceImpl implements DbService {
 
     @Override
     public void createOrUpdateOrder(Order order) {
+        try {
+            Dao orderDao = getDao(Order.class);
+            Dao itemDao = getDao(Item.class);
+            order.lastChangedDate = new Date();
+            if (order.id == null) { //new order
+                Filter filter = new Filter();
+                order.code = Cache.getUserInitial() + " - " + countOrder(filter);
+            }
+            orderDao.createOrUpdate(order);
+            CloseableIterator<Item> it = order.items.closeableIterator();
+            try {
+                while (it.hasNext()) {
+                    Item item = it.next();
+                    item.order = order;
+                    itemDao.createOrUpdate(item);
+                }
+            } finally {
+                it.close();
+            }
+        } catch (SQLException ex) {
+            logger.error("createOrUpdateOrder", ex);
+        }
     }
 
     @Override
@@ -209,7 +237,7 @@ public class DbServiceImpl implements DbService {
                 res = new ArrayList<>();
             } else {
                 for (Product product : res) {
-                    product.finalPrice = product.getPriceWithDiscount();
+                    product.finalPrice = Utils.getValueWithDiscount(product.originalPrice, product.discountValue, product.discountType);
                 }
             }
             return res;
@@ -288,6 +316,69 @@ public class DbServiceImpl implements DbService {
             return dao.countOf(query);
         } catch (SQLException ex) {
             logger.error("countProduct", ex);
+            return 0;
+        }
+    }
+
+    @Override
+    public List<OrderStatus> getOrderStatus() {
+        try {
+            Dao dao = getDao(OrderStatus.class);
+            return dao.queryForAll();
+        } catch (SQLException ex) {
+            logger.error("getOrderStatus", ex);
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public Supplier getSupplierByCode(String supplierCode) {
+        if (supplierCode == null) {
+            return null;
+        }
+        try {
+            Dao dao = getDao(Supplier.class);
+            QueryBuilder qb = dao.queryBuilder();
+            List<Supplier> list = dao.query(qb.where().eq(Supplier.CODE_FIELD, supplierCode).prepare());
+            if (list == null || list.size() != 1) {
+                return null;
+            }
+            return list.get(0);
+        } catch (SQLException ex) {
+            logger.error("getSupplierByCode", ex);
+            return null;
+        }
+    }
+
+    @Override
+    public Product getProductByCode(String productCode) {
+        if (productCode == null) {
+            return null;
+        }
+        try {
+            Dao dao = getDao(Product.class);
+            QueryBuilder qb = dao.queryBuilder();
+            List<Product> list = dao.query(qb.where().eq(Supplier.CODE_FIELD, productCode).prepare());
+            if (list == null || list.size() != 1) {
+                return null;
+            }
+            return list.get(0);
+        } catch (SQLException ex) {
+            logger.error("getProductByCode", ex);
+            return null;
+        }
+    }
+
+    @Override
+    public long countOrder(Filter filter) {
+        try {
+            Dao dao = getDao(Order.class);
+            QueryBuilder qb = dao.queryBuilder();
+            qb.setCountOf(true);
+            qb.where().between(Order.CREATED_DATE_FIELD, filter.dateFrom, filter.dateTo);
+            return dao.countOf(qb.prepare());
+        } catch (SQLException ex) {
+            logger.error("countOrder", ex);
             return 0;
         }
     }
