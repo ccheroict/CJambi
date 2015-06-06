@@ -6,14 +6,19 @@
 package pl.lss.cjambi.ccms.view.widget;
 
 import com.trolltech.qt.core.QModelIndex;
+import com.trolltech.qt.core.QPoint;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QAbstractItemView;
+import com.trolltech.qt.gui.QAction;
+import com.trolltech.qt.gui.QMenu;
 import com.trolltech.qt.gui.QTableWidget;
 import com.trolltech.qt.gui.QTableWidgetItem;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
+import pl.lss.cjambi.ccms.resources.I18n;
 import pl.lss.cjambi.ccms.utils.BeanUtils;
+import pl.lss.cjambi.ccms.utils.Utils;
 import pl.lss.cjambi.ccms.utils.converter.Converter;
 import pl.lss.cjambi.ccms.utils.converter.DefaultConverter;
 
@@ -41,7 +46,32 @@ public abstract class Table<T> extends QTableWidget implements HasState, Refresh
         setSelectionMode(QAbstractItemView.SelectionMode.ContiguousSelection);
         setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers);
         setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows);
-//        setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu);
+        setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu);
+        customContextMenuRequested.connect(this, "onCustomContextMenuRequested(QPoint)");
+    }
+
+    private void onCustomContextMenuRequested(QPoint point) {
+        QPoint globalPoint = mapToGlobal(point);
+        QMenu menu = new QMenu();
+        QAction deleteAction = new QAction(null);
+        deleteAction.setText(I18n.delete);
+        deleteAction.triggered.connect(this, "onDeleteActionSelected()");
+        menu.addAction(deleteAction);
+        if (!selectionModel().selectedRows().isEmpty()) {
+            if (selectionModel().selectedRows().size() == 1) {
+                QAction printAction = new QAction(null);
+                printAction.setText(I18n.print);
+                printAction.triggered.connect(this, "onPrintActionSelected()");
+            }
+            menu.exec(globalPoint);
+        }
+    }
+
+    protected void onDeleteActionSelected() {
+    }
+
+    protected void onPrintActionSelected() {
+        //NO-OP: Override it in extending tables
     }
 
     @Override
@@ -89,7 +119,7 @@ public abstract class Table<T> extends QTableWidget implements HasState, Refresh
                 for (int col = 0; col < columnCount(); col++) {
                     Converter converter = converters.get(col);
                     Object value = BeanUtils.getProperty(state.get(row), propNames.get(col));
-                    String content = (String) converter.toPresentation(value);
+                    String content = Utils.toStringOrEmpty(converter.toPresentation(value));
                     QTableWidgetItem item = new QTableWidgetItem(content);
                     item.setTextAlignment(colAlignments.get(col));
                     setItem(row, col, item);

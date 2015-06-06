@@ -60,7 +60,6 @@ public class I18n {
     public static final String quantity = "Số lượng";
     public static final String discountType = "Loại giảm";
     public static final String discountValue = "Giảm giá";
-    public static final String discount = "Giảm giá";
     public static final String requiredPacks = "Số thùng";
     public static final String orderItem = "Sản phẩm trong đơn hàng";
     public static final String printOrder = "In đơn hàng";
@@ -82,5 +81,7 @@ public class I18n {
     public static final String mustSelectProductFromList = "Phải chọn một sản phẩm trong danh sách";
     public static final String discountIsNotValid = "Giảm giá nhập không hợp lệ";
     public static final String invalidOrderItem = "Thông tin sản phẩm trong đơn hàng nhập không đúng";
+    public static final String save = "Lưu lại";
+    public static final String print = "In";
 
 }

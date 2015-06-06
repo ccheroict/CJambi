@@ -8,13 +8,14 @@ package pl.lss.cjambi.ccms.bean;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import java.util.Date;
+import pl.lss.cjambi.ccms.utils.Printable;
 
 /**
  *
  * @author ctran
  */
 @DatabaseTable
-public class Product {
+public class Product implements Printable {
 
     public static final String SELF = "self";
     public static final String CODE_FIELD = "code";
@@ -68,6 +69,8 @@ public class Product {
     public Company company;
     @DatabaseField
     public String note;
+    @DatabaseField
+    public Integer isActive;
 
     public Product() {
     }
@@ -80,4 +83,8 @@ public class Product {
 //        }
 //        return originalPrice;
 //    }
+    @Override
+    public void print() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

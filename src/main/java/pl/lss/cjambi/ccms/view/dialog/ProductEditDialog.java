@@ -170,7 +170,7 @@ public class ProductEditDialog extends BeanEditDialog<Product> {
     protected boolean validate() {
         return setStyleSheet(code, Styles.QLINEEDIT_RED_BORDER, !checkTextWidgetEmpty(code) && stateIsNullOrItself(code, bean))
                 && setStyleSheet(supplier, Styles.QLINEEDIT_RED_BORDER, !checkTextWidgetEmpty(supplier) && isConvertable(supplier))
-                && setStyleSheet(packSize, Styles.QLINEEDIT_RED_BORDER, !checkTextWidgetEmpty(packSize) && isConvertable(packSize))
+                && setStyleSheet(packSize, Styles.QLINEEDIT_RED_BORDER, !checkTextWidgetEmpty(packSize) && isConvertable(packSize) && (Integer) tryConvert(packSize) > 0)
                 && setStyleSheet(originalPrice, Styles.QLINEEDIT_RED_BORDER, !checkTextWidgetEmpty(originalPrice) && isConvertable(originalPrice))
                 && setStyleSheet(discountValue, Styles.QLINEEDIT_RED_BORDER, checkTextWidgetEmpty(discountValue) || isConvertable(discountValue));
     }

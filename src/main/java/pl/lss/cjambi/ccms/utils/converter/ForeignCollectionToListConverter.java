@@ -5,7 +5,7 @@
  */
 package pl.lss.cjambi.ccms.utils.converter;
 
-import com.j256.ormlite.dao.CloseableWrappedIterable;
+import com.j256.ormlite.dao.CloseableIterator;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.ForeignCollection;
 import java.util.ArrayList;
@@ -61,11 +61,15 @@ public class ForeignCollectionToListConverter implements Converter<ForeignCollec
     public List toPresentation(ForeignCollection data) throws Exception {
         List l = new ArrayList<>();
         if (data != null) {
-            CloseableWrappedIterable it = data.getWrappedIterable();
-            while (it.iterator().hasNext()) {
-                l.add(it.iterator().next());
+
+            CloseableIterator it = data.closeableIterator();
+            try {
+                while (it.hasNext()) {
+                    l.add(it.next());
+                }
+            } finally {
+                it.close();
             }
-            it.close();
         }
         return l;
     }

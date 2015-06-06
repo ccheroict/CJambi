@@ -21,7 +21,7 @@ public abstract class OkDialog extends Dialog {
 
     protected OkDialog() {
         super();
-        okBtn = new QPushButton(IconResources.ACTION_ICON, I18n.OK);
+        okBtn = new QPushButton(IconResources.ACTION_ICON, getOkBtnCaption());
     }
 
     @Override
@@ -36,4 +36,9 @@ public abstract class OkDialog extends Dialog {
         close();
         setResult(DialogCode.Accepted.value());
     }
+
+    protected String getOkBtnCaption() {
+        return I18n.OK;
+    }
+
 }

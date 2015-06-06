@@ -16,8 +16,8 @@ public class Filter {
 
     public String supplierCode = "";
     public String productCode = "";
-    public Long pageNum;
-    public Long pageSize;
+    public Long pageNum = 0L;
+    public Long pageSize = 20L;
     public Date dateFrom = Utils.getStartOfDay(new Date());
     public Date dateTo = Utils.getEndOfDay(new Date());
 }

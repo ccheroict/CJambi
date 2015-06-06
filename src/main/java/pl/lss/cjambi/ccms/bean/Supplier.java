@@ -32,6 +32,8 @@ public class Supplier {
     public String note;
     @DatabaseField(foreign = true)
     public Company company;
+    @DatabaseField
+    public Integer isActive;
 
     public Supplier() {
     }

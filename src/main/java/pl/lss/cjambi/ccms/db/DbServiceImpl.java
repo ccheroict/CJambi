@@ -10,10 +10,9 @@ import com.google.gson.JsonParser;
 import com.j256.ormlite.dao.CloseableIterator;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import java.io.BufferedReader;
 import java.io.File;
@@ -49,12 +48,13 @@ import pl.lss.cjambi.ccms.utils.Utils;
  */
 public class DbServiceImpl implements DbService {
 
+    private static final String ISACTIVE = "isActive";
     private static final Logger logger = Logger.getLogger(DbServiceImpl.class);
     private static final String dbConfigFilePath = "db.json";
     private static final DbService instance = new DbServiceImpl();
     private static final ErrorReporter reporter = DialogErrorReporter.getInstance();
 
-    private ConnectionSource connectionSource;
+    private JdbcPooledConnectionSource connectionSource;
 
     public static DbService getInstance() {
         return instance;
@@ -65,7 +65,8 @@ public class DbServiceImpl implements DbService {
             JsonParser parser = new JsonParser();
             String configStr = readFile(dbConfigFilePath);
             JsonObject obj = parser.parse(configStr).getAsJsonObject();
-            connectionSource = new JdbcConnectionSource(obj.get("jdbcUrl").getAsString(), obj.get("username").getAsString(), obj.get("password").getAsString());
+            connectionSource = new JdbcPooledConnectionSource(obj.get("jdbcUrl").getAsString(), obj.get("username").getAsString(), obj.get("password").getAsString());
+            connectionSource.setTestBeforeGet(true);
         } catch (IOException ex) {
             reporter.error(I18n.readDataSourceConfigurationError);
             throw new RuntimeException();
@@ -126,7 +127,10 @@ public class DbServiceImpl implements DbService {
         try {
             Dao<User, Integer> dao = getDao(User.class);
             //TO-DO: binary check login
-            return (User) dao.queryForFirst(dao.queryBuilder().where().like(User.USERNAME_FIELD, username).and().like(User.PASSWORD_FIELD, password).prepare());
+            return (User) dao.queryForFirst(dao.queryBuilder().where()
+                    .like(User.USERNAME_FIELD, username).and()
+                    .like(User.PASSWORD_FIELD, password).and()
+                    .eq(ISACTIVE, 1).prepare());
         } catch (SQLException ex) {
             logger.error("login", ex);
             return null;
@@ -137,7 +141,7 @@ public class DbServiceImpl implements DbService {
     public List<User> getUser(String query) {
         try {
             Dao<User, Integer> dao = getDao(User.class);
-            return dao.query(dao.queryBuilder().where().like(User.USERNAME_FIELD, "%" + query + "%").prepare());
+            return dao.query(dao.queryBuilder().where().like(User.USERNAME_FIELD, "%" + query + "%").and().eq(ISACTIVE, 1).prepare());
         } catch (SQLException ex) {
             logger.error("getUser", ex);
             return new ArrayList<>();
@@ -148,10 +152,17 @@ public class DbServiceImpl implements DbService {
     public List<Order> getOrder(Filter filter) {
         try {
             Dao<Order, Integer> dao = getDao(Order.class);
-            return dao.queryForAll();
+            QueryBuilder qb = dao.queryBuilder();
+            setOffsetAndLimit(qb, filter);
+            qb.where().between(Order.CREATED_DATE_FIELD, filter.dateFrom, filter.dateTo).and().eq(ISACTIVE, 1);
+            List<Order> res = dao.query(qb.prepare());
+            if (res == null) {
+                res = new ArrayList<>();
+            }
+            return res;
         } catch (SQLException ex) {
             logger.error("getOrder", ex);
-            return null;
+            return new ArrayList<>();
         }
     }
 
@@ -188,7 +199,7 @@ public class DbServiceImpl implements DbService {
             QueryBuilder qb = dao.queryBuilder();
             qb.orderBy(Supplier.CODE_FIELD, true);
             setOffsetAndLimit(qb, filter);
-            PreparedQuery query = qb.where().like(Supplier.CODE_FIELD, "%" + filter.supplierCode + "%").prepare();
+            PreparedQuery query = qb.where().like(Supplier.CODE_FIELD, "%" + filter.supplierCode + "%").and().eq(ISACTIVE, 1).prepare();
             List<Supplier> res = dao.query(query);
             if (res == null) {
                 res = new ArrayList<>();
@@ -201,13 +212,12 @@ public class DbServiceImpl implements DbService {
     }
 
     @Override
-    public void createOrUpdateSupplier(Supplier supplier) throws SQLException {
+    public void createOrUpdateSupplier(Supplier supplier) {
         try {
             Dao dao = getDao(Supplier.class);
             dao.createOrUpdate(supplier);
         } catch (SQLException ex) {
             logger.error("createTablesIfNessecary", ex);
-            throw ex;
         }
     }
 
@@ -216,7 +226,7 @@ public class DbServiceImpl implements DbService {
         try {
             Dao dao = getDao(Supplier.class);
             QueryBuilder qb = dao.queryBuilder().setCountOf(true);
-            PreparedQuery query = qb.where().like(Supplier.CODE_FIELD, "%" + filter.supplierCode + "%").prepare();
+            PreparedQuery query = qb.where().like(Supplier.CODE_FIELD, "%" + filter.supplierCode + "%").and().eq(ISACTIVE, 1).prepare();
             return dao.countOf(query);
         } catch (SQLException ex) {
             logger.error("countSupplier", ex);
@@ -231,7 +241,7 @@ public class DbServiceImpl implements DbService {
             QueryBuilder qb = dao.queryBuilder();
             qb.orderBy(Product.CODE_FIELD, true);
             setOffsetAndLimit(qb, filter);
-            PreparedQuery query = qb.where().like(Product.CODE_FIELD, "%" + filter.productCode + "%").prepare();
+            PreparedQuery query = qb.where().like(Product.CODE_FIELD, "%" + filter.productCode + "%").and().eq(ISACTIVE, 1).prepare();
             List<Product> res = dao.query(query);
             if (res == null) {
                 res = new ArrayList<>();
@@ -312,7 +322,7 @@ public class DbServiceImpl implements DbService {
         try {
             Dao dao = getDao(Product.class);
             QueryBuilder qb = dao.queryBuilder().setCountOf(true);
-            PreparedQuery query = qb.where().like(Product.CODE_FIELD, "%" + filter.productCode + "%").prepare();
+            PreparedQuery query = qb.where().like(Product.CODE_FIELD, "%" + filter.productCode + "%").and().eq(ISACTIVE, 1).prepare();
             return dao.countOf(query);
         } catch (SQLException ex) {
             logger.error("countProduct", ex);
@@ -339,7 +349,7 @@ public class DbServiceImpl implements DbService {
         try {
             Dao dao = getDao(Supplier.class);
             QueryBuilder qb = dao.queryBuilder();
-            List<Supplier> list = dao.query(qb.where().eq(Supplier.CODE_FIELD, supplierCode).prepare());
+            List<Supplier> list = dao.query(qb.where().eq(Supplier.CODE_FIELD, supplierCode).and().eq(ISACTIVE, 1).prepare());
             if (list == null || list.size() != 1) {
                 return null;
             }
@@ -358,7 +368,7 @@ public class DbServiceImpl implements DbService {
         try {
             Dao dao = getDao(Product.class);
             QueryBuilder qb = dao.queryBuilder();
-            List<Product> list = dao.query(qb.where().eq(Supplier.CODE_FIELD, productCode).prepare());
+            List<Product> list = dao.query(qb.where().eq(Supplier.CODE_FIELD, productCode).and().eq(ISACTIVE, 1).prepare());
             if (list == null || list.size() != 1) {
                 return null;
             }
@@ -375,7 +385,7 @@ public class DbServiceImpl implements DbService {
             Dao dao = getDao(Order.class);
             QueryBuilder qb = dao.queryBuilder();
             qb.setCountOf(true);
-            qb.where().between(Order.CREATED_DATE_FIELD, filter.dateFrom, filter.dateTo);
+            qb.where().between(Order.CREATED_DATE_FIELD, filter.dateFrom, filter.dateTo).and().eq(ISACTIVE, 1);
             return dao.countOf(qb.prepare());
         } catch (SQLException ex) {
             logger.error("countOrder", ex);

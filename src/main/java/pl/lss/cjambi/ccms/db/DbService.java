@@ -39,7 +39,7 @@ public interface DbService {
 
     public List<Supplier> getSupplier(Filter filter);
 
-    public void createOrUpdateSupplier(Supplier bean) throws SQLException;
+    public void createOrUpdateSupplier(Supplier bean);
 
     public long countSupplier(Filter filter);
 

@@ -9,15 +9,14 @@ import com.trolltech.qt.gui.QLineEdit;
 import com.trolltech.qt.gui.QPlainTextEdit;
 import com.trolltech.qt.gui.QWidget;
 import org.apache.log4j.Logger;
-import pl.lss.cjambi.ccms.controller.exception.InvalidInformationException;
 import pl.lss.cjambi.ccms.db.DbService;
 import pl.lss.cjambi.ccms.db.DbServiceImpl;
 import pl.lss.cjambi.ccms.resources.I18n;
+import pl.lss.cjambi.ccms.utils.BeanUtils;
 import pl.lss.cjambi.ccms.utils.DialogErrorReporter;
 import pl.lss.cjambi.ccms.utils.Editor;
 import pl.lss.cjambi.ccms.utils.ErrorReporter;
 import pl.lss.cjambi.ccms.utils.Utils;
-import pl.lss.cjambi.ccms.utils.converter.Converter;
 import pl.lss.cjambi.ccms.view.widget.HasState;
 
 /**
@@ -58,7 +57,7 @@ public abstract class BeanEditDialog<T> extends OkCloseDialog {
     @Override
     protected void onOkBtnClicked() throws Exception {
         if (!validate()) {
-            throw new InvalidInformationException();
+            throw new Exception();
         }
         editor.commit();
         customFillBeanAfterCommit();
@@ -69,8 +68,12 @@ public abstract class BeanEditDialog<T> extends OkCloseDialog {
     }
 
     protected boolean stateIsNullOrItself(HasState widget, Object itSelf) {
-        Object obj = tryConvert(widget);
-        return (obj == null || obj == itSelf);
+        try {
+            Object obj = tryConvert(widget);
+            return (obj == null || BeanUtils.getProperty(itSelf, "id") == BeanUtils.getProperty(obj, "id"));
+        } catch (Exception ex) {
+            return false;
+        }
     }
 
     protected boolean checkTextWidgetEmpty(HasState widget) {
@@ -92,9 +95,8 @@ public abstract class BeanEditDialog<T> extends OkCloseDialog {
     }
 
     protected Object tryConvert(HasState widget) {
-        Converter converter = editor.getConverter(widget);
         try {
-            return converter.toData(widget.getState());
+            return editor.convertWidgetState(widget);
         } catch (Exception ex) {
             return null;
         }

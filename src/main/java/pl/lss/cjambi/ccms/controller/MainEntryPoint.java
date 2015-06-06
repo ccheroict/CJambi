@@ -24,6 +24,7 @@ import pl.lss.cjambi.ccms.view.dialog.LoginDialog;
 import pl.lss.cjambi.ccms.view.dialog.OrderEditDialog;
 import pl.lss.cjambi.ccms.view.dialog.ProductEditDialog;
 import pl.lss.cjambi.ccms.view.dialog.SupplierEditDialog;
+import pl.lss.cjambi.ccms.view.table.OrderTable;
 import pl.lss.cjambi.ccms.view.table.ProductTable;
 import pl.lss.cjambi.ccms.view.table.SupplierTable;
 
@@ -116,10 +117,9 @@ public class MainEntryPoint extends QMainWindow {
 
     private void onOrderTableActived() {
         setWindowTitle(appTitle + " - " + I18n.orderList);
-//        OrderGrid grid = new OrderGrid();
-//        grid.build();
-//        setCentralWidget(grid);
-//        grid.refresh();
+        OrderTable table = new OrderTable();
+        table.refresh();
+        setCentralWidget(table);
     }
 
     private void buildToolBar() {
@@ -140,13 +140,11 @@ public class MainEntryPoint extends QMainWindow {
     }
 
     private void onAddSupplierAction() {
-//        SupplierEditDialog dialog = SupplierEditDialog.getInstance();
         SupplierEditDialog dialog = new SupplierEditDialog(new Supplier());
         dialog.exec();
     }
 
     private void onAddProductAction() {
-//        ProductEditDialog dialog = ProductEditDialog.getInstance();
         ProductEditDialog dialog = new ProductEditDialog(new Product());
         dialog.exec();
     }

@@ -31,7 +31,11 @@ public class OrderItemTable extends Table<Item> {
     protected void showEditDialog(Item selected) {
         ItemEditDialog dialog = new ItemEditDialog(order);
         dialog.setBean(selected);
+        dialog.updateProductInfo(selected.product);
         dialog.exec();
+        if (!isValidOrderItem(selected)) {
+            state.remove(selected);
+        }
         refresh();
     }
 

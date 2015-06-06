@@ -87,9 +87,7 @@ public class ItemEditDialog extends BeanEditDialog<Item> {
                 return;
             }
             Product selectedProduct = (Product) obj;
-            supplier.setText((String) BeanUtils.getProperty(selectedProduct, Product.SUPPLIER_CODE_FIELD));
-            packSize = (Integer) BeanUtils.getProperty(selectedProduct, Product.PACK_SIZE_FIELD);
-            packSizeLbl.setText(Utils.toStringOrEmpty(packSize));
+            updateProductInfo(selectedProduct);
             requiredPack.setState(0);
             quantity.setState(0);
             price.setState(BeanUtils.getProperty(selectedProduct, Product.FINAL_PRICE_FIELD));
@@ -147,6 +145,19 @@ public class ItemEditDialog extends BeanEditDialog<Item> {
     @Override
     protected boolean validate() {
         return setStyleSheet(product, Styles.QLINEEDIT_RED_BORDER, !checkTextWidgetEmpty(product) && isConvertable(product))
-                && setStyleSheet(price, Styles.QLINEEDIT_RED_BORDER, !checkTextWidgetEmpty(price) && isConvertable(price) && ((Double) tryConvert(price) > 0));
+                && setStyleSheet(requiredPack, Styles.QLINEEDIT_RED_BORDER, !checkTextWidgetEmpty(requiredPack) && isConvertable(requiredPack))
+                && setStyleSheet(quantity, Styles.QLINEEDIT_RED_BORDER, !checkTextWidgetEmpty(quantity) && isConvertable(quantity))
+                && setStyleSheet(price, Styles.QLINEEDIT_RED_BORDER, !checkTextWidgetEmpty(price) && isConvertable(price) && ((Double) tryConvert(price) > 0))
+                && setStyleSheet(value, Styles.QLINEEDIT_RED_BORDER, !checkTextWidgetEmpty(value) && isConvertable(value));
+    }
+
+    public void updateProductInfo(Product selectedProduct) {
+        try {
+            supplier.setText((String) BeanUtils.getProperty(selectedProduct, Product.SUPPLIER_CODE_FIELD));
+            packSize = (Integer) BeanUtils.getProperty(selectedProduct, Product.PACK_SIZE_FIELD);
+            packSizeLbl.setText(Utils.toStringOrEmpty(packSize));
+        } catch (Exception ex) {
+            reporter.error(I18n.sorryErrorHasAppeared);
+        }
     }
 }

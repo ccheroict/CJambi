@@ -5,9 +5,11 @@
  */
 package pl.lss.cjambi.ccms.view.table;
 
+import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QLabel;
 import com.trolltech.qt.gui.QWidget;
+import java.util.List;
 import pl.lss.cjambi.ccms.bean.Filter;
 import pl.lss.cjambi.ccms.bean.Product;
 import pl.lss.cjambi.ccms.db.DbService;
@@ -33,7 +35,6 @@ public class ProductTable extends PageWidget {
     private Table<Product> table;
     private Filter filter = new Filter();
     private Pager pager;
-    private long maxPage;
     private QLabel total;
 
     public ProductTable() {
@@ -56,6 +57,17 @@ public class ProductTable extends PageWidget {
 //                SupplierEditDialog dialog = SupplierEditDialog.getInstance();
                 ProductEditDialog dialog = new ProductEditDialog(selected);
                 dialog.exec();
+                pager.onRefreshBtnCLicked();
+            }
+
+            @Override
+            protected void onDeleteActionSelected() {
+                List<QModelIndex> selectedRows = selectionModel().selectedRows();
+                for (QModelIndex index : selectedRows) {
+                    Product product = state.get(index.row());
+                    product.isActive = 0;
+                    db.createOrUpdateProduct(product);
+                }
             }
         };
         table.addColumn(I18n.productCode, Product.CODE_FIELD);

@@ -52,6 +52,7 @@ public class OrderEditDialog extends BeanEditDialog<Order> implements Refreshabl
     private ComboBox<DiscountType> discountType;
     private ComboBox<OrderStatus> status;
     private QPushButton newItemBtn;
+//    private QPushButton printOrderBtn;
 
     public OrderEditDialog(Order order) {
         super();
@@ -73,18 +74,26 @@ public class OrderEditDialog extends BeanEditDialog<Order> implements Refreshabl
         itemsTable.addColumn(I18n.product, Item.PRODUCT_CODE_FIELD);
         itemsTable.addColumn(I18n.catalog, Item.CATALOG_NAME_FIELD);
         itemsTable.addColumn(I18n.requiredPacks, Item.REQUIRED_PACK_FIELD, new IntegerToStringConverter());
-        itemsTable.addColumn(I18n.packSize, Item.PACK_SIZE_FIELD, new IntegerToStringConverter());
+        itemsTable.addColumn(I18n.packSize, Item.PRODUCT_PACK_SIZE_FIELD, new IntegerToStringConverter());
         itemsTable.addColumn(I18n.requiredProducts, Item.QUANTITY_FIELD, new IntegerToStringConverter());
         itemsTable.addColumn(I18n.finalPrice, Item.PRICE_FIELD, new DoubleToStringConverter());
         itemsTable.addColumn(I18n.value, Item.TOTAL_FIELD, new CurrencyToStringConverter(Constants.PLN));
 
         newItemBtn = new QPushButton(I18n.newItem);
         newItemBtn.clicked.connect(this, "onNewItemBtnClicked()");
+//        printOrderBtn = new QPushButton(I18n.printOrder);
+//        printOrderBtn.clicked.connect(this, "onPrintOrderBtnClicked()");
 
         discountValue.textChanged.connect(this, "onValueChanged()");
         discountType.activatedIndex.connect(this, "onValueChanged()");
 
         build();
+        editor.setSomethingHasChanged(false);
+//        printOrderBtn.setDisabled(editor.isSomethingHasChanged());
+    }
+
+    private void onPrintOrderBtnClicked() {
+        bean.print();
     }
 
     private void onValueChanged() {
@@ -164,17 +173,18 @@ public class OrderEditDialog extends BeanEditDialog<Order> implements Refreshabl
                 layout.addWidget(productQuantity, nRow++, 1);
                 layout.addWidget(new QLabel(I18n.total), nRow, 0);
                 layout.addWidget(total, nRow++, 1);
-                layout.addWidget(new QLabel(I18n.discount), nRow, 0);
+                layout.addWidget(new QLabel(I18n.discountValue), nRow, 0);
                 layout.addWidget(discountValue, nRow, 1);
                 layout.addWidget(discountType, nRow++, 2);
                 layout.addWidget(new QLabel(I18n.value), nRow, 0);
-                layout.addWidget(value, nRow, 1);
+                layout.addWidget(value, nRow++, 1);
+//                layout.addWidget(printOrderBtn, nRow, 0);
 
                 editor.addMapping(packQuantity, Order.PACK_QUANTITY_FIELD, new IntegerToStringConverter(0));
                 editor.addMapping(productQuantity, Order.PRODUCT_QUANTITY_FIELD, new IntegerToStringConverter(0));
                 editor.addMapping(total, Order.TOTAL_FIELD, new CurrencyToStringConverter(0.0, Constants.PLN));
                 editor.addMapping(discountValue, Order.DISCOUNT_VALUE_FIELD, new DoubleToStringConverter(0.0));
-                editor.addMapping(discountType, Order.DISCOUNT_TYPE_VALUE);
+                editor.addMapping(discountType, Order.DISCOUNT_TYPE_FIELD);
                 editor.addMapping(value, Order.VALUE_FIELD, new CurrencyToStringConverter(0.0, Constants.PLN));
 
                 wrapper.addWidget(widget);
@@ -201,6 +211,8 @@ public class OrderEditDialog extends BeanEditDialog<Order> implements Refreshabl
         try {
             super.onOkBtnClicked(); //To change body of generated methods, choose Tools | Templates.
             db.createOrUpdateOrder(bean);
+            editor.setSomethingHasChanged(false);
+//            printOrderBtn.setDisabled(editor.isSomethingHasChanged());
         } catch (Exception ex) {
             reporter.error(I18n.sorryErrorHasAppeared);
             return;
@@ -226,5 +238,10 @@ public class OrderEditDialog extends BeanEditDialog<Order> implements Refreshabl
             value.setState(Utils.getValueWithDiscount(t, dv, dt));
         } catch (Exception ex) {
         }
+    }
+
+    @Override
+    protected String getOkBtnCaption() {
+        return I18n.save;
     }
 }

@@ -28,6 +28,7 @@ public class Editor<T> {
     private Map<HasState, Object> widgetStates = new HashMap<>();
     private Map<String, Object> beanValues = new HashMap<>();
     private int nProp = 0;
+    private boolean somethingHasChanged = true;
 
     public void setBean(T bean) {
         this.bean = bean;
@@ -97,6 +98,7 @@ public class Editor<T> {
     }
 
     public Object convertWidgetState(HasState widget) throws Exception {
+        setSomethingHasChanged(true);
         Converter converter = getConverter(widget);
         Object value = widget.getState();
         return converter.toData(value);
@@ -112,5 +114,13 @@ public class Editor<T> {
             widget.setState(converter.toPresentation(value));
         } catch (Exception ex) {
         }
+    }
+
+    public boolean isSomethingHasChanged() {
+        return somethingHasChanged;
+    }
+
+    public void setSomethingHasChanged(boolean value) {
+        this.somethingHasChanged = value;
     }
 }

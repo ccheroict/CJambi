@@ -10,48 +10,51 @@ import com.trolltech.qt.gui.QLabel;
 import com.trolltech.qt.gui.QWidget;
 import java.util.List;
 import pl.lss.cjambi.ccms.bean.Filter;
-import pl.lss.cjambi.ccms.bean.Supplier;
+import pl.lss.cjambi.ccms.bean.Order;
 import pl.lss.cjambi.ccms.db.DbService;
 import pl.lss.cjambi.ccms.db.DbServiceImpl;
 import pl.lss.cjambi.ccms.resources.I18n;
+import pl.lss.cjambi.ccms.utils.Constants;
+import pl.lss.cjambi.ccms.utils.converter.CurrencyToStringConverter;
+import pl.lss.cjambi.ccms.utils.converter.DateTimeToStringConverter;
 import pl.lss.cjambi.ccms.view.HBoxWidget;
 import pl.lss.cjambi.ccms.view.PageWidget;
 import pl.lss.cjambi.ccms.view.VBoxWidget;
-import pl.lss.cjambi.ccms.view.dialog.SupplierEditDialog;
+import pl.lss.cjambi.ccms.view.dialog.OrderEditDialog;
 import pl.lss.cjambi.ccms.view.widget.Table;
 
 /**
  *
  * @author ctran
  */
-public class SupplierTable extends PageWidget {
+public class OrderTable extends PageWidget {
 
     private static final DbService db = DbServiceImpl.getInstance();
 
-    private Table<Supplier> table;
+    private Table<Order> table;
     private Filter filter = new Filter();
     private Pager pager;
     private QLabel total;
 
-    public SupplierTable() {
+    public OrderTable() {
         super();
     }
 
     @Override
     protected QWidget buildHeader() {
         HBoxWidget header = new HBoxWidget();
-        header.addWidget(new QLabel(I18n.supplierList));
+        header.addWidget(new QLabel(I18n.orderList));
         return header;
     }
 
     @Override
     protected QWidget buildContent() {
-        table = new Table<Supplier>() {
+        table = new Table<Order>() {
 
             @Override
-            protected void showEditDialog(Supplier selected) {
+            protected void showEditDialog(Order selected) {
 //                SupplierEditDialog dialog = SupplierEditDialog.getInstance();
-                SupplierEditDialog dialog = new SupplierEditDialog(selected);
+                OrderEditDialog dialog = new OrderEditDialog(selected);
                 dialog.exec();
                 pager.onRefreshBtnCLicked();
             }
@@ -60,15 +63,20 @@ public class SupplierTable extends PageWidget {
             protected void onDeleteActionSelected() {
                 List<QModelIndex> selectedRows = selectionModel().selectedRows();
                 for (QModelIndex index : selectedRows) {
-                    Supplier supplier = state.get(index.row());
-                    supplier.isActive = 0;
-                    db.createOrUpdateSupplier(supplier);
+                    Order order = state.get(index.row());
+                    order.isActive = 0;
+                    db.createOrUpdateOrder(order);
                 }
             }
         };
-        table.addColumn(I18n.supplierCode, Supplier.CODE_FIELD);
-        table.addColumn(I18n.supplierName, Supplier.NAME_FIELD);
-        table.addColumn(I18n.note, Supplier.NOTE_FIELD);
+        table.addColumn(I18n.orderNr, Order.CODE_FIELD);
+        table.addColumn(I18n.status, Order.STATUS_NAME_FIELD);
+        table.addColumn(I18n.requiredPacks, Order.PACK_QUANTITY_FIELD);
+        table.addColumn(I18n.requiredProducts, Order.PRODUCT_QUANTITY_FIELD);
+        table.addColumn(I18n.discountValue, Order.DISCOUNT_VALUE_FIELD);
+        table.addColumn(I18n.discountType, Order.DISCOUNT_TYPE_NAME_FIELD);
+        table.addColumn(I18n.value, Order.VALUE_FIELD, new CurrencyToStringConverter(Constants.PLN));
+        table.addColumn(I18n.createdDate, Order.CREATED_DATE_FIELD, new DateTimeToStringConverter());
         return table;
     }
 
@@ -80,7 +88,7 @@ public class SupplierTable extends PageWidget {
 
             @Override
             protected long getMaxPage() {
-                long cnt = db.countSupplier(filter);
+                long cnt = db.countOrder(filter);
                 total.setText(I18n.total + ": " + cnt);
                 return ((cnt - 1) / Table.DEFAULT_SIZE + 1);
             }
@@ -89,7 +97,7 @@ public class SupplierTable extends PageWidget {
             protected void fetchDataAndRefreshTable() {
                 filter.pageSize = pageSize;
                 filter.pageNum = pageNum - 1;
-                table.setState(db.getSupplier(filter));
+                table.setState(db.getOrder(filter));
             }
         };
         footer.addWidget(pager);

@@ -30,6 +30,8 @@ public class User {
     public Office office; //where this user works
     @DatabaseField
     public String initial;
+    @DatabaseField
+    public Integer isActive;
 
     public User() {
     }
