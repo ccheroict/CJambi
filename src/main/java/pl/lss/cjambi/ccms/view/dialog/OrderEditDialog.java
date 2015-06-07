@@ -72,7 +72,7 @@ public class OrderEditDialog extends BeanEditDialog<Order> implements Refreshabl
         itemsTable.setParentView(this);
         itemsTable.addColumn(I18n.supplier, Item.SUPPLIER_CODE_FIELD);
         itemsTable.addColumn(I18n.product, Item.PRODUCT_CODE_FIELD);
-        itemsTable.addColumn(I18n.catalog, Item.CATALOG_NAME_FIELD);
+        itemsTable.addColumn(I18n.catalog, Item.PRODUCT_CATALOG_NAME_FIELD);
         itemsTable.addColumn(I18n.requiredPacks, Item.REQUIRED_PACK_FIELD, new IntegerToStringConverter());
         itemsTable.addColumn(I18n.packSize, Item.PRODUCT_PACK_SIZE_FIELD, new IntegerToStringConverter());
         itemsTable.addColumn(I18n.requiredProducts, Item.QUANTITY_FIELD, new IntegerToStringConverter());
@@ -92,10 +92,9 @@ public class OrderEditDialog extends BeanEditDialog<Order> implements Refreshabl
 //        printOrderBtn.setDisabled(editor.isSomethingHasChanged());
     }
 
-    private void onPrintOrderBtnClicked() {
-        bean.print();
-    }
-
+//    private void onPrintOrderBtnClicked() {
+//        bean.print();
+//    }
     private void onValueChanged() {
         try {
             Double dv = (Double) editor.convertWidgetState(discountValue);
@@ -217,6 +216,7 @@ public class OrderEditDialog extends BeanEditDialog<Order> implements Refreshabl
             reporter.error(I18n.sorryErrorHasAppeared);
             return;
         }
+        close();
     }
 
     @Override

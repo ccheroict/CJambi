@@ -14,6 +14,7 @@ import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.table.TableUtils;
+import com.trolltech.qt.core.QTimer;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -48,13 +49,14 @@ import pl.lss.cjambi.ccms.utils.Utils;
  */
 public class DbServiceImpl implements DbService {
 
+    private static final int SESSION_LENGTH = 10 * 60 * 1000;
     private static final String ISACTIVE = "isActive";
     private static final Logger logger = Logger.getLogger(DbServiceImpl.class);
     private static final String dbConfigFilePath = "db.json";
-    private static final DbService instance = new DbServiceImpl();
     private static final ErrorReporter reporter = DialogErrorReporter.getInstance();
-
+    private static final QTimer timer = new QTimer();
     private JdbcPooledConnectionSource connectionSource;
+    private static final DbService instance = new DbServiceImpl();
 
     public static DbService getInstance() {
         return instance;
@@ -67,12 +69,23 @@ public class DbServiceImpl implements DbService {
             JsonObject obj = parser.parse(configStr).getAsJsonObject();
             connectionSource = new JdbcPooledConnectionSource(obj.get("jdbcUrl").getAsString(), obj.get("username").getAsString(), obj.get("password").getAsString());
             connectionSource.setTestBeforeGet(true);
+            timer.setInterval(SESSION_LENGTH);
+            timer.timeout.connect(this, "keepSessionAlive()");
         } catch (IOException ex) {
             reporter.error(I18n.readDataSourceConfigurationError);
             throw new RuntimeException();
         } catch (SQLException ex) {
             reporter.error(I18n.errorWhileConnectingToDatabase);
             throw new RuntimeException();
+        }
+    }
+
+    private void keepSessionAlive() {
+        try {
+            //query to keep connection is not closed
+            Dao dao = getDao(Tax.class);
+            dao.queryForAll();
+        } catch (SQLException ex) {
         }
     }
 

@@ -62,6 +62,7 @@ public abstract class Table<T> extends QTableWidget implements HasState, Refresh
                 QAction printAction = new QAction(null);
                 printAction.setText(I18n.print);
                 printAction.triggered.connect(this, "onPrintActionSelected()");
+                menu.addAction(printAction);
             }
             menu.exec(globalPoint);
         }

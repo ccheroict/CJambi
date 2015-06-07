@@ -8,7 +8,6 @@ package pl.lss.cjambi.ccms.db;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import pl.lss.cjambi.ccms.bean.Filter;
 
 /**
  *
@@ -34,6 +33,6 @@ public class DbServiceImplTest {
 
     @Test
     public void testGetOrder() {
-        db.getOrder(new Filter());
+//        db.getOrder(new Filter());
     }
 }

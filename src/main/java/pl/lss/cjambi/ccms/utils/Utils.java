@@ -5,6 +5,7 @@
  */
 package pl.lss.cjambi.ccms.utils;
 
+import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -107,5 +108,11 @@ public class Utils {
             }
         }
         return value;
+    }
+
+    public static String toUTF8OrEmpty(Object value) {
+        byte[] data = toStringOrEmpty(value).getBytes();
+        String res = new String(data, Charset.forName("UTF-8"));
+        return res;
     }
 }

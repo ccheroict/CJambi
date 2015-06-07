@@ -66,9 +66,9 @@ public class SuggestBoxTest extends QDialog {
         suggestBox.setStyleSheet("QLineEdit{border: 1px solid red;}");
         layout.addWidget(suggestBox);
         instance.setLayout(layout);
-        instance.exec();
-        User state = (User) suggestBox.getState();
-        System.out.println(state.id);
+//        instance.exec();
+//        User state = (User) suggestBox.getState();
+//        System.out.println(state.id);
     }
 
 }

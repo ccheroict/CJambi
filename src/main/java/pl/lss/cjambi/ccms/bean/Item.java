@@ -24,9 +24,8 @@ public class Item {
     public static final String TOTAL_FIELD = "value";
     public static final String SUPPLIER_CODE_FIELD = "product.supplier.code";
     public static final String PRODUCT_CODE_FIELD = "product.code";
-    public static final String CATALOG_NAME_FIELD = "product.catalog.name";
+    public static final String PRODUCT_CATALOG_NAME_FIELD = "product.catalog.name";
     public static final String PRODUCT_PACK_SIZE_FIELD = "product.packSize";
-    public static final String PACK_SIZE_FIELD = "packSize";
 
     @DatabaseField(generatedId = true)
     public Integer id;
@@ -34,8 +33,6 @@ public class Item {
     public Product product;
     @DatabaseField
     public Integer requiredPack;
-    @DatabaseField
-    public Integer packSize;
     @DatabaseField
     public Integer quantity;
     @DatabaseField

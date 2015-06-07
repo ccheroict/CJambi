@@ -15,6 +15,7 @@ import pl.lss.cjambi.ccms.db.DbService;
 import pl.lss.cjambi.ccms.db.DbServiceImpl;
 import pl.lss.cjambi.ccms.resources.I18n;
 import pl.lss.cjambi.ccms.utils.Constants;
+import pl.lss.cjambi.ccms.utils.PrintUtils;
 import pl.lss.cjambi.ccms.utils.converter.CurrencyToStringConverter;
 import pl.lss.cjambi.ccms.utils.converter.DateTimeToStringConverter;
 import pl.lss.cjambi.ccms.view.HBoxWidget;
@@ -67,6 +68,14 @@ public class OrderTable extends PageWidget {
                     order.isActive = 0;
                     db.createOrUpdateOrder(order);
                 }
+                pager.onRefreshBtnCLicked();
+                selectionModel().clearSelection();
+            }
+
+            @Override
+            protected void onPrintActionSelected() {
+                Order order = state.get(selectionModel().selectedRows().get(0).row());
+                PrintUtils.print(order);
             }
         };
         table.addColumn(I18n.orderNr, Order.CODE_FIELD);

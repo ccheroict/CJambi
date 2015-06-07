@@ -10,14 +10,13 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 import java.util.Date;
-import pl.lss.cjambi.ccms.utils.Printable;
 
 /**
  *
  * @author ctran
  */
 @DatabaseTable
-public class Order implements Printable {
+public class Order {
 
     public static final String CODE_FIELD = "code";
     public static final String STATUS_FIELD = "status";
@@ -59,14 +58,9 @@ public class Order implements Printable {
     @DatabaseField(foreign = true)
     public Company company;
     @DatabaseField
-    public Integer isActive;
+    public Integer isActive = 1;
 
     public Order() {
         createdDate = new Date();
-    }
-
-    @Override
-    public void print() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

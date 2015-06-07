@@ -14,6 +14,9 @@ import pl.lss.cjambi.ccms.utils.Utils;
  */
 public class Filter {
 
+    public static final String SUPPLIER_CODE_FIELD = "supplierCode";
+    public static final String PRODUCT_CODE_FIELD = "productCode";
+
     public String supplierCode = "";
     public String productCode = "";
     public Long pageNum = 0L;

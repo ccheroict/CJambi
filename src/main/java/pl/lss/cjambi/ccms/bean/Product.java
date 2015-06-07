@@ -8,14 +8,19 @@ package pl.lss.cjambi.ccms.bean;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import java.util.Date;
-import pl.lss.cjambi.ccms.utils.Printable;
+import org.apache.log4j.Logger;
+import pl.lss.cjambi.ccms.utils.DialogErrorReporter;
+import pl.lss.cjambi.ccms.utils.ErrorReporter;
 
 /**
  *
  * @author ctran
  */
 @DatabaseTable
-public class Product implements Printable {
+public class Product {
+
+    private static final Logger logger = Logger.getLogger(Product.class);
+    private static final ErrorReporter reporter = DialogErrorReporter.getInstance();
 
     public static final String SELF = "self";
     public static final String CODE_FIELD = "code";
@@ -83,8 +88,4 @@ public class Product implements Printable {
 //        }
 //        return originalPrice;
 //    }
-    @Override
-    public void print() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }

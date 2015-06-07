@@ -6,6 +6,7 @@
 package pl.lss.cjambi.ccms.resources;
 
 import pl.lss.cjambi.ccms.bean.Company;
+import pl.lss.cjambi.ccms.bean.Office;
 import pl.lss.cjambi.ccms.bean.User;
 
 /**
@@ -28,4 +29,11 @@ public class Cache {
         return user.initial;
     }
 
+    public static Office getUserOffice() {
+        return user.office;
+    }
+
+    public static User getUser() {
+        return user;
+    }
 }

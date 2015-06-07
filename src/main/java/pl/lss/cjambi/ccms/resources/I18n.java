@@ -47,7 +47,7 @@ public class I18n {
     public static final String colour = "Màu sắc";
     public static final String order = "Đơn hàng";
     public static final String orderList = "Danh sách đơn hàng";
-    public static final String filter = "Lọc";
+    public static final String search = "Tìm kiếm";
     public static final String createdDate = "Ngày tạo";
     public static final String total = "Tổng số";
     public static final String value = "Giá trị";
@@ -83,5 +83,6 @@ public class I18n {
     public static final String invalidOrderItem = "Thông tin sản phẩm trong đơn hàng nhập không đúng";
     public static final String save = "Lưu lại";
     public static final String print = "In";
-
+    public static final String mustSaveProductFirst = "Phải lưu sản phẩm trước khi in code";
+    public static final String codePrinterNotFound = "Không tìm thấy máy in code";
 }

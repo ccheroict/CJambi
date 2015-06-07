@@ -5,6 +5,8 @@
  */
 package pl.lss.cjambi.ccms.view.table;
 
+import com.trolltech.qt.core.QModelIndex;
+import java.util.List;
 import pl.lss.cjambi.ccms.bean.Item;
 import pl.lss.cjambi.ccms.bean.Order;
 import pl.lss.cjambi.ccms.controller.exception.InvalidOrderItemException;
@@ -76,5 +78,17 @@ public class OrderItemTable extends Table<Item> {
         if (parentView != null) {
             parentView.refresh();
         }
+    }
+
+    @Override
+    protected void onDeleteActionSelected() {
+        List<QModelIndex> selectedRows = selectionModel().selectedRows();
+        for (QModelIndex index : selectedRows) {
+            Item item = state.get(index.row());
+            item.isActive = 0;
+            state.remove(item);
+        }
+        refresh();
+        selectionModel().clearSelection();
     }
 }

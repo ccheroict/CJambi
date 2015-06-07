@@ -28,7 +28,7 @@ public class ProductEditDialogTest {
     @BeforeClass
     public static void setUpClass() {
         QApplication.initialize(new String[0]);
-//        instance = ProductEditDialoưg.getInstance();
+        instance = new ProductEditDialog(new Product());
 //        db = Cache.getInstance(DbService.class);
     }
 
@@ -49,7 +49,7 @@ public class ProductEditDialogTest {
     @Test
     public void test() {
         instance.setBean(new Product());
-        instance.exec();
+//        instance.exec();
     }
     /**
      * Test of getInstance method, of class ProductEditDialog.

@@ -7,6 +7,7 @@ package pl.lss.cjambi.ccms.view.table;
 
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.gui.QLabel;
+import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.gui.QWidget;
 import java.util.List;
 import pl.lss.cjambi.ccms.bean.Filter;
@@ -18,6 +19,7 @@ import pl.lss.cjambi.ccms.view.HBoxWidget;
 import pl.lss.cjambi.ccms.view.PageWidget;
 import pl.lss.cjambi.ccms.view.VBoxWidget;
 import pl.lss.cjambi.ccms.view.dialog.SupplierEditDialog;
+import pl.lss.cjambi.ccms.view.dialog.SupplierSearchEditDialog;
 import pl.lss.cjambi.ccms.view.widget.Table;
 
 /**
@@ -41,7 +43,18 @@ public class SupplierTable extends PageWidget {
     protected QWidget buildHeader() {
         HBoxWidget header = new HBoxWidget();
         header.addWidget(new QLabel(I18n.supplierList));
+        QPushButton showFilterBtn = new QPushButton(I18n.search);
+        showFilterBtn.clicked.connect(this, "onShowFilterBtnClicked()");
+        header.addWidget(showFilterBtn);
+        header.addSpacerItemToStretchWidget();
         return header;
+    }
+
+    private void onShowFilterBtnClicked() {
+        SupplierSearchEditDialog dialog = new SupplierSearchEditDialog();
+        dialog.setBean(filter);
+        dialog.exec();
+        pager.onRefreshBtnCLicked();
     }
 
     @Override
@@ -64,6 +77,8 @@ public class SupplierTable extends PageWidget {
                     supplier.isActive = 0;
                     db.createOrUpdateSupplier(supplier);
                 }
+                pager.onRefreshBtnCLicked();
+                selectionModel().clearSelection();
             }
         };
         table.addColumn(I18n.supplierCode, Supplier.CODE_FIELD);

@@ -8,6 +8,7 @@ package pl.lss.cjambi.ccms.view.table;
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QLabel;
+import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.gui.QWidget;
 import java.util.List;
 import pl.lss.cjambi.ccms.bean.Filter;
@@ -16,12 +17,14 @@ import pl.lss.cjambi.ccms.db.DbService;
 import pl.lss.cjambi.ccms.db.DbServiceImpl;
 import pl.lss.cjambi.ccms.resources.I18n;
 import pl.lss.cjambi.ccms.utils.Constants;
+import pl.lss.cjambi.ccms.utils.PrintUtils;
 import pl.lss.cjambi.ccms.utils.converter.CurrencyToStringConverter;
 import pl.lss.cjambi.ccms.utils.converter.IntegerToStringConverter;
 import pl.lss.cjambi.ccms.view.HBoxWidget;
 import pl.lss.cjambi.ccms.view.PageWidget;
 import pl.lss.cjambi.ccms.view.VBoxWidget;
 import pl.lss.cjambi.ccms.view.dialog.ProductEditDialog;
+import pl.lss.cjambi.ccms.view.dialog.ProductSearchEditDialog;
 import pl.lss.cjambi.ccms.view.widget.Table;
 
 /**
@@ -45,7 +48,18 @@ public class ProductTable extends PageWidget {
     protected QWidget buildHeader() {
         HBoxWidget header = new HBoxWidget();
         header.addWidget(new QLabel(I18n.productList));
+        QPushButton showFilterBtn = new QPushButton(I18n.search);
+        showFilterBtn.clicked.connect(this, "onShowFilterBtnClicked()");
+        header.addWidget(showFilterBtn);
+        header.addSpacerItemToStretchWidget();
         return header;
+    }
+
+    private void onShowFilterBtnClicked() {
+        ProductSearchEditDialog dialog = new ProductSearchEditDialog();
+        dialog.setBean(filter);
+        dialog.exec();
+        pager.onRefreshBtnCLicked();
     }
 
     @Override
@@ -68,7 +82,16 @@ public class ProductTable extends PageWidget {
                     product.isActive = 0;
                     db.createOrUpdateProduct(product);
                 }
+                pager.onRefreshBtnCLicked();
+                selectionModel().clearSelection();
             }
+
+            @Override
+            protected void onPrintActionSelected() {
+                Product product = state.get(selectionModel().selectedRows().get(0).row());
+                PrintUtils.print(product);
+            }
+
         };
         table.addColumn(I18n.productCode, Product.CODE_FIELD);
         table.addColumn(I18n.catalog, Product.CATALOG_NAME_FIELD);
