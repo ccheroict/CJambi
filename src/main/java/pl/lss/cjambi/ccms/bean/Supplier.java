@@ -33,7 +33,7 @@ public class Supplier {
     @DatabaseField(foreign = true)
     public Company company;
     @DatabaseField
-    public Integer isActive;
+    public Integer isActive = 1;
 
     public Supplier() {
     }

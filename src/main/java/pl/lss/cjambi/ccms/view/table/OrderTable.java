@@ -7,6 +7,7 @@ package pl.lss.cjambi.ccms.view.table;
 
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.gui.QLabel;
+import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.gui.QWidget;
 import java.util.List;
 import pl.lss.cjambi.ccms.bean.Filter;
@@ -22,6 +23,7 @@ import pl.lss.cjambi.ccms.view.HBoxWidget;
 import pl.lss.cjambi.ccms.view.PageWidget;
 import pl.lss.cjambi.ccms.view.VBoxWidget;
 import pl.lss.cjambi.ccms.view.dialog.OrderEditDialog;
+import pl.lss.cjambi.ccms.view.dialog.OrderSearchEditDialog;
 import pl.lss.cjambi.ccms.view.widget.Table;
 
 /**
@@ -45,7 +47,18 @@ public class OrderTable extends PageWidget {
     protected QWidget buildHeader() {
         HBoxWidget header = new HBoxWidget();
         header.addWidget(new QLabel(I18n.orderList));
+        QPushButton showFilterBtn = new QPushButton(I18n.search);
+        showFilterBtn.clicked.connect(this, "onShowFilterBtnClicked()");
+        header.addWidget(showFilterBtn);
+        header.addSpacerItemToStretchWidget();
         return header;
+    }
+
+    private void onShowFilterBtnClicked() {
+        OrderSearchEditDialog dialog = new OrderSearchEditDialog();
+        dialog.setBean(filter);
+        dialog.exec();
+        pager.onRefreshBtnCLicked();
     }
 
     @Override

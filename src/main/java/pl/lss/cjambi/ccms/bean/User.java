@@ -31,7 +31,7 @@ public class User {
     @DatabaseField
     public String initial;
     @DatabaseField
-    public Integer isActive;
+    public Integer isActive = 1;
 
     public User() {
     }

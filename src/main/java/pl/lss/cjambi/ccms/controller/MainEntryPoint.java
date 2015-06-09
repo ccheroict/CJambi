@@ -35,7 +35,7 @@ import pl.lss.cjambi.ccms.view.table.SupplierTable;
 public class MainEntryPoint extends QMainWindow {
 
     private static final String appTitle = Constants.APP_NAME + " " + Constants.APP_VERSION;
-    private static final DbService db = DbServiceImpl.getInstance();
+    private final DbService db = DbServiceImpl.getInstance();
 
     public MainEntryPoint() {
         setWindowTitle(appTitle);

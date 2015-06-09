@@ -85,4 +85,6 @@ public class I18n {
     public static final String print = "In";
     public static final String mustSaveProductFirst = "Phải lưu sản phẩm trước khi in code";
     public static final String codePrinterNotFound = "Không tìm thấy máy in code";
+    public static final String from = "Từ";
+    public static final String to = "Đến";
 }

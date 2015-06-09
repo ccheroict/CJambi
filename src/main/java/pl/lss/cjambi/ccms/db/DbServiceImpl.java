@@ -5,8 +5,6 @@
  */
 package pl.lss.cjambi.ccms.db;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.j256.ormlite.dao.CloseableIterator;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
@@ -49,10 +47,14 @@ import pl.lss.cjambi.ccms.utils.Utils;
  */
 public class DbServiceImpl implements DbService {
 
+    public static String JDBC_DEV = "jdbc:mysql://localhost:3306/ccms?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false";
+    public static String USERNAME_DEV = "root";
+    public static String PASSWORD_DEV = "";
+
     private static final int SESSION_LENGTH = 10 * 60 * 1000;
     private static final String ISACTIVE = "isActive";
     private static final Logger logger = Logger.getLogger(DbServiceImpl.class);
-    private static final String dbConfigFilePath = "db.json";
+    private static final String dbConfigFilePath = System.getProperty("user.dir") + File.separator + "db.json";
     private static final ErrorReporter reporter = DialogErrorReporter.getInstance();
     private static final QTimer timer = new QTimer();
     private JdbcPooledConnectionSource connectionSource;
@@ -64,16 +66,11 @@ public class DbServiceImpl implements DbService {
 
     private DbServiceImpl() {
         try {
-            JsonParser parser = new JsonParser();
-            String configStr = readFile(dbConfigFilePath);
-            JsonObject obj = parser.parse(configStr).getAsJsonObject();
-            connectionSource = new JdbcPooledConnectionSource(obj.get("jdbcUrl").getAsString(), obj.get("username").getAsString(), obj.get("password").getAsString());
+            connectionSource = new JdbcPooledConnectionSource(JDBC_DEV, USERNAME_DEV, PASSWORD_DEV);
+//            connectionSource = new JdbcPooledConnectionSource(obj.get("jdbcUrl").getAsString(), obj.get("username").getAsString(), obj.get("password").getAsString());
             connectionSource.setTestBeforeGet(true);
             timer.setInterval(SESSION_LENGTH);
             timer.timeout.connect(this, "keepSessionAlive()");
-        } catch (IOException ex) {
-            reporter.error(I18n.readDataSourceConfigurationError);
-            throw new RuntimeException();
         } catch (SQLException ex) {
             reporter.error(I18n.errorWhileConnectingToDatabase);
             throw new RuntimeException();
@@ -92,8 +89,7 @@ public class DbServiceImpl implements DbService {
     private String readFile(String filePath) throws IOException {
         String result = "";
         try {
-            ClassLoader classLoader = getClass().getClassLoader();
-            File file = new File(classLoader.getResource(filePath).getFile());
+            File file = new File(filePath);
             BufferedReader br = new BufferedReader(new FileReader(file));
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
@@ -167,7 +163,7 @@ public class DbServiceImpl implements DbService {
             Dao<Order, Integer> dao = getDao(Order.class);
             QueryBuilder qb = dao.queryBuilder();
             setOffsetAndLimit(qb, filter);
-            qb.where().between(Order.CREATED_DATE_FIELD, filter.dateFrom, filter.dateTo).and().eq(ISACTIVE, 1);
+            qb.where().between(Order.CREATED_DATE_FIELD, filter.dateFrom, filter.dateTo).and().like(Order.CODE_FIELD, "%" + filter.orderCode + "%").and().eq(ISACTIVE, 1);
             List<Order> res = dao.query(qb.prepare());
             if (res == null) {
                 res = new ArrayList<>();
@@ -398,7 +394,7 @@ public class DbServiceImpl implements DbService {
             Dao dao = getDao(Order.class);
             QueryBuilder qb = dao.queryBuilder();
             qb.setCountOf(true);
-            qb.where().between(Order.CREATED_DATE_FIELD, filter.dateFrom, filter.dateTo).and().eq(ISACTIVE, 1);
+            qb.where().between(Order.CREATED_DATE_FIELD, filter.dateFrom, filter.dateTo).and().like(Order.CODE_FIELD, "%" + filter.orderCode + "%").and().eq(ISACTIVE, 1);
             return dao.countOf(qb.prepare());
         } catch (SQLException ex) {
             logger.error("countOrder", ex);

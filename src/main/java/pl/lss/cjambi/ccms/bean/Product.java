@@ -75,7 +75,7 @@ public class Product {
     @DatabaseField
     public String note;
     @DatabaseField
-    public Integer isActive;
+    public Integer isActive = 1;
 
     public Product() {
     }

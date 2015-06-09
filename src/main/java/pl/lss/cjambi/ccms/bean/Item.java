@@ -42,7 +42,7 @@ public class Item {
     @DatabaseField(foreign = true)
     public Order order;
     @DatabaseField
-    public Integer isActive;
+    public Integer isActive = 1;
 
     public Item() {
     }
