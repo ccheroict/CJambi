@@ -8,16 +8,16 @@ package pl.lss.cjambi.ccms.db;
 import com.j256.ormlite.dao.Dao;
 import java.sql.SQLException;
 import java.util.List;
-import pl.lss.cjambi.ccms.bean.Catalog;
-import pl.lss.cjambi.ccms.bean.DiscountType;
+import pl.lss.ccms.cjambi.bean.Catalog;
+import pl.lss.ccms.cjambi.bean.DiscountType;
 import pl.lss.cjambi.ccms.bean.Filter;
-import pl.lss.cjambi.ccms.bean.Order;
-import pl.lss.cjambi.ccms.bean.OrderStatus;
-import pl.lss.cjambi.ccms.bean.Product;
-import pl.lss.cjambi.ccms.bean.Supplier;
-import pl.lss.cjambi.ccms.bean.Tax;
-import pl.lss.cjambi.ccms.bean.Unit;
-import pl.lss.cjambi.ccms.bean.User;
+import pl.lss.ccms.cjambi.bean.Order;
+import pl.lss.ccms.cjambi.bean.OrderStatus;
+import pl.lss.ccms.cjambi.bean.Product;
+import pl.lss.ccms.cjambi.bean.Supplier;
+import pl.lss.ccms.cjambi.bean.Tax;
+import pl.lss.ccms.cjambi.bean.Unit;
+import pl.lss.ccms.cjambi.bean.User;
 
 /**
  *

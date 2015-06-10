@@ -104,11 +104,6 @@
         </dependency>
         <dependency>
             <groupId>com.j256.ormlite</groupId>
-            <artifactId>ormlite-core</artifactId>
-            <version>4.48</version>
-        </dependency>
-        <dependency>
-            <groupId>com.j256.ormlite</groupId>
             <artifactId>ormlite-jdbc</artifactId>
             <version>4.48</version>
         </dependency>
@@ -137,6 +132,11 @@
             <artifactId>junit</artifactId>
             <version>4.10</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>pl.lss.cjambi.ccms</groupId>
+            <artifactId>CJambi-Bean</artifactId>
+            <version>LASTEST</version>
         </dependency>
     </dependencies>
 </project>

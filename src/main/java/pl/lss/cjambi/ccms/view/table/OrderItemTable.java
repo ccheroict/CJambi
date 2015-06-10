@@ -7,8 +7,8 @@ package pl.lss.cjambi.ccms.view.table;
 
 import com.trolltech.qt.core.QModelIndex;
 import java.util.List;
-import pl.lss.cjambi.ccms.bean.Item;
-import pl.lss.cjambi.ccms.bean.Order;
+import pl.lss.ccms.cjambi.bean.Item;
+import pl.lss.ccms.cjambi.bean.Order;
 import pl.lss.cjambi.ccms.controller.exception.InvalidOrderItemException;
 import pl.lss.cjambi.ccms.view.dialog.ItemEditDialog;
 import pl.lss.cjambi.ccms.view.widget.Refreshable;

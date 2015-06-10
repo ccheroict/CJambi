@@ -14,7 +14,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import org.apache.log4j.Logger;
-import pl.lss.cjambi.ccms.bean.DiscountType;
+import pl.lss.ccms.cjambi.bean.DiscountType;
 
 /**
  *

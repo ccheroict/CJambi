@@ -5,9 +5,9 @@
  */
 package pl.lss.cjambi.ccms.resources;
 
-import pl.lss.cjambi.ccms.bean.Company;
-import pl.lss.cjambi.ccms.bean.Office;
-import pl.lss.cjambi.ccms.bean.User;
+import pl.lss.ccms.cjambi.bean.Company;
+import pl.lss.ccms.cjambi.bean.Office;
+import pl.lss.ccms.cjambi.bean.User;
 
 /**
  *

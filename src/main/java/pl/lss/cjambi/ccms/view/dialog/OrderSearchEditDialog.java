@@ -10,7 +10,7 @@ import com.trolltech.qt.gui.QLabel;
 import com.trolltech.qt.gui.QWidget;
 import java.util.List;
 import pl.lss.cjambi.ccms.bean.Filter;
-import pl.lss.cjambi.ccms.bean.Order;
+import pl.lss.ccms.cjambi.bean.Order;
 import pl.lss.cjambi.ccms.resources.I18n;
 import pl.lss.cjambi.ccms.utils.Utils;
 import pl.lss.cjambi.ccms.utils.converter.DateToQDateConverter;
