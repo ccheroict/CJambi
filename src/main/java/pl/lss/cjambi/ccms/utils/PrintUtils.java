@@ -80,8 +80,11 @@ public class PrintUtils {
 //                    .append("^XZ\n");
             sb.append("^XA")
                     .append("^FO10,10").append("^BCN,60,Y,N,N").append("^FD" + idStr.toString() + "^FS")
-                    .append("^FO10,100").append("^ADN,24,10^FD" + supplierCode + " Cena: " + productPrice + "^FS")
-                    .append("^FO10,130").append("^ADN,24,10^FDOpak.:" + packSize + " Roz.: " + productSize + "^FS")
+                    .append("^FO220,20").append("^ADR,24,10^FD" + supplierCode + "^FS")
+                    .append("^FO0,120").append("^ADN,24,10^FDCena:^FS")
+                    .append("^FO60,100").append("^ADN,72,24^FD" + productPrice + "^FS")
+                    //                    .append("^FO10,100").append("^ADN,24,10^FD" + supplierCode + " Cena: " + productPrice + "^FS")
+                    //                    .append("^FO10,130").append("^ADN,24,10^FDOpak.:" + packSize + " Roz.: " + productSize + "^FS")
                     .append("^XZ");
 
             byte[] by = sb.toString().getBytes();

@@ -5,7 +5,6 @@
  */
 package pl.lss.cjambi.ccms.db;
 
-import com.j256.ormlite.dao.CloseableIterator;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
@@ -20,12 +19,12 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import org.apache.log4j.Logger;
 import pl.lss.ccms.cjambi.bean.Catalog;
 import pl.lss.ccms.cjambi.bean.Company;
 import pl.lss.ccms.cjambi.bean.DiscountType;
-import pl.lss.cjambi.ccms.bean.Filter;
 import pl.lss.ccms.cjambi.bean.Item;
 import pl.lss.ccms.cjambi.bean.Office;
 import pl.lss.ccms.cjambi.bean.Order;
@@ -35,6 +34,7 @@ import pl.lss.ccms.cjambi.bean.Supplier;
 import pl.lss.ccms.cjambi.bean.Tax;
 import pl.lss.ccms.cjambi.bean.Unit;
 import pl.lss.ccms.cjambi.bean.User;
+import pl.lss.cjambi.ccms.bean.Filter;
 import pl.lss.cjambi.ccms.resources.Cache;
 import pl.lss.cjambi.ccms.resources.I18n;
 import pl.lss.cjambi.ccms.utils.DialogErrorReporter;
@@ -47,9 +47,12 @@ import pl.lss.cjambi.ccms.utils.Utils;
  */
 public class DbServiceImpl implements DbService {
 
-    public static String JDBC_DEV = "jdbc:mysql://localhost:3306/ccms?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false";
-    public static String USERNAME_DEV = "root";
-    public static String PASSWORD_DEV = "";
+    public static String JDBC_DEV = "jdbc:mysql://sql.ciibjeans.home.pl:3306/09182262_ccms?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false";
+    public static String USERNAME_DEV = "09182262_ccms";
+    public static String PASSWORD_DEV = "ChungCC2015";
+//    public static String JDBC_DEV = "jdbc:mysql://localhost:3306/ccms?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false";
+//    public static String USERNAME_DEV = "root";
+//    public static String PASSWORD_DEV = "";
 
     private static final int SESSION_LENGTH = 10 * 60 * 1000;
     private static final String ISACTIVE = "isActive";
@@ -183,18 +186,14 @@ public class DbServiceImpl implements DbService {
             order.lastChangedDate = new Date();
             if (order.id == null) { //new order
                 Filter filter = new Filter();
-                order.code = Cache.getUserInitial() + " - " + countOrder(filter);
+                order.code = Cache.getUserInitial() + "/" + countOrder(filter);
             }
             orderDao.createOrUpdate(order);
-            CloseableIterator<Item> it = order.items.closeableIterator();
-            try {
-                while (it.hasNext()) {
-                    Item item = it.next();
-                    item.order = order;
-                    itemDao.createOrUpdate(item);
-                }
-            } finally {
-                it.close();
+            Iterator<Item> it = order.items.iterator();
+            while (it.hasNext()) {
+                Item item = it.next();
+                item.order = order;
+                itemDao.createOrUpdate(item);
             }
         } catch (SQLException ex) {
             logger.error("createOrUpdateOrder", ex);
