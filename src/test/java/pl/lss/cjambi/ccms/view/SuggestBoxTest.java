@@ -15,7 +15,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import pl.lss.ccms.cjambi.bean.User;
+import pl.lss.cjambi.ccms.bean.User;
 import pl.lss.cjambi.ccms.db.DbService;
 import pl.lss.cjambi.ccms.db.DbServiceImpl;
 import pl.lss.cjambi.ccms.view.widget.SuggestBox;

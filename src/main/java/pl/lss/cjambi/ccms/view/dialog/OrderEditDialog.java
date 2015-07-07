@@ -11,10 +11,10 @@ import com.trolltech.qt.gui.QLabel;
 import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.gui.QWidget;
 import java.sql.SQLException;
-import pl.lss.ccms.cjambi.bean.DiscountType;
-import pl.lss.ccms.cjambi.bean.Item;
-import pl.lss.ccms.cjambi.bean.Order;
-import pl.lss.ccms.cjambi.bean.OrderStatus;
+import pl.lss.cjambi.ccms.bean.DiscountType;
+import pl.lss.cjambi.ccms.bean.Item;
+import pl.lss.cjambi.ccms.bean.Order;
+import pl.lss.cjambi.ccms.bean.OrderStatus;
 import pl.lss.cjambi.ccms.controller.exception.InvalidOrderItemException;
 import pl.lss.cjambi.ccms.db.DbService;
 import pl.lss.cjambi.ccms.db.DbServiceImpl;
@@ -65,8 +65,8 @@ public class OrderEditDialog extends BeanEditDialog<Order> implements Refreshabl
         packQuantity = new Label();
         productQuantity = new Label();
         discountValue = new LineEdit();
-        discountType = new ComboBox<>(db.getDiscountType(), DiscountType.NAME_FIELD);
-        status = new ComboBox<>(db.getOrderStatus(), OrderStatus.NAME_FIELD);
+        discountType = new ComboBox<>(db.getDiscountTypes(), DiscountType.NAME_FIELD);
+        status = new ComboBox<>(Cache.getOrderStatuses(), OrderStatus.NAME_FIELD);
 
         itemsTable = new OrderItemTable(bean);
         itemsTable.setParentView(this);
@@ -100,7 +100,7 @@ public class OrderEditDialog extends BeanEditDialog<Order> implements Refreshabl
             Double dv = (Double) editor.convertWidgetState(discountValue);
             DiscountType dt = (DiscountType) editor.convertWidgetState(discountType);
             Double t = (Double) editor.convertWidgetState(total);
-            value.setState(Utils.getValueWithDiscount(t, dv, dt));
+            value.setState(Utils.round(Utils.getValueWithDiscount(t, dv, dt)));
         } catch (Exception ex) {
             reporter.error(I18n.discountIsNotValid);
         }
@@ -231,11 +231,11 @@ public class OrderEditDialog extends BeanEditDialog<Order> implements Refreshabl
         }
         packQuantity.setState(nPack);
         productQuantity.setState(nProduct);
-        total.setState(t);
+        total.setState(Utils.round(t));
         try {
             Double dv = (Double) editor.convertWidgetState(discountValue);
             DiscountType dt = (DiscountType) editor.convertWidgetState(discountType);
-            value.setState(Utils.getValueWithDiscount(t, dv, dt));
+            value.setState(Utils.round(Utils.getValueWithDiscount(t, dv, dt)));
         } catch (Exception ex) {
         }
     }

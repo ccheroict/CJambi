@@ -87,4 +87,6 @@ public class I18n {
     public static final String codePrinterNotFound = "Không tìm thấy máy in code";
     public static final String from = "Từ";
     public static final String to = "Đến";
+    public static final String ID = "ID";
+    public static final String orderCode = "Mã đơn hàng";
 }

@@ -5,7 +5,7 @@
  */
 package pl.lss.cjambi.ccms.utils.converter;
 
-import pl.lss.ccms.cjambi.bean.Supplier;
+import pl.lss.cjambi.ccms.bean.Supplier;
 import pl.lss.cjambi.ccms.db.DbService;
 import pl.lss.cjambi.ccms.db.DbServiceImpl;
 

@@ -11,9 +11,9 @@ import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QMainWindow;
 import com.trolltech.qt.gui.QMenu;
 import com.trolltech.qt.gui.QToolBar;
-import pl.lss.ccms.cjambi.bean.Order;
-import pl.lss.ccms.cjambi.bean.Product;
-import pl.lss.ccms.cjambi.bean.Supplier;
+import pl.lss.cjambi.ccms.bean.Order;
+import pl.lss.cjambi.ccms.bean.Product;
+import pl.lss.cjambi.ccms.bean.Supplier;
 import pl.lss.cjambi.ccms.db.DbService;
 import pl.lss.cjambi.ccms.db.DbServiceImpl;
 import pl.lss.cjambi.ccms.resources.I18n;
@@ -35,7 +35,7 @@ import pl.lss.cjambi.ccms.view.table.SupplierTable;
 public class MainEntryPoint extends QMainWindow {
 
     private static final String appTitle = Constants.APP_NAME + " " + Constants.APP_VERSION;
-    private final DbService db = DbServiceImpl.getInstance();
+    private static final DbService db = DbServiceImpl.getInstance();
 
     public MainEntryPoint() {
         setWindowTitle(appTitle);

@@ -10,7 +10,7 @@ import com.trolltech.qt.gui.QLabel;
 import com.trolltech.qt.gui.QWidget;
 import java.util.List;
 import pl.lss.cjambi.ccms.bean.Filter;
-import pl.lss.ccms.cjambi.bean.Supplier;
+import pl.lss.cjambi.ccms.bean.Supplier;
 import pl.lss.cjambi.ccms.resources.I18n;
 import static pl.lss.cjambi.ccms.view.dialog.BeanEditDialog.db;
 import pl.lss.cjambi.ccms.view.widget.SuggestBox;

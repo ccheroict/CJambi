@@ -10,13 +10,13 @@ import com.trolltech.qt.gui.QIcon;
 import com.trolltech.qt.gui.QLabel;
 import com.trolltech.qt.gui.QWidget;
 import java.util.List;
-import pl.lss.ccms.cjambi.bean.Catalog;
-import pl.lss.ccms.cjambi.bean.DiscountType;
+import pl.lss.cjambi.ccms.bean.Catalog;
+import pl.lss.cjambi.ccms.bean.DiscountType;
 import pl.lss.cjambi.ccms.bean.Filter;
-import pl.lss.ccms.cjambi.bean.Product;
-import pl.lss.ccms.cjambi.bean.Supplier;
-import pl.lss.ccms.cjambi.bean.Tax;
-import pl.lss.ccms.cjambi.bean.Unit;
+import pl.lss.cjambi.ccms.bean.Product;
+import pl.lss.cjambi.ccms.bean.Supplier;
+import pl.lss.cjambi.ccms.bean.Tax;
+import pl.lss.cjambi.ccms.bean.Unit;
 import pl.lss.cjambi.ccms.resources.Cache;
 import pl.lss.cjambi.ccms.resources.I18n;
 import pl.lss.cjambi.ccms.resources.IconResources;
@@ -26,7 +26,6 @@ import pl.lss.cjambi.ccms.utils.Utils;
 import pl.lss.cjambi.ccms.utils.converter.CurrencyToStringConverter;
 import pl.lss.cjambi.ccms.utils.converter.DoubleToStringConverter;
 import pl.lss.cjambi.ccms.utils.converter.IntegerToStringConverter;
-import pl.lss.cjambi.ccms.utils.converter.ProductToCodeConverter;
 import pl.lss.cjambi.ccms.utils.converter.SupplierToCodeConverter;
 import pl.lss.cjambi.ccms.view.widget.ComboBox;
 import pl.lss.cjambi.ccms.view.widget.Label;
@@ -40,7 +39,8 @@ import pl.lss.cjambi.ccms.view.widget.SuggestBox;
  */
 public class ProductEditDialog extends BeanEditDialog<Product> {
 
-    private SuggestBox<Product> code;
+//    private SuggestBox<Product> code;
+    private LineEdit code;
     private SuggestBox<Supplier> supplier;
     private LineEdit size, colour, packSize, originalPrice, discountValue;
     private ComboBox<Catalog> catalog;
@@ -53,15 +53,24 @@ public class ProductEditDialog extends BeanEditDialog<Product> {
     public ProductEditDialog(Product product) {
         super();
         setBean(product);
-        code = new SuggestBox(Product.class, Product.CODE_FIELD) {
-
-            @Override
-            public List fetchData() {
-                Filter filter = new Filter();
-                filter.productCode = text();
-                return db.getProduct(filter);
-            }
-        };
+//        code = new SuggestBox(Product.class, Product.CODE_FIELD) {
+//
+//            @Override
+//            public List fetchData() {
+//                Filter filter = new Filter();
+//                filter.productCode = text();
+//                Object obj;
+//                try {
+//                    obj = editor.convertWidgetState(supplier);
+//                    if (obj != null) {
+//                        filter.supplier = (Supplier) obj;
+//                    }
+//                } catch (Exception ex) {
+//                }
+//                return db.getProduct(filter);
+//            }
+//        };
+        code = new LineEdit();
         supplier = new SuggestBox(Supplier.class, Supplier.CODE_FIELD) {
 
             @Override
@@ -76,7 +85,7 @@ public class ProductEditDialog extends BeanEditDialog<Product> {
         packSize = new LineEdit();
         originalPrice = new LineEdit();
         discountValue = new LineEdit();
-        discountType = new ComboBox(db.getDiscountType(), DiscountType.NAME_FIELD);
+        discountType = new ComboBox(db.getDiscountTypes(), DiscountType.NAME_FIELD);
         tax = new ComboBox(db.getTax(), Tax.NAME_FIELD);
         unit = new ComboBox(db.getUnit(), Unit.NAME_FIELD);
         catalog = new ComboBox(db.getCatalog(), Catalog.NAME_FIELD);
@@ -101,12 +110,12 @@ public class ProductEditDialog extends BeanEditDialog<Product> {
         QWidget widget = new QWidget();
         QGridLayout grid = new QGridLayout(widget);
         int nRow = 0;
+        grid.addWidget(new QLabel(I18n.supplierCode), nRow, 0);
+        grid.addWidget(supplier, nRow++, 1);
         grid.addWidget(new QLabel(I18n.productCode), nRow, 0);
         grid.addWidget(code, nRow++, 1);
         grid.addWidget(new QLabel(I18n.catalog), nRow, 0);
         grid.addWidget(catalog, nRow++, 1);
-        grid.addWidget(new QLabel(I18n.supplierCode), nRow, 0);
-        grid.addWidget(supplier, nRow++, 1);
         grid.addWidget(new QLabel(I18n.size), nRow, 0);
         grid.addWidget(size, nRow++, 1);
         grid.addWidget(new QLabel(I18n.colour), nRow, 0);
@@ -126,9 +135,9 @@ public class ProductEditDialog extends BeanEditDialog<Product> {
         grid.addWidget(new QLabel(I18n.note), nRow, 0);
         grid.addWidget(note, nRow++, 1);
 
-        editor.addMapping(code, Product.SELF, new ProductToCodeConverter());
-        editor.addMapping(catalog, Product.CATALOG_FIELD);
         editor.addMapping(supplier, Product.SUPPLIER_FIELD, new SupplierToCodeConverter());
+        editor.addMapping(code, Product.CODE_FIELD);
+        editor.addMapping(catalog, Product.CATALOG_FIELD);
         editor.addMapping(size, Product.SIZE_FIELD);
         editor.addMapping(colour, Product.COLOUR_FIELD);
         editor.addMapping(packSize, Product.PACK_SIZE_FIELD, new IntegerToStringConverter(0));
@@ -168,7 +177,13 @@ public class ProductEditDialog extends BeanEditDialog<Product> {
 
     @Override
     protected boolean validate() {
-        return setStyleSheet(code, Styles.QLINEEDIT_RED_BORDER, !checkTextWidgetEmpty(code) && stateIsNullOrItself(code, bean))
+//        return setStyleSheet(code, Styles.QLINEEDIT_RED_BORDER, !checkTextWidgetEmpty(code) && stateIsNullOrItself(code, bean))
+//                && setStyleSheet(supplier, Styles.QLINEEDIT_RED_BORDER, !checkTextWidgetEmpty(supplier) && isConvertable(supplier))
+//                && setStyleSheet(packSize, Styles.QLINEEDIT_RED_BORDER, !checkTextWidgetEmpty(packSize) && isConvertable(packSize) && (Integer) tryConvert(packSize) > 0)
+//                && setStyleSheet(originalPrice, Styles.QLINEEDIT_RED_BORDER, !checkTextWidgetEmpty(originalPrice) && isConvertable(originalPrice))
+//                && setStyleSheet(discountValue, Styles.QLINEEDIT_RED_BORDER, checkTextWidgetEmpty(discountValue) || isConvertable(discountValue));
+
+        return setStyleSheet(code, Styles.QLINEEDIT_RED_BORDER, !checkTextWidgetEmpty(code) /*&& stateIsNullOrItself(code, bean)*/)
                 && setStyleSheet(supplier, Styles.QLINEEDIT_RED_BORDER, !checkTextWidgetEmpty(supplier) && isConvertable(supplier))
                 && setStyleSheet(packSize, Styles.QLINEEDIT_RED_BORDER, !checkTextWidgetEmpty(packSize) && isConvertable(packSize) && (Integer) tryConvert(packSize) > 0)
                 && setStyleSheet(originalPrice, Styles.QLINEEDIT_RED_BORDER, !checkTextWidgetEmpty(originalPrice) && isConvertable(originalPrice))

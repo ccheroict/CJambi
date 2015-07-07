@@ -5,6 +5,7 @@
  */
 package pl.lss.cjambi.ccms.db;
 
+import com.j256.ormlite.dao.CloseableIterator;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
@@ -19,27 +20,26 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import org.apache.log4j.Logger;
-import pl.lss.ccms.cjambi.bean.Catalog;
-import pl.lss.ccms.cjambi.bean.Company;
-import pl.lss.ccms.cjambi.bean.DiscountType;
-import pl.lss.ccms.cjambi.bean.Item;
-import pl.lss.ccms.cjambi.bean.Office;
-import pl.lss.ccms.cjambi.bean.Order;
-import pl.lss.ccms.cjambi.bean.OrderStatus;
-import pl.lss.ccms.cjambi.bean.Product;
-import pl.lss.ccms.cjambi.bean.Supplier;
-import pl.lss.ccms.cjambi.bean.Tax;
-import pl.lss.ccms.cjambi.bean.Unit;
-import pl.lss.ccms.cjambi.bean.User;
+import pl.lss.cjambi.ccms.bean.Catalog;
+import pl.lss.cjambi.ccms.bean.Company;
+import pl.lss.cjambi.ccms.bean.DiscountType;
 import pl.lss.cjambi.ccms.bean.Filter;
+import pl.lss.cjambi.ccms.bean.Item;
+import pl.lss.cjambi.ccms.bean.Office;
+import pl.lss.cjambi.ccms.bean.Order;
+import pl.lss.cjambi.ccms.bean.OrderStatus;
+import pl.lss.cjambi.ccms.bean.Product;
+import pl.lss.cjambi.ccms.bean.Supplier;
+import pl.lss.cjambi.ccms.bean.Tax;
+import pl.lss.cjambi.ccms.bean.Unit;
+import pl.lss.cjambi.ccms.bean.User;
 import pl.lss.cjambi.ccms.resources.Cache;
 import pl.lss.cjambi.ccms.resources.I18n;
-import pl.lss.cjambi.ccms.utils.DialogErrorReporter;
-import pl.lss.cjambi.ccms.utils.ErrorReporter;
 import pl.lss.cjambi.ccms.utils.Utils;
+import pl.lss.cjambi.ccms.view.dialog.DialogErrorReporter;
+import pl.lss.cjambi.ccms.view.dialog.ErrorReporter;
 
 /**
  *
@@ -47,17 +47,17 @@ import pl.lss.cjambi.ccms.utils.Utils;
  */
 public class DbServiceImpl implements DbService {
 
-    public static String JDBC_DEV = "jdbc:mysql://sql.ciibjeans.home.pl:3306/09182262_ccms?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false";
-    public static String USERNAME_DEV = "09182262_ccms";
+    public static String JDBC_DEV = "jdbc:mysql://sql.serwer1578161.home.pl:3306/17843548_0000002?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false";
+    public static String USERNAME_DEV = "17843548_0000002";
     public static String PASSWORD_DEV = "ChungCC2015";
 //    public static String JDBC_DEV = "jdbc:mysql://localhost:3306/ccms?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false";
 //    public static String USERNAME_DEV = "root";
 //    public static String PASSWORD_DEV = "";
-
     private static final int SESSION_LENGTH = 10 * 60 * 1000;
     private static final String ISACTIVE = "isActive";
+    private static final String ID = "id";
     private static final Logger logger = Logger.getLogger(DbServiceImpl.class);
-    private static final String dbConfigFilePath = System.getProperty("user.dir") + File.separator + "db.json";
+//    private static final String dbConfigFilePath = System.getProperty("user.dir") + File.separator + "db.json";
     private static final ErrorReporter reporter = DialogErrorReporter.getInstance();
     private static final QTimer timer = new QTimer();
     private JdbcPooledConnectionSource connectionSource;
@@ -71,9 +71,10 @@ public class DbServiceImpl implements DbService {
         try {
             connectionSource = new JdbcPooledConnectionSource(JDBC_DEV, USERNAME_DEV, PASSWORD_DEV);
 //            connectionSource = new JdbcPooledConnectionSource(obj.get("jdbcUrl").getAsString(), obj.get("username").getAsString(), obj.get("password").getAsString());
-            connectionSource.setTestBeforeGet(true);
+//            connectionSource.setTestBeforeGet(true);
             timer.setInterval(SESSION_LENGTH);
             timer.timeout.connect(this, "keepSessionAlive()");
+            timer.start();
         } catch (SQLException ex) {
             reporter.error(I18n.errorWhileConnectingToDatabase);
             throw new RuntimeException();
@@ -156,7 +157,7 @@ public class DbServiceImpl implements DbService {
             return dao.query(dao.queryBuilder().where().like(User.USERNAME_FIELD, "%" + query + "%").and().eq(ISACTIVE, 1).prepare());
         } catch (SQLException ex) {
             logger.error("getUser", ex);
-            return new ArrayList<>();
+            return new ArrayList<User>();
         }
     }
 
@@ -166,15 +167,17 @@ public class DbServiceImpl implements DbService {
             Dao<Order, Integer> dao = getDao(Order.class);
             QueryBuilder qb = dao.queryBuilder();
             setOffsetAndLimit(qb, filter);
-            qb.where().between(Order.CREATED_DATE_FIELD, filter.dateFrom, filter.dateTo).and().like(Order.CODE_FIELD, "%" + filter.orderCode + "%").and().eq(ISACTIVE, 1);
+//            qb.where().between(Order.CREATED_DATE_FIELD, filter.dateFrom, filter.dateTo).and().like(Order.CODE_FIELD, "%" + filter.orderCode + "%").and().eq(ISACTIVE, 1);
+            qb.where().between(Order.CREATED_DATE_FIELD, filter.dateFrom, filter.dateTo).and().eq(ISACTIVE, 1);
+//            qb.orderBy(Order.CODE_FIELD, false);
             List<Order> res = dao.query(qb.prepare());
             if (res == null) {
-                res = new ArrayList<>();
+                res = new ArrayList<Order>();
             }
             return res;
         } catch (SQLException ex) {
             logger.error("getOrder", ex);
-            return new ArrayList<>();
+            return new ArrayList<Order>();
         }
     }
 
@@ -184,17 +187,23 @@ public class DbServiceImpl implements DbService {
             Dao orderDao = getDao(Order.class);
             Dao itemDao = getDao(Item.class);
             order.lastChangedDate = new Date();
-            if (order.id == null) { //new order
+            if (order.code == null || order.code.isEmpty()) { //new order
                 Filter filter = new Filter();
+                filter.isActive = null;
                 order.code = Cache.getUserInitial() + "/" + countOrder(filter);
             }
-            orderDao.createOrUpdate(order);
-            Iterator<Item> it = order.items.iterator();
-            while (it.hasNext()) {
-                Item item = it.next();
-                item.order = order;
-                itemDao.createOrUpdate(item);
+            CloseableIterator<Item> iterator = order.items.closeableIterator();
+            try {
+                while (iterator.hasNext()) {
+                    Item item = iterator.next();
+                    item.order = order;
+                    itemDao.createOrUpdate(item);
+                }
+            } finally {
+                // close it at the end to close underlying SQL statement
+                iterator.close();
             }
+            orderDao.createOrUpdate(order);
         } catch (SQLException ex) {
             logger.error("createOrUpdateOrder", ex);
         }
@@ -210,12 +219,12 @@ public class DbServiceImpl implements DbService {
             PreparedQuery query = qb.where().like(Supplier.CODE_FIELD, "%" + filter.supplierCode + "%").and().eq(ISACTIVE, 1).prepare();
             List<Supplier> res = dao.query(query);
             if (res == null) {
-                res = new ArrayList<>();
+                res = new ArrayList<Supplier>();
             }
             return res;
         } catch (SQLException ex) {
             logger.error("getSupplier", ex);
-            return new ArrayList<>();
+            return new ArrayList<Supplier>();
         }
     }
 
@@ -247,12 +256,17 @@ public class DbServiceImpl implements DbService {
         try {
             Dao dao = getDao(Product.class);
             QueryBuilder qb = dao.queryBuilder();
-            qb.orderBy(Product.CODE_FIELD, true);
+            qb.orderBy(Product.ID_FIELD, false);
+            PreparedQuery query = null;
             setOffsetAndLimit(qb, filter);
-            PreparedQuery query = qb.where().like(Product.CODE_FIELD, "%" + filter.productCode + "%").and().eq(ISACTIVE, 1).prepare();
+            if (filter.supplier != null) {
+                query = qb.where().like(Product.CODE_FIELD, "%" + filter.productCode + "%").and().eq("supplier_id", filter.supplier.id).and().eq(ISACTIVE, 1).prepare();
+            } else {
+                query = qb.where().like(Product.CODE_FIELD, "%" + filter.productCode + "%").and().eq(ISACTIVE, 1).prepare();
+            }
             List<Product> res = dao.query(query);
             if (res == null) {
-                res = new ArrayList<>();
+                res = new ArrayList<Product>();
             } else {
                 for (Product product : res) {
                     product.finalPrice = Utils.getValueWithDiscount(product.originalPrice, product.discountValue, product.discountType);
@@ -261,18 +275,18 @@ public class DbServiceImpl implements DbService {
             return res;
         } catch (SQLException ex) {
             logger.error("getProduct", ex);
-            return new ArrayList<>();
+            return new ArrayList<Product>();
         }
     }
 
     @Override
-    public List<DiscountType> getDiscountType() {
+    public List<DiscountType> getDiscountTypes() {
         try {
             Dao dao = getDao(DiscountType.class);
-            return dao.queryForAll();
+            return dao.query(dao.queryBuilder().orderBy(ID, true).prepare());
         } catch (SQLException ex) {
             logger.error("getDiscountType", ex);
-            return new ArrayList<>();
+            return new ArrayList<DiscountType>();
         }
     }
 
@@ -283,7 +297,7 @@ public class DbServiceImpl implements DbService {
             return dao.queryForAll();
         } catch (SQLException ex) {
             logger.error("getTax", ex);
-            return new ArrayList<>();
+            return new ArrayList<Tax>();
         }
     }
 
@@ -294,7 +308,7 @@ public class DbServiceImpl implements DbService {
             return dao.queryForAll();
         } catch (SQLException ex) {
             logger.error("getUnit", ex);
-            return new ArrayList<>();
+            return new ArrayList<Unit>();
         }
     }
 
@@ -321,7 +335,7 @@ public class DbServiceImpl implements DbService {
             return dao.queryForAll();
         } catch (SQLException ex) {
             logger.error("getCatalog", ex);
-            return new ArrayList<>();
+            return new ArrayList<Catalog>();
         }
     }
 
@@ -339,13 +353,13 @@ public class DbServiceImpl implements DbService {
     }
 
     @Override
-    public List<OrderStatus> getOrderStatus() {
+    public List<OrderStatus> getOrderStatuses() {
         try {
             Dao dao = getDao(OrderStatus.class);
-            return dao.queryForAll();
+            return dao.query(dao.queryBuilder().orderBy(ID, true).prepare());
         } catch (SQLException ex) {
             logger.error("getOrderStatus", ex);
-            return new ArrayList<>();
+            return new ArrayList<OrderStatus>();
         }
     }
 
@@ -369,14 +383,14 @@ public class DbServiceImpl implements DbService {
     }
 
     @Override
-    public Product getProductByCode(String productCode) {
+    public Product getProductByCodeAndSupplier(String productCode, Supplier supplier) {
         if (productCode == null) {
             return null;
         }
         try {
             Dao dao = getDao(Product.class);
             QueryBuilder qb = dao.queryBuilder();
-            List<Product> list = dao.query(qb.where().eq(Supplier.CODE_FIELD, productCode).and().eq(ISACTIVE, 1).prepare());
+            List<Product> list = dao.query(qb.where().eq(Product.CODE_FIELD, productCode).and().eq("supplier_id", supplier.id).and().eq(ISACTIVE, 1).prepare());
             if (list == null || list.size() != 1) {
                 return null;
             }
@@ -393,11 +407,33 @@ public class DbServiceImpl implements DbService {
             Dao dao = getDao(Order.class);
             QueryBuilder qb = dao.queryBuilder();
             qb.setCountOf(true);
-            qb.where().between(Order.CREATED_DATE_FIELD, filter.dateFrom, filter.dateTo).and().like(Order.CODE_FIELD, "%" + filter.orderCode + "%").and().eq(ISACTIVE, 1);
+            if (filter.isActive != null) {
+                qb.where().between(Order.CREATED_DATE_FIELD, filter.dateFrom, filter.dateTo).and().like(Order.CODE_FIELD, "%" + filter.orderCode + "%").and().eq(ISACTIVE, filter.isActive);
+            } else {
+                qb.where().between(Order.CREATED_DATE_FIELD, filter.dateFrom, filter.dateTo).and().like(Order.CODE_FIELD, "%" + filter.orderCode + "%");
+            }
             return dao.countOf(qb.prepare());
         } catch (SQLException ex) {
             logger.error("countOrder", ex);
             return 0;
+        }
+    }
+
+    @Override
+    public Product getProductById(Integer productId) {
+        if (productId == null) {
+            return null;
+        }
+        try {
+            Dao dao = getDao(Product.class);
+            List<Product> list = dao.query(dao.queryBuilder().where().idEq(productId).and().eq(ISACTIVE, 1).prepare());
+            if (list == null || list.size() != 1) {
+                return null;
+            }
+            return list.get(0);
+        } catch (SQLException ex) {
+            logger.error("getProductById", ex);
+            return null;
         }
     }
 }

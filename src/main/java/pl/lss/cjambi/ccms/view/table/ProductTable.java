@@ -11,13 +11,13 @@ import com.trolltech.qt.gui.QLabel;
 import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.gui.QWidget;
 import java.util.List;
-import pl.lss.ccms.cjambi.bean.Product;
+import pl.lss.cjambi.ccms.bean.Product;
 import pl.lss.cjambi.ccms.bean.Filter;
 import pl.lss.cjambi.ccms.db.DbService;
 import pl.lss.cjambi.ccms.db.DbServiceImpl;
 import pl.lss.cjambi.ccms.resources.I18n;
 import pl.lss.cjambi.ccms.utils.Constants;
-import pl.lss.cjambi.ccms.utils.PrintUtils;
+import pl.lss.cjambi.ccms.view.widget.PrintUtils;
 import pl.lss.cjambi.ccms.utils.converter.CurrencyToStringConverter;
 import pl.lss.cjambi.ccms.utils.converter.IntegerToStringConverter;
 import pl.lss.cjambi.ccms.view.HBoxWidget;
@@ -93,6 +93,7 @@ public class ProductTable extends PageWidget {
             }
 
         };
+        table.addColumn(I18n.ID, Product.ID_FIELD);
         table.addColumn(I18n.productCode, Product.CODE_FIELD);
         table.addColumn(I18n.catalog, Product.CATALOG_NAME_FIELD);
         table.addColumn(I18n.supplier, Product.SUPPLIER_CODE_FIELD);

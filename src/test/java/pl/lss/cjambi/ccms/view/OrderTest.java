@@ -5,7 +5,6 @@
  */
 package pl.lss.cjambi.ccms.view;
 
-import pl.lss.cjambi.ccms.bean.Filter;
 import pl.lss.cjambi.ccms.db.DbService;
 
 /**
@@ -18,6 +17,6 @@ public class OrderTest {
 
     public static void main(String[] args) {
 //        db = Cache.getInstance(DbService.class);
-        db.getOrder(new Filter());
+//        db.getOrder(new Filter());
     }
 }

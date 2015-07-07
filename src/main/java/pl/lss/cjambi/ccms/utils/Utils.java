@@ -14,7 +14,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import org.apache.log4j.Logger;
-import pl.lss.ccms.cjambi.bean.DiscountType;
+import pl.lss.cjambi.ccms.bean.DiscountType;
 
 /**
  *
@@ -24,7 +24,7 @@ public class Utils {
 
     private static final Utils instance = new Utils();
     private static final Logger logger = Logger.getLogger(Utils.class);
-    private static final DecimalFormat doubleFormatter = new DecimalFormat();
+    private static final DecimalFormat doubleFormatter = new DecimalFormat("#.##");
     private static final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
     static {
@@ -102,7 +102,7 @@ public class Utils {
     }
 
     public static Double getValueWithDiscount(Double value, Double discountValue, DiscountType discountType) {
-        if (discountValue != null && discountValue != 0) {
+        if (discountValue != null && discountValue > 0) {
             if (discountType.name.equals("%")) {
                 value = (1 - discountValue / 100.0) * value;
             } else {
@@ -116,5 +116,9 @@ public class Utils {
         byte[] data = toStringOrEmpty(value).getBytes();
         String res = new String(data, Charset.forName("UTF-8"));
         return res;
+    }
+
+    public static Double round(double value) {
+        return Double.parseDouble(doubleFormatter.format(value).replace(",", "."));
     }
 }

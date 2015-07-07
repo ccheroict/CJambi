@@ -9,11 +9,12 @@ import com.trolltech.qt.gui.QFormLayout;
 import com.trolltech.qt.gui.QIcon;
 import com.trolltech.qt.gui.QLabel;
 import com.trolltech.qt.gui.QWidget;
-import java.util.List;
-import pl.lss.cjambi.ccms.bean.Filter;
-import pl.lss.ccms.cjambi.bean.Item;
-import pl.lss.ccms.cjambi.bean.Order;
-import pl.lss.ccms.cjambi.bean.Product;
+import pl.lss.cjambi.ccms.bean.Item;
+import pl.lss.cjambi.ccms.bean.Order;
+import pl.lss.cjambi.ccms.bean.Product;
+import pl.lss.cjambi.ccms.bean.Supplier;
+import pl.lss.cjambi.ccms.db.DbService;
+import pl.lss.cjambi.ccms.db.DbServiceImpl;
 import pl.lss.cjambi.ccms.resources.I18n;
 import pl.lss.cjambi.ccms.resources.IconResources;
 import pl.lss.cjambi.ccms.utils.BeanUtils;
@@ -21,9 +22,7 @@ import pl.lss.cjambi.ccms.utils.Styles;
 import pl.lss.cjambi.ccms.utils.Utils;
 import pl.lss.cjambi.ccms.utils.converter.DoubleToStringConverter;
 import pl.lss.cjambi.ccms.utils.converter.IntegerToStringConverter;
-import pl.lss.cjambi.ccms.utils.converter.ProductToCodeConverter;
 import pl.lss.cjambi.ccms.view.widget.LineEdit;
-import pl.lss.cjambi.ccms.view.widget.SuggestBox;
 
 /**
  *
@@ -31,24 +30,31 @@ import pl.lss.cjambi.ccms.view.widget.SuggestBox;
  */
 public class ItemEditDialog extends BeanEditDialog<Item> {
 
+    private DbService db = DbServiceImpl.getInstance();
     private Order order;
-    private SuggestBox product;
+//    private SuggestBox product;
+    private LineEdit id;
     private QLabel supplier, packSizeLbl;
     private LineEdit requiredPack, price, quantity, value;
     private Integer packSize;
 
+    private Supplier selectedSupplier = null;
+    private Product selectedProduct = null;
+
     public ItemEditDialog(Order order) {
         super();
-        product = new SuggestBox(Product.class, Product.CODE_FIELD) {
-
-            @Override
-            public List fetchData() {
-                Filter filter = new Filter();
-                filter.productCode = text();
-                return db.getProduct(filter);
-            }
-        };
-        product.completer().activatedIndex.connect(this, "onProductChanged()");
+//        product = new SuggestBox(Product.class, Product.CODE_FIELD) {
+//
+//            @Override
+//            public List fetchData() {
+//                Filter filter = new Filter();
+//                filter.productCode = text();
+//                return db.getProduct(filter);
+//            }
+//        };
+        id = new LineEdit();
+//        product.completer().activatedIndex.connect(this, "onProductChanged()");
+        id.editingFinished.connect(this, "onProductChanged()");
         supplier = new QLabel();
         packSizeLbl = new QLabel();
         requiredPack = new LineEdit();
@@ -75,18 +81,25 @@ public class ItemEditDialog extends BeanEditDialog<Item> {
         try {
             Integer q = (Integer) editor.convertWidgetState(quantity);
             Double p = (Double) editor.convertWidgetState(price);
-            value.setState(q * p);
+            value.setState(Utils.round(q * p));
         } catch (Exception ex) {
         }
     }
 
     private void onProductChanged() {
         try {
-            Object obj = tryConvert(product);
-            if (obj == null) {
+            selectedProduct = null;
+            selectedSupplier = null;
+//            Object obj = tryConvert(product);
+//            if (obj == null) {
+//                return;
+//            }
+//            Product selectedProduct = (Product) obj;
+            if (id.text() == null || id.text().isEmpty()) {
                 return;
             }
-            Product selectedProduct = (Product) obj;
+            selectedProduct = db.getProductById(Integer.parseInt(id.text()));
+            selectedSupplier = selectedProduct.supplier;
             updateProductInfo(selectedProduct);
             requiredPack.setState(0);
             quantity.setState(0);
@@ -110,7 +123,8 @@ public class ItemEditDialog extends BeanEditDialog<Item> {
     protected QWidget buildContent() {
         QWidget widget = new QWidget();
         QFormLayout form = new QFormLayout(widget);
-        form.addRow(new QLabel(I18n.product), product);
+//        form.addRow(new QLabel(I18n.product), product);
+        form.addRow(new QLabel(I18n.ID), id);
         form.addRow(new QLabel(I18n.supplier), supplier);
         form.addRow(new QLabel(I18n.packSize), packSizeLbl);
         form.addRow(new QLabel(I18n.requiredPacks), requiredPack);
@@ -118,7 +132,13 @@ public class ItemEditDialog extends BeanEditDialog<Item> {
         form.addRow(new QLabel(I18n.finalPrice), price);
         form.addRow(new QLabel(I18n.value), value);
 
-        editor.addMapping(product, Item.PRODUCT_FIELD, new ProductToCodeConverter());
+//        editor.addMapping(product, Item.PRODUCT_FIELD, new ProductToCodeConverter() {
+//
+//            @Override
+//            public Supplier getSupplier() {
+//                return selectedSupplier;
+//            }
+//        });
         editor.addMapping(requiredPack, Item.REQUIRED_PACK_FIELD, new IntegerToStringConverter(0));
         editor.addMapping(quantity, Item.QUANTITY_FIELD, new IntegerToStringConverter());
         editor.addMapping(price, Item.PRICE_FIELD, new DoubleToStringConverter());
@@ -140,11 +160,12 @@ public class ItemEditDialog extends BeanEditDialog<Item> {
     @Override
     protected void customFillBeanAfterCommit() {
         bean.order = order;
+        bean.product = selectedProduct;
     }
 
     @Override
     protected boolean validate() {
-        return setStyleSheet(product, Styles.QLINEEDIT_RED_BORDER, !checkTextWidgetEmpty(product) && isConvertable(product))
+        return setStyleSheet(id, Styles.QLINEEDIT_RED_BORDER, selectedProduct != null)
                 && setStyleSheet(requiredPack, Styles.QLINEEDIT_RED_BORDER, !checkTextWidgetEmpty(requiredPack) && isConvertable(requiredPack))
                 && setStyleSheet(quantity, Styles.QLINEEDIT_RED_BORDER, !checkTextWidgetEmpty(quantity) && isConvertable(quantity))
                 && setStyleSheet(price, Styles.QLINEEDIT_RED_BORDER, !checkTextWidgetEmpty(price) && isConvertable(price) && ((Double) tryConvert(price) > 0))
@@ -158,6 +179,15 @@ public class ItemEditDialog extends BeanEditDialog<Item> {
             packSizeLbl.setText(Utils.toStringOrEmpty(packSize));
         } catch (Exception ex) {
             reporter.error(I18n.sorryErrorHasAppeared);
+        }
+    }
+
+    @Override
+    protected void customFillWidgetsBeforeExec() throws Exception {
+        if (bean.product != null) {
+            id.setState(bean.product.id);
+            selectedProduct = db.getProductById(Integer.parseInt(id.text()));
+            id.setEnabled(false);
         }
     }
 }

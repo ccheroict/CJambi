@@ -13,10 +13,8 @@ import pl.lss.cjambi.ccms.db.DbService;
 import pl.lss.cjambi.ccms.db.DbServiceImpl;
 import pl.lss.cjambi.ccms.resources.I18n;
 import pl.lss.cjambi.ccms.utils.BeanUtils;
-import pl.lss.cjambi.ccms.utils.DialogErrorReporter;
-import pl.lss.cjambi.ccms.utils.Editor;
-import pl.lss.cjambi.ccms.utils.ErrorReporter;
 import pl.lss.cjambi.ccms.utils.Utils;
+import pl.lss.cjambi.ccms.view.widget.Editor;
 import pl.lss.cjambi.ccms.view.widget.HasState;
 
 /**
