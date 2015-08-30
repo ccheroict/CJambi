@@ -28,6 +28,7 @@ public class Item {
     public static final String PRODUCT_PACK_SIZE_FIELD = "product.packSize";
     public static final String PRODUCT_ID_FIELD = "product.id";
     public static final String PRODUCT_SIZE_FIELD = "product.size";
+    public static final String PRODUCT_COLOUR_FIELD = "product.colour";
 
     @DatabaseField(generatedId = true)
     public Integer id;

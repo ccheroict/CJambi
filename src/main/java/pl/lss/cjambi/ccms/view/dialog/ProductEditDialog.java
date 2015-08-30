@@ -8,6 +8,7 @@ package pl.lss.cjambi.ccms.view.dialog;
 import com.trolltech.qt.gui.QGridLayout;
 import com.trolltech.qt.gui.QIcon;
 import com.trolltech.qt.gui.QLabel;
+import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.gui.QWidget;
 import java.util.List;
 import pl.lss.cjambi.ccms.bean.Catalog;
@@ -31,6 +32,7 @@ import pl.lss.cjambi.ccms.view.widget.ComboBox;
 import pl.lss.cjambi.ccms.view.widget.Label;
 import pl.lss.cjambi.ccms.view.widget.LineEdit;
 import pl.lss.cjambi.ccms.view.widget.PlainTextEdit;
+import pl.lss.cjambi.ccms.view.widget.PrintUtils;
 import pl.lss.cjambi.ccms.view.widget.SuggestBox;
 
 /**
@@ -49,6 +51,7 @@ public class ProductEditDialog extends BeanEditDialog<Product> {
     private ComboBox<Unit> unit;
     private Label finalPrice;
     private PlainTextEdit note;
+    private QPushButton printBtn;
 
     public ProductEditDialog(Product product) {
         super();
@@ -91,8 +94,15 @@ public class ProductEditDialog extends BeanEditDialog<Product> {
         catalog = new ComboBox(db.getCatalog(), Catalog.NAME_FIELD);
         finalPrice = new Label();
         note = new PlainTextEdit();
+        printBtn = new QPushButton(I18n.print);
+        printBtn.setEnabled(bean.id != null);
+        printBtn.clicked.connect(this, "onPrintBtnClicked()");
 
         build();
+    }
+
+    private void onPrintBtnClicked() {
+        PrintUtils.print(bean);
     }
 
     @Override
@@ -134,6 +144,7 @@ public class ProductEditDialog extends BeanEditDialog<Product> {
         grid.addWidget(finalPrice, nRow++, 1);
         grid.addWidget(new QLabel(I18n.note), nRow, 0);
         grid.addWidget(note, nRow++, 1);
+        grid.addWidget(printBtn, nRow, 0);
 
         editor.addMapping(supplier, Product.SUPPLIER_FIELD, new SupplierToCodeConverter());
         editor.addMapping(code, Product.CODE_FIELD);
@@ -168,11 +179,12 @@ public class ProductEditDialog extends BeanEditDialog<Product> {
         try {
             super.onOkBtnClicked(); //To change body of generated methods, choose Tools | Templates.
             db.createOrUpdateProduct(bean);
+            printBtn.setEnabled(bean.id != null);
+//            close();
         } catch (Exception ex) {
             reporter.error(I18n.sorryErrorHasAppeared);
             return;
         }
-        close();
     }
 
     @Override

@@ -89,7 +89,8 @@ public class PrintUtils {
                     .append("^FO10,10").append("^BCN,60,Y,N,N").append("^FD" + idStr.toString() + "^FS")
                     .append("^FO220,20").append("^ADR,24,10^FD" + supplierCode + "^FS")
                     .append("^FO0,120").append("^ADN,24,10^FD" + product.size + "^FS")
-                    .append("^FO80,100").append("^ADN,72,24^FD" + productPrice + "^FS")
+                    .append("^FO0,140").append("^ADN,24,10^FD" + product.colour + "^FS")
+                    .append("^FO100,100").append("^ADN,72,24^FD" + productPrice + "^FS")
                     //                    .append("^FO10,100").append("^ADN,24,10^FD" + supplierCode + " Cena: " + productPrice + "^FS")
                     //                    .append("^FO10,130").append("^ADN,24,10^FDOpak.:" + packSize + " Roz.: " + productSize + "^FS")
                     .append("^XZ");
@@ -130,6 +131,7 @@ public class PrintUtils {
                     + "*{font-size: 16px;}"
                     + "#orderTable{font-size: 15px; margin-top: 60px; border-style: solid; }"
                     + ".oddRow{background-color: #F5F5F5;}"
+                    + "tr{height: 40px;}"
                     + "");
             sb.append("<html>");
             sb.append("<head>");
@@ -141,14 +143,14 @@ public class PrintUtils {
             sb.append(" <tr>");
             sb.append("   <td>");
             sb.append("     <div style=\"font-size: 50px; font-weight:bold;\">" + company.name + "</div>");
-            sb.append("     <div style=\"font-size: 20px; font-weight:bold;\">" + office.name + "</div>");
-            sb.append("     <div>" + office.street + "</div>");
-            sb.append("     <div>" + office.zipcode + "</div>");
+//            sb.append("     <div style=\"font-size: 20px; font-weight:bold;\">" + office.name + "</div>");
+//            sb.append("     <div>" + office.street + "</div>");
+//            sb.append("     <div>" + office.zipcode + "</div>");
             sb.append("     <div>Tel: " + office.tel + "</div>");
             sb.append("     <div>" + office.fax + "</div>");
             sb.append("     <div>Email: " + office.email + "</div>");
             sb.append("   </td>");
-            sb.append("   <td style=\"padding-left: 200px; padding-top: 108px;\">");
+            sb.append("   <td style=\"padding-left: 200px; padding-top: 80px;\">");
             sb.append("     <table>");
             sb.append("      <tr>");
             sb.append("        <td align=right>Czas: </td>");
@@ -173,13 +175,13 @@ public class PrintUtils {
             sb.append("  <th>Lp.</th>");
             sb.append("  <th>Dostawca</th>");
             sb.append("  <th>Kod</th>");
+            sb.append("  <th>Kolor</th>");
             sb.append("  <th>Pł.</th>");
             sb.append("  <th>Roz.</th>");
             sb.append("  <th>Paczka</th>");
             sb.append("  <th>Opak.</th>");
             sb.append("  <th>Ilość</th>");
             sb.append("  <th>Cena</th>");
-            sb.append("  <th>Rabat</th>");
             sb.append("  <th>Wartość</th>");
             sb.append(" </tr></thead>");
             sb.append("<tbody>");
@@ -195,13 +197,13 @@ public class PrintUtils {
                 sb.append(" <td align=center width=20px>" + (i + 1) + "</td>");
                 sb.append(" <td align=center>" + Utils.toStringOrEmpty(BeanUtils.getProperty(item, Item.SUPPLIER_CODE_FIELD)) + "</td>");
                 sb.append(" <td align=center>" + Utils.toStringOrEmpty(BeanUtils.getProperty(item, Item.PRODUCT_CODE_FIELD)) + "</td>");
+                sb.append(" <td align=center>" + Utils.toStringOrEmpty(BeanUtils.getProperty(item, Item.PRODUCT_COLOUR_FIELD)) + "</td>");
                 sb.append(" <td align=center>" + Utils.toStringOrEmpty(BeanUtils.getProperty(item, Item.PRODUCT_CATALOG_NAME_FIELD)) + "</td>");
                 sb.append(" <td align=center>" + Utils.toStringOrEmpty(BeanUtils.getProperty(item, Item.PRODUCT_SIZE_FIELD)) + "</td>");
                 sb.append(" <td align=center>" + item.requiredPack + "</td>");
                 sb.append(" <td align=center>" + Utils.toStringOrEmpty(BeanUtils.getProperty(item, Item.PRODUCT_PACK_SIZE_FIELD)) + "</td>");
                 sb.append(" <td align=center>" + item.quantity + "</td>");
                 sb.append(" <td align=center>" + Utils.toStringOrEmpty(item.price) + "</td>");
-                sb.append(" <td align=center></td>");
                 sb.append(" <td align=center>" + Utils.toStringOrEmpty(item.value) + "</td>");
                 sb.append("</tr>");
             }
@@ -211,12 +213,12 @@ public class PrintUtils {
             sb.append(" <td align=center></td>");
             sb.append(" <td align=center></td>");
             sb.append(" <td align=center></td>");
+            sb.append(" <td align=center></td>");
             sb.append(" <td align=center>Razem :</td>");
             sb.append(" <td align=center style=\"font-size: 40px; font-weight:bold;\">" + order.packQuantity + "</td>");
             sb.append(" <td align=center>Opak.</td>");
             sb.append(" <td align=center>" + order.productQuantity + "</td>");
             sb.append(" <td align=center>par</td>");
-            sb.append(" <td align=center></td>");
             sb.append(" <td align=center>" + new CurrencyToStringConverter(Constants.PLN).toPresentation(order.total) + "</td>");
             sb.append("</tr>");
 //            sb.append("<tr>");
@@ -243,7 +245,8 @@ public class PrintUtils {
             sb.append(" <td align=center></td>");
             sb.append(" <td align=center></td>");
             sb.append(" <td align=center>Wartość: </td>");
-            sb.append(" <td align=center>" + new CurrencyToStringConverter(Constants.PLN).toPresentation(order.value) + "</td>");
+//            sb.append(" <td align=center>" + new CurrencyToStringConverter(Constants.PLN).toPresentation(order.value) + "</td>");
+            sb.append(" <td align=center></td>");
             sb.append("</tr>");
             sb.append("</tbody></table>");
 

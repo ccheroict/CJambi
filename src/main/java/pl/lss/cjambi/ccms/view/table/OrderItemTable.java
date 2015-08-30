@@ -6,10 +6,14 @@
 package pl.lss.cjambi.ccms.view.table;
 
 import com.trolltech.qt.core.QModelIndex;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import pl.lss.cjambi.ccms.bean.Item;
 import pl.lss.cjambi.ccms.bean.Order;
 import pl.lss.cjambi.ccms.controller.exception.InvalidOrderItemException;
+import pl.lss.cjambi.ccms.utils.BeanUtils;
+import pl.lss.cjambi.ccms.utils.Utils;
 import pl.lss.cjambi.ccms.view.dialog.ItemEditDialog;
 import pl.lss.cjambi.ccms.view.widget.Refreshable;
 import pl.lss.cjambi.ccms.view.widget.Table;
@@ -74,6 +78,21 @@ public class OrderItemTable extends Table<Item> {
 
     @Override
     public void refresh() {
+        Collections.sort(state, new Comparator<Item>() {
+
+            @Override
+            public int compare(Item i1, Item i2) {
+                String s1 = "";
+                String s2 = "";
+                try {
+                    s1 = Utils.toStringOrEmpty(BeanUtils.getProperty(i1, Item.SUPPLIER_CODE_FIELD));
+                    s2 = Utils.toStringOrEmpty(BeanUtils.getProperty(i2, Item.SUPPLIER_CODE_FIELD));
+                } catch (Exception ex) {
+                }
+
+                return s1.compareTo(s2);
+            }
+        });
         super.refresh(); //To change body of generated methods, choose Tools | Templates.
         if (parentView != null) {
             parentView.refresh();

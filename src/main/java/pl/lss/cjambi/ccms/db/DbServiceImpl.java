@@ -47,9 +47,14 @@ import pl.lss.cjambi.ccms.view.dialog.ErrorReporter;
  */
 public class DbServiceImpl implements DbService {
 
-    public static String JDBC_DEV = "jdbc:mysql://sql.serwer1578161.home.pl:3306/17843548_0000002?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false";
-    public static String USERNAME_DEV = "17843548_0000002";
-    public static String PASSWORD_DEV = "ChungCC2015";
+    public static String JDBC_DEV = "jdbc:mysql://136.243.44.221:3306/chungtq_ccms?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false";
+    public static String USERNAME_DEV = "chungtq_ccms";
+    public static String PASSWORD_DEV = "Chung271289";
+//    public static String JDBC_DEV = "jdbc:mysql://sql.serwer1578161.home.pl:3306/17843548_0000002?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false";
+//    public static String JDBC_DEV = "jdbc:mysql://mn11.webd.pl/ccms_ccms?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false";
+//    public static String USERNAME_DEV = "17843548_0000002";
+//    public static String USERNAME_DEV = "ccms_ccms";
+//    public static String PASSWORD_DEV = "ChungCC2015";
 //    public static String JDBC_DEV = "jdbc:mysql://localhost:3306/ccms?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false";
 //    public static String USERNAME_DEV = "root";
 //    public static String PASSWORD_DEV = "";
