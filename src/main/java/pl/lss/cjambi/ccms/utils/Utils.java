@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 import org.apache.log4j.Logger;
 import pl.lss.cjambi.ccms.bean.DiscountType;
+import pl.lss.cjambi.ccms.bean.Item;
 
 /**
  *
@@ -120,5 +121,18 @@ public class Utils {
 
     public static Double round(double value) {
         return Double.parseDouble(doubleFormatter.format(value).replace(",", "."));
+    }
+
+    public static void removeInvalidItemFromOrder(List<Item> items) {
+        List<Item> oldState = new ArrayList<>();
+        for (Item item : items) {
+            oldState.add(item);
+        }
+        items.clear();
+        for (Item item : oldState) {
+            if (item.isActive > 0) {
+                items.add(item);
+            }
+        }
     }
 }

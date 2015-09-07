@@ -19,7 +19,9 @@ public class Filter {
     public static final String ORDER_CODE_FIELD = "orderCode";
     public static final String DATE_FROM_FIELD = "dateFrom";
     public static final String ORDER_DATE_TO_FIELD = "dateTo";
+    public static final String ID_FIELD = "id";
 
+    public Integer id;
     public String supplierCode = "";
     public String productCode = "";
     public String orderCode = "";

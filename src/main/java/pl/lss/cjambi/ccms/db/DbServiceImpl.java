@@ -11,6 +11,7 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.table.TableUtils;
 import com.trolltech.qt.core.QTimer;
 import java.io.BufferedReader;
@@ -264,11 +265,14 @@ public class DbServiceImpl implements DbService {
             qb.orderBy(Product.ID_FIELD, false);
             PreparedQuery query = null;
             setOffsetAndLimit(qb, filter);
-            if (filter.supplier != null) {
-                query = qb.where().like(Product.CODE_FIELD, "%" + filter.productCode + "%").and().eq("supplier_id", filter.supplier.id).and().eq(ISACTIVE, 1).prepare();
-            } else {
-                query = qb.where().like(Product.CODE_FIELD, "%" + filter.productCode + "%").and().eq(ISACTIVE, 1).prepare();
+            Where wherePhrase = qb.where().like(Product.CODE_FIELD, "%" + filter.productCode + "%").and().eq(ISACTIVE, 1);
+            if (filter.id != null) {
+                wherePhrase = wherePhrase.and().idEq(filter.id);
             }
+            if (filter.supplier != null) {
+                wherePhrase = wherePhrase.and().eq("supplier_id", filter.supplier.id);
+            };
+            query = wherePhrase.prepare();
             List<Product> res = dao.query(query);
             if (res == null) {
                 res = new ArrayList<Product>();

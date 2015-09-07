@@ -12,7 +12,9 @@ import java.util.List;
 import pl.lss.cjambi.ccms.bean.Filter;
 import pl.lss.cjambi.ccms.bean.Product;
 import pl.lss.cjambi.ccms.resources.I18n;
+import pl.lss.cjambi.ccms.utils.converter.IntegerToStringConverter;
 import static pl.lss.cjambi.ccms.view.dialog.BeanEditDialog.db;
+import pl.lss.cjambi.ccms.view.widget.LineEdit;
 import pl.lss.cjambi.ccms.view.widget.SuggestBox;
 
 /**
@@ -22,9 +24,12 @@ import pl.lss.cjambi.ccms.view.widget.SuggestBox;
 public class ProductSearchEditDialog extends FilterDialog {
 
     private SuggestBox code;
+    private LineEdit id;
 
     public ProductSearchEditDialog() {
         super();
+        id = new LineEdit();
+
         code = new SuggestBox(Product.class, Product.CODE_FIELD) {
 
             @Override
@@ -43,8 +48,10 @@ public class ProductSearchEditDialog extends FilterDialog {
     protected QWidget buildContent() {
         QWidget widget = new QWidget();
         QFormLayout layout = new QFormLayout(widget);
+        layout.addRow(new QLabel(I18n.ID), id);
         layout.addRow(new QLabel(I18n.productCode), code);
 
+        editor.addMapping(id, Filter.ID_FIELD, new IntegerToStringConverter());
         editor.addMapping(code, Filter.PRODUCT_CODE_FIELD);
 
         return widget;

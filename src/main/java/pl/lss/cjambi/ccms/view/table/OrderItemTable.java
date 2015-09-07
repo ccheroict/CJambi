@@ -31,6 +31,7 @@ public class OrderItemTable extends Table<Item> {
     public OrderItemTable(Order order) {
         super(ITEM_TABLE_SIZE);
         this.order = order;
+        refresh();
     }
 
     @Override
@@ -40,7 +41,8 @@ public class OrderItemTable extends Table<Item> {
         dialog.updateProductInfo(selected.product);
         dialog.exec();
         if (!isValidOrderItem(selected)) {
-            state.remove(selected);
+            selected.isActive = 0;
+//            state.remove(selected);
         }
         refresh();
     }
@@ -53,7 +55,8 @@ public class OrderItemTable extends Table<Item> {
             if (obj.equals(item)) {
                 obj.add(item);
                 if (!isValidOrderItem(obj)) {
-                    state.remove(obj);
+//                    state.remove(obj);
+                    obj.isActive = 0;
                     throw new InvalidOrderItemException();
                 }
 
@@ -78,6 +81,7 @@ public class OrderItemTable extends Table<Item> {
 
     @Override
     public void refresh() {
+        Utils.removeInvalidItemFromOrder(state);
         Collections.sort(state, new Comparator<Item>() {
 
             @Override
@@ -93,6 +97,7 @@ public class OrderItemTable extends Table<Item> {
                 return s1.compareTo(s2);
             }
         });
+
         super.refresh(); //To change body of generated methods, choose Tools | Templates.
         if (parentView != null) {
             parentView.refresh();
@@ -105,7 +110,7 @@ public class OrderItemTable extends Table<Item> {
         for (QModelIndex index : selectedRows) {
             Item item = state.get(index.row());
             item.isActive = 0;
-            state.remove(item);
+//            state.remove(item);
         }
         refresh();
         selectionModel().clearSelection();
