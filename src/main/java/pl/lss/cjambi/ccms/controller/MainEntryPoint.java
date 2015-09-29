@@ -11,6 +11,7 @@ import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QMainWindow;
 import com.trolltech.qt.gui.QMenu;
 import com.trolltech.qt.gui.QToolBar;
+import java.io.FileInputStream;
 import pl.lss.cjambi.ccms.bean.Order;
 import pl.lss.cjambi.ccms.bean.Product;
 import pl.lss.cjambi.ccms.bean.Supplier;
@@ -36,6 +37,17 @@ public class MainEntryPoint extends QMainWindow {
 
     private static final String appTitle = Constants.APP_NAME + " " + Constants.APP_VERSION;
     private static final DbService db = DbServiceImpl.getInstance();
+
+    static {
+        try {
+            String path = Constants.CONFIG_FILE_PATH;
+            FileInputStream file = new FileInputStream(path);
+
+            Constants.mainProperties.load(file);
+            file.close();
+        } catch (Exception e) {
+        }
+    }
 
     public MainEntryPoint() {
         setWindowTitle(appTitle);

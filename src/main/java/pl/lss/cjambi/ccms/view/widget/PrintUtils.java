@@ -51,8 +51,9 @@ public class PrintUtils {
     private static final String PRINTER_NAME = "ccms";
     private static final int CODE_LENGTH = 6;
     private static final ErrorReporter reporter = DialogErrorReporter.getInstance();
-    private static final int FIRST_PAGE_ITEM_NO = 26;
-    private static final int NEXT_PAGE_ITEM_NO = 29;
+    private static int firstPageItemNo = Integer.parseInt(Constants.mainProperties.getProperty("FIRST_PAGE_ITEM_NO", "19"));
+    private static int nextPageItemNo = Integer.parseInt(Constants.mainProperties.getProperty("NEXT_PAGE_ITEM_NO", "22"));
+    private static int orderItemsMarginBottom = Integer.parseInt(Constants.mainProperties.getProperty("ORDER_ITEM_MARGIN_BOTTOM", "36"));
 
     public static void print(Product product) {
         try {
@@ -134,7 +135,7 @@ public class PrintUtils {
         try {
             doc.setDefaultStyleSheet(""
                     + "*{font-size: 16px;}"
-                    + "#orderTable{font-size: 15px; margin-top: 20px; margin-bottom:36px; border-style:solid;}"
+                    + "#orderTable{font-size: medium; margin-top: 20px; margin-bottom: " + orderItemsMarginBottom + "px; border-style:solid;}"
                     + ".oddRow{background-color: #B5B5B5;}"
                     + ".item-info-cell{padding-top: 8px; padding-bottom: 8px;}"
                     + "tr{margin-top: 30px;}"
@@ -175,13 +176,13 @@ public class PrintUtils {
             Utils.removeInvalidItemFromOrder(data);
             sortOrderItemBySupplier(data);
 
-            generateItemTablePage(sb, order.code, order.lastChangedDate, data, 0, FIRST_PAGE_ITEM_NO);
-            int id = FIRST_PAGE_ITEM_NO;
+            generateItemTablePage(sb, order.code, order.lastChangedDate, data, 0, firstPageItemNo);
+            int id = firstPageItemNo;
             while (id < data.size()) {
-                generateItemTablePage(sb, order.code, order.lastChangedDate, data, id, id + NEXT_PAGE_ITEM_NO);
-                id += NEXT_PAGE_ITEM_NO;
+                generateItemTablePage(sb, order.code, order.lastChangedDate, data, id, id + nextPageItemNo);
+                id += nextPageItemNo;
             }
-            if (data.size() >= FIRST_PAGE_ITEM_NO) {
+            if (data.size() >= firstPageItemNo) {
                 sb.append("<br/>");
                 sb.append("<div>Podsumowanie zamówienia - " + order.code + " : " + "<b style=\"font-size: 40px;\">" + order.packQuantity + "</b> opak. " + order.productQuantity + " par.</div>");
                 sb.append("<div>Wartość: <b>" + new CurrencyToStringConverter(Constants.PLN).toPresentation(order.total) + "</b> </div>");
@@ -222,17 +223,17 @@ public class PrintUtils {
         sb.append(" <div>Oryginalna/Kopia - Czas: " + Utils.toStringOrEmpty(new DateTimeToStringConverter().toPresentation(lastChangedDate)) + "</div>");
         sb.append("</div>");
         sb.append("<table id=\"orderTable\" border=\"1\" width=100% cellspacing=0 cellpadding=0>");
-        sb.append(" <thead><tr bgcolor=#dbdbdb>");
+        sb.append(" <thead><tr>");
         sb.append("  <th>Lp.</th>");
         sb.append("  <th>Dostawca</th>");
         sb.append("  <th>Kod</th>");
         sb.append("  <th>Kolor</th>");
         sb.append("  <th>Pł.</th>");
         sb.append("  <th>Roz.</th>");
-        sb.append("  <th>Paczka</th>");
-        sb.append("  <th>Opak.</th>");
-        sb.append("  <th>Ilość</th>");
-        sb.append("  <th>Cena</th>");
+        sb.append("  <th>P</th>");
+        sb.append("  <th>Op.</th>");
+        sb.append("  <th>**Ilość**</th>");
+        sb.append("  <th style=\"width: 100px;\">**Cena - ost.**</th>");
         sb.append("  <th>Wartość</th>");
         sb.append(" </tr></thead>");
         sb.append("<tbody>");
@@ -260,22 +261,22 @@ public class PrintUtils {
             sb.append(" <td class=\"item-info-cell\" align=center style=\"font-weight: bold;\">" + item.requiredPack + "</td>");
             sb.append(" <td class=\"item-info-cell\" align=center>" + Utils.toStringOrEmpty(BeanUtils.getProperty(item, Item.PRODUCT_PACK_SIZE_FIELD)) + "</td>");
             productQuantity += item.quantity;
-            sb.append(" <td class=\"item-info-cell\" align=center>" + item.quantity + "</td>");
-            sb.append(" <td class=\"item-info-cell\" align=center>" + Utils.toStringOrEmpty(item.price) + "</td>");
+            sb.append(" <td class=\"item-info-cell\" style=\"padding-left: 10px;\" align=left>" + item.quantity + "</td>");
+            sb.append(" <td class=\"item-info-cell\" style=\"padding-left: 10px;\" align=left width=100px>" + Utils.toStringOrEmpty(item.price) + "</td>");
             value += item.value;
-            sb.append(" <td class=\"item-info-cell\" align=center>" + Utils.toStringOrEmpty(item.value) + "</td>");
+            sb.append(" <td class=\"item-info-cell\" align=center>" + Utils.toStringOrEmpty(Utils.round(item.value)) + "</td>");
             sb.append("</tr>");
         }
 
-        sb.append("<tr bgcolor=#dbdbdb style=\"font-weight: bold;\">");
+        sb.append("<tr style=\"font-weight: bold;\">");
 //        sb.append(" <td align=center></td>");
 //        sb.append(" <td align=center></td>");
 //        sb.append(" <td align=center></td>");
 //        sb.append(" <td align=center></td>");
 //        sb.append(" <td align=center></td>");
         sb.append(" <td align=right colspan=6>Razem :</td>");
-        sb.append(" <td align=center style=\"font-size: 40px; font-weight:bold;\">" + packQuantity + "</td>");
-        sb.append(" <td align=center>Opak.</td>");
+        sb.append(" <td align=center style=\"font-size: x-large; font-weight:bold;\">" + packQuantity + "</td>");
+        sb.append(" <td align=center>Op.</td>");
         sb.append(" <td align=center>" + productQuantity + "</td>");
         sb.append(" <td align=center>par</td>");
 
@@ -294,7 +295,7 @@ public class PrintUtils {
 //            sb.append(" <td align=center>Rabat: </td>");
 //            sb.append(" <td align=center>" + Utils.toStringOrEmpty(new DoubleToStringConverter().toPresentation(order.discountValue)) + " " + Utils.toStringOrEmpty(BeanUtils.getProperty(order, Order.DISCOUNT_TYPE_NAME_FIELD)) + "</td>");
 //            sb.append("<tr>");
-        sb.append("<tr bgcolor=#dbdbdb style=\"font-weight: bold;\">");
+        sb.append("<tr style=\"font-weight: bold;\">");
 //        sb.append(" <td align=center></td>");
 //        sb.append(" <td align=center></td>");
 //        sb.append(" <td align=center></td>");
