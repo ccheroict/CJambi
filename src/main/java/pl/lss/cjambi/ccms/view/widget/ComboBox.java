@@ -51,6 +51,7 @@ public class ComboBox<T> extends QComboBox implements HasState {
             for (int i = 0; i < choices.size(); i++) {
                 if (id.equals(BeanUtils.getProperty(choices.get(i), "id"))) {
                     setCurrentIndex(i);
+                    onActiveIndex(i);
                 }
             }
         } catch (Exception ex) {
