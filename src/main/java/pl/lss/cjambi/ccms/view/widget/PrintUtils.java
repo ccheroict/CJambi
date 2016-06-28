@@ -156,6 +156,7 @@ public class PrintUtils {
             sb.append("     <div>Tel: " + office.tel + "</div>");
             sb.append("     <div>" + office.fax + "</div>");
             sb.append("     <div>Email: " + office.email + "</div>");
+            sb.append("     <div>Strona: www.tanieobuwie-g01-02.com.pl</div>");
             sb.append("   </td>");
 //            sb.append("   <td style=\"padding-left: 200px; padding-top: 20px;\">");
 //            sb.append("     <table>");
