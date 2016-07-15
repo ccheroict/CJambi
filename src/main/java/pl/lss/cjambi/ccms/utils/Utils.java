@@ -27,6 +27,8 @@ public class Utils {
     private static final Logger logger = Logger.getLogger(Utils.class);
     private static final DecimalFormat doubleFormatter = new DecimalFormat("#.##");
     private static final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+    private static final String[] monthName = {"Tháng Một", "Tháng Hai", "Tháng Ba", "Tháng Tư", "Tháng Năm", "Tháng Sáu",
+        "Tháng Bảy", "Tháng Tám", "Tháng Chín", "Tháng Mười", "Tháng Mười một", "Tháng Mười hai"};
 
     static {
         doubleFormatter.setMinimumFractionDigits(2);
@@ -134,5 +136,17 @@ public class Utils {
                 items.add(item);
             }
         }
+    }
+
+    public static String toStringSimpleDateAsText(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM");
+        String s = sdf.format(date);
+        String sDate = s.substring(0, 2);
+        String sMonth = s.substring(3, 5);
+        return sDate + ", " + monthName[Integer.parseInt(sMonth) - 1];
+    }
+
+    public static void main(String[] args) {
+        toStringSimpleDateAsText(new Date());
     }
 }

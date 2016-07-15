@@ -35,7 +35,6 @@ import pl.lss.cjambi.ccms.utils.BeanUtils;
 import pl.lss.cjambi.ccms.utils.Constants;
 import pl.lss.cjambi.ccms.utils.Utils;
 import pl.lss.cjambi.ccms.utils.converter.CurrencyToStringConverter;
-import pl.lss.cjambi.ccms.utils.converter.DateTimeToStringConverter;
 import pl.lss.cjambi.ccms.utils.converter.DoubleToStringConverter;
 import pl.lss.cjambi.ccms.utils.converter.ForeignCollectionToListConverter;
 import pl.lss.cjambi.ccms.view.dialog.DialogErrorReporter;
@@ -149,14 +148,14 @@ public class PrintUtils {
             sb.append("<table width=100%>");
             sb.append(" <tr>");
             sb.append("   <td>");
-            sb.append("     <div style=\"font-size: 30px;\">" + company.name + "</div>");
+            sb.append("     <div style=\"font-size: 30px;\">" + toSpace(company.name) + "</div>");
 //            sb.append("     <div style=\"font-size: 20px; font-weight:bold;\">" + office.name + "</div>");
 //            sb.append("     <div>" + office.street + "</div>");
 //            sb.append("     <div>" + office.zipcode + "</div>");
-            sb.append("     <div>Tel: " + office.tel + "</div>");
-            sb.append("     <div>" + office.fax + "</div>");
-            sb.append("     <div>Email: " + office.email + "</div>");
-            sb.append("     <div>Strona: www.tanieobuwie-g01-02.com.pl</div>");
+            sb.append("     <div>" + toSpace("Tel: " + office.tel) + "</div>");
+            sb.append("     <div>" + toSpace(office.fax) + "</div>");
+            sb.append("     <div>" + toSpace("Email: " + office.email) + "</div>");
+            sb.append("     <div>" + toSpace("Strona: www.tanieobuwie-g01-02.com.pl") + "</div>");
             sb.append("   </td>");
 //            sb.append("   <td style=\"padding-left: 200px; padding-top: 20px;\">");
 //            sb.append("     <table>");
@@ -221,7 +220,9 @@ public class PrintUtils {
             sb.append("<div align=center>");
         }
         sb.append(" <div style=\"font-size:30px;\">ZAMÓWIENIE Nr - " + code + "</div>");
-        sb.append(" <div>Oryginalna/Kopia - Czas: " + Utils.toStringOrEmpty(new DateTimeToStringConverter().toPresentation(lastChangedDate)) + "</div>");
+//        sb.append(" <div>Oryginalna/Kopia - Czas: " + Utils.toStringOrEmpty(new DateTimeToStringConverter().toPresentation(lastChangedDate)) + "</div>");
+//        sb.append(" <div>Oryginalna/Kopia - Czas: " + Utils.toStringSimpleDateAsText(lastChangedDate) + "</div>");
+        sb.append(" <div>Oryginalna/Kopia: " + Utils.toStringSimpleDateAsText(lastChangedDate) + "</div>");
         sb.append("</div>");
         sb.append("<table id=\"orderTable\" border=\"1\" width=100% cellspacing=0 cellpadding=0>");
         sb.append(" <thead><tr>");
@@ -311,5 +312,13 @@ public class PrintUtils {
         sb.append(" <td align=center></td>");
         sb.append("</tr>");
         sb.append("</tbody></table>");
+    }
+
+    private static String toSpace(String s) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < s.length(); i++) {
+            sb.append(" ");
+        }
+        return sb.toString();
     }
 }

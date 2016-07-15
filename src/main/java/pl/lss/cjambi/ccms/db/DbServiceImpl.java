@@ -56,7 +56,7 @@ public class DbServiceImpl implements DbService {
 //    public static String USERNAME_DEV = "17843548_0000002";
 //    public static String USERNAME_DEV = "ccms_ccms";
 //    public static String PASSWORD_DEV = "ChungCC2015";
-//    public static String JDBC_DEV = "jdbc:mysql://localhost:3306/ccms?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false";
+//    public static String JDBC_DEV = "jdbc:mysql://localhost:3306/chungtq_ccms?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false";
 //    public static String USERNAME_DEV = "root";
 //    public static String PASSWORD_DEV = "";
     private static final int SESSION_LENGTH = 10 * 60 * 1000;
